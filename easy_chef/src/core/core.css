@@ -1,0 +1,10 @@
+@import "./css/core.css";
+@import "./css/demo.css";
+@import "./css/theme-default.css";
+@import "./css/pages/app-chat.css";
+@import "./css/rtl/core.css";
+@import "./css/rtl/theme-default.css";
+
+@import "../assets/fonts/tabler-icons.css";
+@import "../assets/fonts/fontawesome.css";
+@import "../assets/fonts/tabler-icons.css";
