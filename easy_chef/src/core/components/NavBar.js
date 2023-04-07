@@ -5,9 +5,18 @@ import {Button} from 'reactstrap'
 import {useState} from 'react'
 import UserRegisterModal from "../../areas/User/Modals/Register";
 
-const NavBar = () => {
+const NavBar = ({OnLoggedIn}) => {
     const [loginModal, setLoginModal] = useState(false)
     const [registerModal, setRegisterModal] = useState(false)
+
+    const onLoginClosed = ()  => {
+        setLoginModal(!loginModal)
+        onRefresh();
+    }
+
+    const onRefresh = () => {
+        OnLoggedIn();
+    }
 
     const openRegister = () => {
         setLoginModal(false);
@@ -40,7 +49,7 @@ const NavBar = () => {
                         <i className="ti ti-search ti-md"></i>
                     </a>
                 </li>
-                <UserDropdown/>
+                <UserDropdown OnRefresh={onRefresh} />
                 </>
             )
         }
@@ -68,8 +77,7 @@ const NavBar = () => {
                 <div className="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
                     <ul className="navbar-nav flex-row align-items-center ms-auto">
                         {userData()}
-                        {/*<UserDropdown/>*/}
-                        <UserLoginModal show={loginModal} onClose={() => setLoginModal(!loginModal)}
+                        <UserLoginModal show={loginModal} onClose={onLoginClosed}
                                         onOpenRegister={openRegister}/>
                         <UserRegisterModal show={registerModal} onClose={() => setRegisterModal(!registerModal)}
                                            onOpenLogin={openLogin}></UserRegisterModal>

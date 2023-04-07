@@ -7,3 +7,4 @@ class UserProfile(User):
     avatar = models.ImageField(upload_to='accounts/avatars', null=True, blank=True)
     date_created = models.DateTimeField(auto_now_add=True)
     last_updated = models.DateTimeField(auto_now=True)
+    wizard_shown = models.BooleanField(default=False)

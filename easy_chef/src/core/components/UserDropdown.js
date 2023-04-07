@@ -1,6 +1,7 @@
 // ** React Imports
 import {Link} from "react-router-dom";
 import React, {useEffect, useState} from 'react';
+import { useNavigate } from "react-router-dom";
 
 // ** Custom Components
 import Avatar from "../components/avatar";
@@ -14,15 +15,18 @@ import {
 } from "reactstrap";
 import api from "../baseAPI";
 
-const UserDropdown = () => {
+const UserDropdown = ({OnRefresh}) => {
     const [userFirstName, setUserFirstName] = useState('')
     const [userLastName, setUserLastName] = useState('')
+    const navigate = useNavigate();
 
     function logoutUser() {
         localStorage.removeItem("user_tokens");
         localStorage.removeItem("user");
         setUserFirstName("");
         setUserLastName("");
+        navigate("/");
+        OnRefresh();
     }
 
     useEffect(() => {

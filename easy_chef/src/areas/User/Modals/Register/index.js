@@ -24,7 +24,7 @@ function registerUser(email, password, confirmPassword) {
         });
 }
 
-function loginUser(email, password){
+function loginUser(email, password) {
     const requestOptions = {
         method: "POST",
         headers: {"Content-Type": "application/json"},
@@ -46,7 +46,7 @@ const UserRegisterModal = ({show, onClose, onOpenLogin}) => {
         confirmPassword: yup.string().oneOf([yup.ref('password'), null], 'Passwords must match').required(),
         terms: yup.bool().required()
     })
-    
+
     // ** Hooks
     const {
         control,
@@ -55,13 +55,12 @@ const UserRegisterModal = ({show, onClose, onOpenLogin}) => {
     } = useForm({mode: 'onChange', resolver: yupResolver(SignupSchema)})
 
     const onSubmit = data => {
-        if (data.email.length > 0 && data.password > 0) {
-            registerUser(data.email, data.password, data.confirmPassword)
-                .then((response) => {
-                    if(response.status === 201){
-                        loginUser(data.email, data.password)
+        registerUser(data.email, data.password, data.confirmPassword)
+            .then((response) => {
+                if (response.status === 201) {
+                    loginUser(data.email, data.password)
                         .then((token_data) => {
-                            if(token_data.status === 200){
+                            if (token_data.status === 200) {
                                 onClose()
                             }
                         })
@@ -69,14 +68,12 @@ const UserRegisterModal = ({show, onClose, onOpenLogin}) => {
                             console.error(error);
                             //todo: handle the error
                         });
-                    }
-                })
-                .catch((error) => {
-                    console.error(error);
-                    //todo: handle the error
-                });
-
-        }
+                }
+            })
+            .catch((error) => {
+                console.error(error);
+                //todo: handle the error
+            });
     }
 
     return (
