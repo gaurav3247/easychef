@@ -16,22 +16,29 @@ import {
 import api from "../baseAPI";
 
 const UserDropdown = ({OnRefresh}) => {
-    const [userFirstName, setUserFirstName] = useState('')
-    const [userLastName, setUserLastName] = useState('')
+    const [userFullName, setuserFullName] = useState('')
     const navigate = useNavigate();
 
     function logoutUser() {
         localStorage.removeItem("user_tokens");
         localStorage.removeItem("user");
-        setUserFirstName("");
-        setUserLastName("");
+        setuserFullName("");
         navigate("/");
         OnRefresh();
     }
 
     useEffect(() => {
-        // here is where you make API call(s) or any side effects
+        const requestOptions = {
+            method: "GET",
+        };
 
+        api.get('/accounts/edit-profile/', requestOptions)
+        .then((response) => {
+            let data = response.data;
+            console.log(data);
+        })
+
+        console.log("test");
     }, [])
 
     return (
@@ -54,7 +61,7 @@ const UserDropdown = ({OnRefresh}) => {
                             </div>
                         </div>
                         <div className="flex-grow-1">
-                            <span className="fw-semibold d-block">{userFirstName} {userLastName}</span>
+                            <span className="fw-semibold d-block">{userFullName}</span>
                             <small className="text-muted">User</small>
                         </div>
                     </div>

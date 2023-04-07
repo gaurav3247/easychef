@@ -9,19 +9,17 @@ class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, required=True)
     password2 = serializers.CharField(write_only=True, required=True)
     avatar = serializers.ImageField(required=False)
-    first_name = serializers.CharField(required=False)
-    last_name = serializers.CharField(required=False)
+    full_name = serializers.CharField(required=True)
     username = serializers.CharField(required=False)
 
     class Meta:
         model = UserProfile
         fields = ('username', 'password', 'password2',
-                  'email', 'first_name', 'last_name',
+                  'email', 'full_name',
                   'avatar', 'phone_number')
         extra_kwargs = {
             'phone_number': {'required': False},
-            'first_name': {'required': True},
-            'last_name': {'required': True},
+            'full_name': {'required': True}
         }
 
     def validate(self, attrs):
@@ -38,6 +36,7 @@ class RegisterSerializer(serializers.ModelSerializer):
             email=validated_data.get('email', ''),
             first_name=validated_data.get('first_name', ''),
             last_name=validated_data.get('last_name', ''),
+            full_name=validated_data.get('full_name', ''),
             avatar=validated_data.get('avatar', ''),
             phone_number=validated_data.get('phone_number', '')
         )
@@ -48,6 +47,7 @@ class RegisterSerializer(serializers.ModelSerializer):
 
 class UpdateUserSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(required=False, allow_blank=True)
+    full_name = serializers.CharField(required=False, allow_blank=True)
     first_name = serializers.CharField(required=False, allow_blank=True)
     last_name = serializers.CharField(required=False, allow_blank=True)
     avatar = serializers.ImageField(required=False)
@@ -71,12 +71,13 @@ class UpdateUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = UserProfile
-        fields = ("id", "username", 'first_name', 'last_name', 'email', 'avatar',
+        fields = ("id", "username", 'first_name', 'last_name', 'full_name', 'email', 'avatar',
                   'phone_number', 'number_of_recipes_created', 'number_of_recipes_saved', 'average_rating')
 
     def update(self, instance, validated_data):
         instance.first_name = validated_data.get('first_name', instance.first_name)
         instance.last_name = validated_data.get('last_name', instance.last_name)
+        instance.full_name = validated_data.get('full_name', instance.last_name)
         instance.email = validated_data.get('email', instance.email)
         instance.avatar = validated_data.get('avatar', instance.avatar)
         instance.phone_number = validated_data.get('phone_number', instance.phone_number)

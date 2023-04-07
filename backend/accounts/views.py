@@ -36,6 +36,12 @@ class EditProfileView(UpdateAPIView):
     def get_object(self):
         return get_object_or_404(UserProfile, id=self.request.user.id)
 
+    def get(self, request, *args, **kwargs):
+        user = UserProfile.objects.get(id=self.request.user.id)
+
+        serializer = self.serializer_class(user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
 
 class ProfileView(RetrieveAPIView):
     serializer_class = UpdateUserSerializer

@@ -11,17 +11,19 @@ const UserRegisterModal = ({show, onClose, onOpenLogin}) => {
     const [apiError, setApiError] = useState('')
     const SignupSchema = yup.object().shape({
         email: yup.string().email().required(),
+        fullName: yup.string().required(),
         password: yup.string().min(6).required(),
         confirmPassword: yup.string().oneOf([yup.ref('password'), null], 'Passwords must match').required(),
         terms: yup.bool().required()
     })
 
-    function registerUser(email, password, confirmPassword) {
+    function registerUser(email, password, confirmPassword, fullName) {
         // eslint-disable-next-line react-hooks/rules-of-hooks
         const requestOptions = {
             method: "POST",
             headers: {"Content-Type": "application/json"},
             email: email,
+            full_name: fullName,
             password: password,
             password2: confirmPassword
         };
@@ -68,7 +70,7 @@ const UserRegisterModal = ({show, onClose, onOpenLogin}) => {
     } = useForm({mode: 'onChange', resolver: yupResolver(SignupSchema)})
 
     const onSubmit = data => {
-        registerUser(data.email, data.password, data.confirmPassword)
+        registerUser(data.email, data.password, data.confirmPassword, data.fullName)
             .then((response) => {
                 if (response.status === 201) {
                     loginUser(data.email, data.password)
@@ -126,6 +128,22 @@ const UserRegisterModal = ({show, onClose, onOpenLogin}) => {
                                     )}
                                 />
                                 {errors.email && <FormFeedback>{errors.email.message}</FormFeedback>}
+                            </div>
+                            <div className='mb-1'>
+                                <Label className='form-label' for='fullName'>
+                                    Full Name
+                                </Label>
+                                <Controller
+                                    id='fullName'
+                                    name='fullName'
+                                    defaultValue=''
+                                    control={control}
+                                    render={({field}) => (
+                                        <Input {...field} type='text' placeholder='John Smith'
+                                            invalid={errors.fullName && true}/>
+                                            )}
+                                />
+                                {errors.fullName && <FormFeedback>{errors.fullName.message}</FormFeedback>}
                             </div>
                             <div className='mb-1'>
                                 <Label className='form-label' for='password'>
