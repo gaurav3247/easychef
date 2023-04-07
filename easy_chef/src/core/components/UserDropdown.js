@@ -35,10 +35,8 @@ const UserDropdown = ({OnRefresh}) => {
         api.get('/accounts/edit-profile/', requestOptions)
         .then((response) => {
             let data = response.data;
-            console.log(data);
+            setuserFullName(data.full_name);
         })
-
-        console.log("test");
     }, [])
 
     return (
