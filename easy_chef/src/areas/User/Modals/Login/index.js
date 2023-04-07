@@ -1,4 +1,8 @@
 import {NavLink} from "react-router-dom";
+import {useForm, Controller} from 'react-hook-form'
+import * as yup from 'yup'
+import {yupResolver} from '@hookform/resolvers/yup'
+import api from "../../../../core/baseAPI";
 import {
     Modal,
     ModalHeader,
@@ -9,16 +13,12 @@ import {
     Label,
     Input,
     FormFeedback,
-    Button,
-    Alert
+    Button
 } from 'reactstrap'
-import {useForm, Controller} from 'react-hook-form'
-import toast from 'react-hot-toast'
-import * as yup from 'yup'
-import {yupResolver} from '@hookform/resolvers/yup'
-import api from "../../../../core/baseAPI";
+import {useState} from "react";
 
 const UserLoginModal = ({show, onClose, onOpenRegister}) => {
+    const [apiError, setApiError] = useState('')
     const LoginSchema = yup.object().shape({
         email: yup.string().email().required(),
         password: yup.string().required(),
@@ -36,7 +36,15 @@ const UserLoginModal = ({show, onClose, onOpenRegister}) => {
             .then((response) => {
                 localStorage.setItem("user_tokens", JSON.stringify(response.data));
                 return response;
+            })
+            .catch(function (error) {
+                setApiError("Invalid login attempt!");
             });
+    }
+
+    function Close(){
+        setApiError("");
+        onClose();
     }
 
     const {
@@ -49,18 +57,16 @@ const UserLoginModal = ({show, onClose, onOpenRegister}) => {
         loginUser(data.email, data.password)
             .then((token_data) => {
                 if (token_data.status === 200) {
-                    onClose()
+                    Close()
                 }
             })
             .catch((error) => {
-                console.error(error);
-                //todo: handle the error
             });
     }
     return (
         <div>
-            <Modal style={{width: 385}} isOpen={show} toggle={onClose} centered>
-                <ModalHeader toggle={onClose}></ModalHeader>
+            <Modal style={{width: 385}} isOpen={show} toggle={Close} centered>
+                <ModalHeader toggle={Close}></ModalHeader>
                 <ModalBody>
                     <div className="card-body">
                         <div className="app-brand justify-content-center mb-4 mt-n3">
@@ -125,8 +131,11 @@ const UserLoginModal = ({show, onClose, onOpenRegister}) => {
                                     Remember Me
                                 </Label>
                             </div>
+                            <div className='d-flex text-danger mt-1 mt-2 mb-2 justify-content-center'>
+                                {apiError}
+                            </div>
                             <div className='d-flex'>
-                                <Button className='mt-4 me-1 btn btn-primary d-grid w-100' color='primary'
+                                <Button className='me-1 btn btn-primary d-grid w-100' color='primary'
                                         type='submit'>
                                     Sign in
                                 </Button>

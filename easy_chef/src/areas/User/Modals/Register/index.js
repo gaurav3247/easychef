@@ -7,45 +7,58 @@ import {yupResolver} from '@hookform/resolvers/yup'
 import {useState} from "react";
 import api from "../../../../core/baseAPI";
 
-
-function registerUser(email, password, confirmPassword) {
-    const requestOptions = {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        email: email,
-        password: password,
-        password2: confirmPassword
-    };
-
-    return api.post(`/accounts/signup/`, requestOptions)
-        .then((response) => {
-            localStorage.setItem("user", JSON.stringify(response.data));
-            return response;
-        });
-}
-
-function loginUser(email, password) {
-    const requestOptions = {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        username: email,
-        password: password
-    };
-
-    return api.post(`/accounts/login/`, requestOptions)
-        .then((response) => {
-            localStorage.setItem("user_tokens", JSON.stringify(response.data));
-            return response;
-        });
-}
-
 const UserRegisterModal = ({show, onClose, onOpenLogin}) => {
+    const [apiError, setApiError] = useState('')
     const SignupSchema = yup.object().shape({
         email: yup.string().email().required(),
         password: yup.string().min(6).required(),
         confirmPassword: yup.string().oneOf([yup.ref('password'), null], 'Passwords must match').required(),
         terms: yup.bool().required()
     })
+
+    function registerUser(email, password, confirmPassword) {
+        // eslint-disable-next-line react-hooks/rules-of-hooks
+        const requestOptions = {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            email: email,
+            password: password,
+            password2: confirmPassword
+        };
+
+        return api.post(`/accounts/signup/`, requestOptions)
+        .then((response) => {
+            localStorage.setItem("user", JSON.stringify(response.data));
+            return response;
+        })
+        .catch(function (error) {
+            let emailError = error?.response?.data?.email[0];
+            if(emailError)
+                setApiError(emailError);
+            else
+                setApiError("Unknown Error Occurred");
+        });
+    }
+
+    function loginUser(email, password) {
+        const requestOptions = {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            username: email,
+            password: password
+        };
+
+        return api.post(`/accounts/login/`, requestOptions)
+        .then((response) => {
+            localStorage.setItem("user_tokens", JSON.stringify(response.data));
+            return response;
+        });
+    }
+
+    function Close(){
+        setApiError("");
+        onClose();
+    }
 
     // ** Hooks
     const {
@@ -61,7 +74,7 @@ const UserRegisterModal = ({show, onClose, onOpenLogin}) => {
                     loginUser(data.email, data.password)
                         .then((token_data) => {
                             if (token_data.status === 200) {
-                                onClose()
+                                Close()
                             }
                         })
                         .catch((error) => {
@@ -78,8 +91,8 @@ const UserRegisterModal = ({show, onClose, onOpenLogin}) => {
 
     return (
         <div>
-            <Modal style={{width: 385}} isOpen={show} toggle={onClose} centered>
-                <ModalHeader toggle={onClose}></ModalHeader>
+            <Modal style={{width: 385}} isOpen={show} toggle={Close} centered>
+                <ModalHeader toggle={Close}></ModalHeader>
                 <ModalBody>
                     <div className="card-body">
                         <div className="app-brand justify-content-center mb-4
@@ -163,8 +176,11 @@ const UserRegisterModal = ({show, onClose, onOpenLogin}) => {
                                     </a>
                                 </Label>
                             </div>
+                            <div className='d-flex text-danger mt-1 mt-2 mb-2 justify-content-center'>
+                                {apiError}
+                            </div>
                             <div className='d-flex'>
-                                <Button className='mt-4 me-1 btn btn-primary d-grid w-100' color='primary'
+                                <Button className=' me-1 btn btn-primary d-grid w-100' color='primary'
                                         type='submit'>
                                     Sign up
                                 </Button>
