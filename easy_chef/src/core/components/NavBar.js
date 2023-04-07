@@ -1,7 +1,51 @@
 import UserDropdown from './UserDropdown'
 import {NavLink, useLocation} from "react-router-dom";
+import UserLoginModal from "../../areas/User/Modals/Login";
+import {Button} from 'reactstrap'
+import {useState} from 'react'
+import UserRegisterModal from "../../areas/User/Modals/Register";
 
 const NavBar = () => {
+    const [loginModal, setLoginModal] = useState(false)
+    const [registerModal, setRegisterModal] = useState(false)
+
+    const openRegister = () => {
+        setLoginModal(false);
+        setRegisterModal(true);
+    }
+
+    const openLogin = () => {
+        setLoginModal(true);
+        setRegisterModal(false);
+    }
+
+    const userData = () => {
+        let data = localStorage.getItem("user_tokens");
+        if (data === '' || data === null) {
+            return (
+                <Button color='primary'  onClick={() => setLoginModal(!loginModal)}>
+                    Login
+                </Button>
+            )
+        } else {
+            return (
+                <>
+                <li className="nav-item navbar-search-wrapper me-2 me-xl-0">
+                    <NavLink to="/new-recipe">
+                        <i className="ti ti-file-plus ti-md"></i>
+                    </NavLink>
+                </li>
+                <li className="nav-item navbar-search-wrapper me-2 me-xl-0">
+                    <a className="nav-link search-toggler" href={void (0)}>
+                        <i className="ti ti-search ti-md"></i>
+                    </a>
+                </li>
+                <UserDropdown/>
+                </>
+            )
+        }
+    }
+
     return (
         <nav className="layout-navbar navbar navbar-expand-xl align-items-center bg-navbar-theme" id="layout-navbar">
             <div className="container-xxl">
@@ -23,17 +67,12 @@ const NavBar = () => {
                 </div>
                 <div className="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
                     <ul className="navbar-nav flex-row align-items-center ms-auto">
-                        <li className="nav-item navbar-search-wrapper me-2 me-xl-0">
-                            <NavLink to="/new-recipe">
-                                <i className="ti ti-file-plus ti-md"></i>
-                            </NavLink>
-                        </li>
-                        <li className="nav-item navbar-search-wrapper me-2 me-xl-0">
-                            <a className="nav-link search-toggler" href={void (0)}>
-                                <i className="ti ti-search ti-md"></i>
-                            </a>
-                        </li>
-                        <UserDropdown/>
+                        {userData()}
+                        {/*<UserDropdown/>*/}
+                        <UserLoginModal show={loginModal} onClose={() => setLoginModal(!loginModal)}
+                                        onOpenRegister={openRegister}/>
+                        <UserRegisterModal show={registerModal} onClose={() => setRegisterModal(!registerModal)}
+                                           onOpenLogin={openLogin}></UserRegisterModal>
                     </ul>
                 </div>
             </div>

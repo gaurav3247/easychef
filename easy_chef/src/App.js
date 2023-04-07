@@ -1,13 +1,13 @@
 import './App.css';
-import Home from './pages/Home';
-import AllRecipes from './pages/AllRecipes';
-import MainLayout from './core/components/MainLayout'
 import {BrowserRouter, Routes, Route} from "react-router-dom";
-import MyRecipes from "./pages/MyRecipes";
-import ShoppingList from "./pages/ShoppingList";
-import EditRecipe from "./pages/EditRecipe";
-import UserProfile from "./pages/UserProfile";
-import UserLogout from "./pages/UserLogout";
+import MainLayout from './core/components/MainLayout'
+import Home from './areas/Home';
+import AllRecipes from './areas/Recipe/Pages/AllRecipes';
+import MyRecipes from "./areas/Recipe/Pages/MyRecipes";
+import ShoppingList from "./areas/Recipe/Pages/ShoppingList";
+import EditRecipe from "./areas/Recipe/Pages/EditRecipe";
+import UserProfile from "./areas/User/Pages/Profile";
+import UserLogout from "./areas/User/Pages/Logout";
 
 function App() {
     return (

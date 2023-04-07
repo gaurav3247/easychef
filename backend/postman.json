@@ -1,0 +1,1630 @@
+{
+	"info": {
+		"_postman_id": "3be2d093-3990-41ce-aca7-0acfc8220369",
+		"name": "P2",
+		"description": "API endpoints for phase 2 of group project",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "26254776"
+	},
+	"item": [
+		{
+			"name": "Auth/Profiles",
+			"item": [
+				{
+					"name": "Auth",
+					"item": [
+						{
+							"name": "Signup",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "username",
+											"value": "user4",
+											"type": "text"
+										},
+										{
+											"key": "password",
+											"value": "hello!1234",
+											"type": "text"
+										},
+										{
+											"key": "password2",
+											"value": "hello!1234",
+											"type": "text"
+										},
+										{
+											"key": "first_name",
+											"value": "John",
+											"type": "text"
+										},
+										{
+											"key": "last_name",
+											"value": "Doe",
+											"type": "text"
+										},
+										{
+											"key": "email",
+											"value": "john@gmail.com",
+											"type": "text"
+										},
+										{
+											"key": "avatar",
+											"type": "file",
+											"src": "/C:/Users/Stas.V/Pictures/01f94aed-52ad-4b88-b561-33753bb5abfb.webp",
+											"disabled": true
+										},
+										{
+											"key": "phone_number",
+											"value": "123456789",
+											"type": "text",
+											"disabled": true
+										}
+									]
+								},
+								"url": {
+									"raw": "http://127.0.0.1:8000/accounts/signup/",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "8000",
+									"path": [
+										"accounts",
+										"signup",
+										""
+									]
+								},
+								"description": "This API endpoint allows users to create a new account. A request should be sent to this URL with the following parameters:\n\n- **username:** The user's username that will be used for login\n- **password:** The user's password that will be used for login\n- **password_2:** Confirmation of parameter **password**\n- **first_name** (optional): The user's first name\n- **last_name** (optional): The user's last name\n- **email** (optional): The user's email\n- **avatar** (optional): The user's profile picture\n- **phone_number** (optional): The user's phone number"
+							},
+							"response": []
+						},
+						{
+							"name": "Login",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "username",
+											"value": "user2",
+											"type": "text"
+										},
+										{
+											"key": "password",
+											"value": "hello!12345",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://127.0.0.1:8000/accounts/login/",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "8000",
+									"path": [
+										"accounts",
+										"login",
+										""
+									]
+								},
+								"description": "This API endpoint allows users to log in into existing account. A request should be sent to this URL with the following parameters:\n\n- **username**: The user's username\n- **password**: The user's password"
+							},
+							"response": []
+						}
+					],
+					"description": "This category contains user auth end points."
+				},
+				{
+					"name": "Profie View/Edit",
+					"item": [
+						{
+							"name": "Edit Profile",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "first_name",
+											"value": "John",
+											"type": "text"
+										},
+										{
+											"key": "last_name ",
+											"value": "Smith",
+											"type": "text"
+										},
+										{
+											"key": "email ",
+											"value": "John.Smith@example.com",
+											"type": "text"
+										},
+										{
+											"key": "avatar ",
+											"type": "file",
+											"src": "/C:/Users/Stas.V/Pictures/01f94aed-52ad-4b88-b561-33753bb5abfb.webp"
+										},
+										{
+											"key": "phone_number ",
+											"value": "647-0909-555",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://127.0.0.1:8000/accounts/edit-profile/",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "8000",
+									"path": [
+										"accounts",
+										"edit-profile",
+										""
+									]
+								},
+								"description": "This API endpoint allows users to update their profile information. Request should be sent to this URL with the following parameters:\n\n- **first_name** (optional): The user's first name\n- **last_name** (optional): The user's last name\n- **email** (optional): The user's email\n- **avatar** (optional): The user's profile picture\n- **phone_number** (optional): The user's phone number"
+							},
+							"response": []
+						},
+						{
+							"name": "Change password",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "old_password",
+											"value": "hello!1234",
+											"type": "text"
+										},
+										{
+											"key": "password",
+											"value": "hello!12345",
+											"type": "text"
+										},
+										{
+											"key": "password2",
+											"value": "hello!12345",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://127.0.0.1:8000/accounts/change-password/",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "8000",
+									"path": [
+										"accounts",
+										"change-password",
+										""
+									]
+								},
+								"description": "This API endpoint allows users to change their password. Request should be sent to this URL with the following parameters:\n\n- **old_password**: Current password of the user\n- **password**: New password of the user\n- **password2**: Confirmation of new password"
+							},
+							"response": []
+						},
+						{
+							"name": "Profile Details",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://127.0.0.1:8000/accounts/edit-profile/",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "8000",
+									"path": [
+										"accounts",
+										"edit-profile",
+										""
+									]
+								},
+								"description": "This API endpoint allows users to get any users details. Request should be sent to this URL with no parameters."
+							},
+							"response": []
+						}
+					],
+					"description": "This category contains users personal information edit and view related endpoints"
+				},
+				{
+					"name": "Top Creators",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/recipe/top-creators/?take=2",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"recipe",
+								"top-creators",
+								""
+							],
+							"query": [
+								{
+									"key": "take",
+									"value": "2"
+								}
+							]
+						},
+						"description": "This API endpoint allows users to get any users details. Request should be sent to this URL with no parameters. Request has the following query params:\n\n- **take:** Number of top creators to return"
+					},
+					"response": []
+				}
+			],
+			"description": "This category contains auth and user information related endpoints"
+		},
+		{
+			"name": "Recipe",
+			"item": [
+				{
+					"name": "Edit",
+					"item": [
+						{
+							"name": "Recipe Create",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"steps\": \"This is random steps\",\r\n    \"name\": \"Book\",\r\n    \"serving\": 4,\r\n    \"cuisine\": 1,\r\n    \"prep_time\": \"15 minutes\",\r\n    \"cooking_time\": \"1 hour\",\r\n    \"base_recipe\": 1,\r\n    \"ingredients\": [\r\n        {\"name\": \"Toast\", \"quantity\": 123, \"unit\": \"kg\"},\r\n        {\"name\": \"Toast123\", \"quantity\": 23, \"unit\": \"g\"}\r\n    ],\r\n    \"diets\" : [\r\n        {\"id\": 1}\r\n    ]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://127.0.0.1:8000/recipe/save/",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "8000",
+									"path": [
+										"recipe",
+										"save",
+										""
+									]
+								},
+								"description": "This API endpoint allows users create a new recipe. Request should be sent to this URL with the following parameters:\n\n- **steps**: The recipe's steps html from rich text editor\n- **name**: The recipe's name\n- **serving**: The recipe's serving size\n- **cuisine** (optional): The recipe's cuisine Id.\n- **prep_time** (optional): The recipe's preperation time\n- **cooking_time** (optional): The recipe's cooking time\n- **base_recipe** (optional): The recipe's base recipe that it was build on\n- **diets** (optional): The recipe's list of diets where each item of list has the following format: **{**\"**id**\": diet_id**}**\n- **ingredients**: The recipe's list of ingredients where each item of list has the following format: **{**\"**name**\": ingredient_name, \"**quantity**\": amount_of_ingedient, \"**unit**\": unit_of measure_of_ingredient**}**\n    \n\n**Note**: Make sure that some **cuisine** and **diet** exists before creating a recipe. Ideally **cuisine** and **diet** tables should be pre populated by admin."
+							},
+							"response": []
+						},
+						{
+							"name": "Recipe Preview Picture",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "preview_picture",
+											"type": "file",
+											"src": "/C:/Users/Stas.V/Pictures/01f94aed-52ad-4b88-b561-33753bb5abfb.webp"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://127.0.0.1:8000/recipe/upload-preview-pricture/6/",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "8000",
+									"path": [
+										"recipe",
+										"upload-preview-pricture",
+										"6",
+										""
+									],
+									"query": [
+										{
+											"key": "",
+											"value": null,
+											"disabled": true
+										}
+									]
+								},
+								"description": "This API endpoint allows users to upload preview for recipe with **recipe_id**. Request should be sent to this URL with the following parameters:\n\n- **preview_picture**: Image for preview picture"
+							},
+							"response": []
+						},
+						{
+							"name": "Recipe Save  Changes",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"id\": 5,\r\n    \"steps\": \" \",\r\n    \"name\": \"Book\",\r\n    \"prep_time\": \"15 minutes\",\r\n    \"cooking_time\": \"23 min\",\r\n    \"serving\": 4,\r\n    \"preview_picture\": null,\r\n    \"user\": 1,\r\n    \"diets\": [\r\n        {\r\n            \"id\": 1\r\n        }\r\n    ],\r\n    \"ingredients\": [\r\n        {\r\n            \"id\": 9,\r\n            \"name\": \"Toast\",\r\n            \"quantity\": 123.0\r\n        },\r\n        {\r\n            \"id\": 10,\r\n            \"name\": \"Toast123\",\r\n            \"quantity\": 23.0\r\n        }\r\n    ],\r\n    \"cuisine\": 1,\r\n    \"base_recipe\": null\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://127.0.0.1:8000/recipe/save/",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "8000",
+									"path": [
+										"recipe",
+										"save",
+										""
+									]
+								},
+								"description": "This API endpoint allows users save edited recipe. Request should be sent to this URL with the following parameters:\n\n- **steps**: The recipe's steps html from rich text editor\n- **name**: The recipe's name\n- **serving**: The recipe's serving size\n- **cuisine** (optional): The recipe's cuisine Id.\n- **prep_time** (optional): The recipe's preperation time\n- **cooking_time** (optional): The recipe's cooking time\n- **base_recipe** (optional): The recipe's base recipe that it was build on\n- **diets** (optional): The recipe's list of diets where each item of list has the following format: **{**\"**id**\": diet_id**}**\n- **ingredients**: The recipe's list of ingredients where each item of list has the following format: **{**\"**name**\": ingredient_name, \"**quantity**\": amount_of_ingedient, \"**unit**\": unit_of measure_of_ingredient**}**\n    \n\n**Note**: that all fields of the original recipe must be included even if they were not modified."
+							},
+							"response": []
+						},
+						{
+							"name": "Recipe Delete",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "http://127.0.0.1:8000/recipe/delete/1/",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "8000",
+									"path": [
+										"recipe",
+										"delete",
+										"1",
+										""
+									]
+								},
+								"description": "This API endpoint allows users to delete created recipes. Request should be sent to this URL with no parameters.\n\n**Note:** that request's url **must** contain a valid recipe id."
+							},
+							"response": []
+						},
+						{
+							"name": "Ingredients Autocomplete",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://127.0.0.1:8000/recipe/ingredients/atocompleteBy/t",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "8000",
+									"path": [
+										"recipe",
+										"ingredients",
+										"atocompleteBy",
+										"t"
+									]
+								},
+								"description": "This API endpoint allows users to get ingredients auto suggestions based on their input. Request should be sent to this URL with no parameters.\n\n**Note:** that request's url **must** contain a string input."
+							},
+							"response": []
+						}
+					],
+					"description": "This category contains recipe information edit and delete endpoints. Additionaly an ingredients autocomplete suggestions endpoint is listed here."
+				},
+				{
+					"name": "View/Interact",
+					"item": [
+						{
+							"name": "Recipe Details",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://127.0.0.1:8000/recipe/details/6/",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "8000",
+									"path": [
+										"recipe",
+										"details",
+										"6",
+										""
+									]
+								},
+								"description": "This API endpoint allows users to get details of the recipe with provided **recipe_id** in URL. Request should be sent to this URL with no parameters.\n\n**Note:** that request's url **must** contain a valid **recipe_id**"
+							},
+							"response": []
+						},
+						{
+							"name": "Recipe Comments",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://127.0.0.1:8000/recipe/all-comments/1/",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "8000",
+									"path": [
+										"recipe",
+										"all-comments",
+										"1",
+										""
+									]
+								},
+								"description": "This API endpoint allows users to get comments of the recipe with provided **recipe_id** in URL. Request should be sent to this URL with no parameters.\n\n**Note:** that request's url **must** contain a valid **recipe_id**"
+							},
+							"response": []
+						},
+						{
+							"name": "Recipe Duplicate",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://127.0.0.1:8000/recipe/duplicate/1",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "8000",
+									"path": [
+										"recipe",
+										"duplicate",
+										"1"
+									]
+								},
+								"description": "This API endpoint allows users to get details of the recipe with provided **recipe_id** in URL for futher editing as a new copy of proviced recipe. Request should be sent to this URL with no parameters.\n\n**Note:** that request's url **must** contain a valid **recipe_id**"
+							},
+							"response": []
+						},
+						{
+							"name": "Rate",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "rating",
+											"value": "3",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://127.0.0.1:8000/recipe/rate/2",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "8000",
+									"path": [
+										"recipe",
+										"rate",
+										"2"
+									]
+								},
+								"description": "This API endpoint allows users to rate the recipe with provided **recipe_id** in URL. Request should be sent to this URL with following parameters:\n\n- **rating**: Rating of recipe from and including 0 to 5\n    \n\n**Note:** that request's url **must** contain a valid **recipe_id**"
+							},
+							"response": []
+						},
+						{
+							"name": "Add Comment",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "attachments",
+											"type": "file",
+											"src": "/C:/Users/Stas.V/Pictures/01f94aed-52ad-4b88-b561-33753bb5abfb.webp"
+										},
+										{
+											"key": "text",
+											"value": " Asdasd",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://127.0.0.1:8000/recipe/comment/1/",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "8000",
+									"path": [
+										"recipe",
+										"comment",
+										"1",
+										""
+									]
+								},
+								"description": "This API endpoint allows users to add comment to the recipe with provided **recipe_id** in URL. Request should be sent to this URL with following parameters:\n\n- **text**: Message of user that will be added to recipe comments\n- **attachment** (optional): List of attachments attached to the message\n    \n\n**Note:** that request's url **must** contain a valid **recipe_id**"
+							},
+							"response": []
+						},
+						{
+							"name": "Mark As Favorite",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "rating",
+											"value": "5",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://127.0.0.1:8000/recipe/add-to-favorite/2/",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "8000",
+									"path": [
+										"recipe",
+										"add-to-favorite",
+										"2",
+										""
+									]
+								},
+								"description": "This API endpoint allows users to mark as favorite the recipe with provided **recipe_id** in URL. Request should be sent to this URL with no parameters.\n\n**Note:** that request's url **must** contain a valid **recipe_id**"
+							},
+							"response": []
+						},
+						{
+							"name": "Remove From Favorite",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "http://127.0.0.1:8000/recipe/remove-from-favorite/1/",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "8000",
+									"path": [
+										"recipe",
+										"remove-from-favorite",
+										"1",
+										""
+									]
+								},
+								"description": "This API endpoint allows users to remove from favorites the recipe with provided **recipe_id** in URL. Request should be sent to this URL with no parameters.\n\n**Note:** that request's url **must** contain a valid **recipe_id**"
+							},
+							"response": []
+						}
+					],
+					"description": "This category contains recipe information details endpoints. Additionaly interactions such as:\n\n- Comments list and create endpoints\n- Rating get and create endpoints\n- Mark and unmark as favorite endpoints\n- Duplicate recipe endpoint"
+				},
+				{
+					"name": "Recipe Lists",
+					"item": [
+						{
+							"name": "Filters Options",
+							"item": [
+								{
+									"name": "Filter Creators List",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"auth": {
+											"type": "noauth"
+										},
+										"method": "GET",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://127.0.0.1:8000/recipe/filters/creator/",
+											"protocol": "http",
+											"host": [
+												"127",
+												"0",
+												"0",
+												"1"
+											],
+											"port": "8000",
+											"path": [
+												"recipe",
+												"filters",
+												"creator",
+												""
+											]
+										},
+										"description": "This API endpoint allows users to get the list of all creator on the app. Request should be sent to this URL with no parameters."
+									},
+									"response": []
+								},
+								{
+									"name": "Filter Ingredients List",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"auth": {
+											"type": "noauth"
+										},
+										"method": "GET",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://127.0.0.1:8000/recipe/filters/ingredients/",
+											"protocol": "http",
+											"host": [
+												"127",
+												"0",
+												"0",
+												"1"
+											],
+											"port": "8000",
+											"path": [
+												"recipe",
+												"filters",
+												"ingredients",
+												""
+											]
+										},
+										"description": "This API endpoint allows users to get the list of all ingredients used in active recipes on the app. Request should be sent to this URL with no parameters."
+									},
+									"response": []
+								},
+								{
+									"name": "Filter Cuisines List",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"auth": {
+											"type": "noauth"
+										},
+										"method": "GET",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://127.0.0.1:8000/recipe/filters/cuisines/",
+											"protocol": "http",
+											"host": [
+												"127",
+												"0",
+												"0",
+												"1"
+											],
+											"port": "8000",
+											"path": [
+												"recipe",
+												"filters",
+												"cuisines",
+												""
+											]
+										},
+										"description": "This API endpoint allows users to get the list of all cuisines on the app. Request should be sent to this URL with no parameters."
+									},
+									"response": []
+								},
+								{
+									"name": "Filter Diet List",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"auth": {
+											"type": "noauth"
+										},
+										"method": "GET",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://127.0.0.1:8000/recipe/filters/diets/",
+											"protocol": "http",
+											"host": [
+												"127",
+												"0",
+												"0",
+												"1"
+											],
+											"port": "8000",
+											"path": [
+												"recipe",
+												"filters",
+												"diets",
+												""
+											]
+										},
+										"description": "This API endpoint allows users to get the list of all diets on the app. Request should be sent to this URL with no parameters."
+									},
+									"response": []
+								}
+							],
+							"description": "This category contains filter options for all possible filter inputs on the app."
+						},
+						{
+							"name": "All Recipes",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://127.0.0.1:8000/recipe/list?skip=3&name=Book&take=1",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "8000",
+									"path": [
+										"recipe",
+										"list"
+									],
+									"query": [
+										{
+											"key": "ingredient",
+											"value": "Toast123",
+											"disabled": true
+										},
+										{
+											"key": "cookTime",
+											"value": "15 minutes",
+											"disabled": true
+										},
+										{
+											"key": "diet",
+											"value": "1",
+											"disabled": true
+										},
+										{
+											"key": "cuisine",
+											"value": "1",
+											"disabled": true
+										},
+										{
+											"key": "creator",
+											"value": "1",
+											"disabled": true
+										},
+										{
+											"key": "skip",
+											"value": "3"
+										},
+										{
+											"key": "name",
+											"value": "Book"
+										},
+										{
+											"key": "take",
+											"value": "1"
+										}
+									]
+								},
+								"description": "This API endpoint allows users to get the list of all recipes on the platform. Request should be sent to this URL with no parameters. Request has the following query params for filtering:\n\n- **take:** Number of recipes to return (pagination)\n- **skip**: Number of recipes to skip (pagination)\n- **name**: Name or part of the name of recipe (filtering)\n- **creator**: Id of user that created recipe (filtering)\n- **cuisine**: Id of cuisine that recipe contains (filtering)\n- **diet**: Id of diet that recipe contains (filtering)\n- **cookTime**: Cooking time of the recipe (filtering)\n- **ingredient**: Name of ingredient that recipe contains (filtering)"
+							},
+							"response": []
+						},
+						{
+							"name": "Interactions",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://127.0.0.1:8000/recipe/interactions?cookTime=15 minutes",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "8000",
+									"path": [
+										"recipe",
+										"interactions"
+									],
+									"query": [
+										{
+											"key": "take",
+											"value": "6",
+											"disabled": true
+										},
+										{
+											"key": "skip",
+											"value": "1",
+											"disabled": true
+										},
+										{
+											"key": "ingredient",
+											"value": "41",
+											"disabled": true
+										},
+										{
+											"key": "ingredient",
+											"value": "4",
+											"disabled": true
+										},
+										{
+											"key": "cookTime",
+											"value": "15 minutes"
+										},
+										{
+											"key": "diet",
+											"value": "1",
+											"disabled": true
+										},
+										{
+											"key": "cuisine",
+											"value": "1",
+											"disabled": true
+										},
+										{
+											"key": "creator",
+											"value": "1",
+											"disabled": true
+										}
+									]
+								},
+								"description": "This API endpoint allows users to get the list of all recipes auth user interacted with(like, comment, create). Request should be sent to this URL with no parameters. Request has the following query params for filtering:\n\n- **take:** Number of recipes to return (pagination)\n- **skip**: Number of recipes to skip (pagination)\n- **name**: Name or part of the name of recipe (filtering)\n- **creator**: Id of user that created recipe (filtering)\n- **cuisine**: Id of cuisine that recipe contains (filtering)\n- **diet**: Id of diet that recipe contains (filtering)\n- **cookTime**: Cooking time of the recipe (filtering)\n- **ingredient**: Name of ingredient that recipe contains (filtering)"
+							},
+							"response": []
+						},
+						{
+							"name": "Favorite Recipes",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://127.0.0.1:8000/recipe/favorites/?diet=1",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "8000",
+									"path": [
+										"recipe",
+										"favorites",
+										""
+									],
+									"query": [
+										{
+											"key": "take",
+											"value": "6",
+											"disabled": true
+										},
+										{
+											"key": "skip",
+											"value": "1",
+											"disabled": true
+										},
+										{
+											"key": "ingredient",
+											"value": "41",
+											"disabled": true
+										},
+										{
+											"key": "ingredient",
+											"value": "4",
+											"disabled": true
+										},
+										{
+											"key": "cookTime",
+											"value": "15 minutes",
+											"disabled": true
+										},
+										{
+											"key": "diet",
+											"value": "1"
+										},
+										{
+											"key": "cuisine",
+											"value": "1",
+											"disabled": true
+										}
+									]
+								},
+								"description": "This API endpoint allows users to get the list of all recipes auth user marked as favorite. Request should be sent to this URL with no parameters. Request has the following query params for filtering:\n\n- **take:** Number of recipes to return (pagination)\n- **skip**: Number of recipes to skip (pagination)\n- **name**: Name or part of the name of recipe (filtering)\n- **creator**: Id of user that created recipe (filtering)\n- **cuisine**: Id of cuisine that recipe contains (filtering)\n- **diet**: Id of diet that recipe contains (filtering)\n- **cookTime**: Cooking time of the recipe (filtering)\n- **ingredient**: Name of ingredient that recipe contains (filtering)"
+							},
+							"response": []
+						},
+						{
+							"name": "Popular Recipes",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://127.0.0.1:8000/recipe/popular-recipes/?take=10",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "8000",
+									"path": [
+										"recipe",
+										"popular-recipes",
+										""
+									],
+									"query": [
+										{
+											"key": "take",
+											"value": "10"
+										}
+									]
+								},
+								"description": "This API endpoint gets the top 10 most popular recipes based on amounts of saves/favorites. Request should be sent to this URL with the following parameter:"
+							},
+							"response": []
+						}
+					],
+					"description": "This category contains all possible lists of recipes on the app and filter options related to them"
+				},
+				{
+					"name": "Create Diet",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "Test",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/recipe/add-diet/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"recipe",
+								"add-diet",
+								""
+							]
+						},
+						"description": "**This api endpoint will be only used by system admins!**\n\nAPI endpoint adds new diet. Request should be sent to this URL with the following parameters:\n\n- **name**: name of new diet"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Cuisine",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "Test Cousine",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/recipe/add-cuisine/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"recipe",
+								"add-cuisine",
+								""
+							]
+						},
+						"description": "**This api endpoint will be only used by system admins!**\n\nAPI endpoint adds new cuisine. Request should be sent to this URL with the following parameters:\n\n- **name**: name of new cuisine"
+					},
+					"response": []
+				}
+			],
+			"description": "This category contains recipe related endpoints"
+		},
+		{
+			"name": "Shopping List",
+			"item": [
+				{
+					"name": "Shopping List Details",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/shopping-list/details",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"shopping-list",
+								"details"
+							]
+						},
+						"description": "This API endpoint allows users to get their shopping list details. Request should be sent to this URL with no parameters."
+					},
+					"response": []
+				},
+				{
+					"name": "Shopping List Ingredients",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/shopping-list/ingredients/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"shopping-list",
+								"ingredients",
+								""
+							]
+						},
+						"description": "This API endpoint allows users to get the list of ingredients in their shopping list. Request should be sent to this URL with no parameters."
+					},
+					"response": []
+				},
+				{
+					"name": "Add Recipe To Shopping List",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "servingSize",
+									"value": "4",
+									"type": "text"
+								},
+								{
+									"key": "recipeID",
+									"value": "2",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/shopping-list/add-recipe",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"shopping-list",
+								"add-recipe"
+							]
+						},
+						"description": "This API endpoint allows users to add all the ingredients needed to create a recipe into their shopping list. A request should be sent to this URL with the following parameters:\n\n- **servingSize:** The serving size will be used to determine how much of each ingredient is needed to create the recipe with that particular serving size.\n- **recipeID:** The recipe id will be used to determine which recipe is being added to the shopping list."
+					},
+					"response": []
+				},
+				{
+					"name": "Remove Recipe From Shopping List",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "recipeID",
+									"value": "1",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/shopping-list/remove-recipe",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"shopping-list",
+								"remove-recipe"
+							]
+						},
+						"description": "This API endpoint allows users to remove the ingredients needed to make a recipe from the user's shopping list. Request should be sent to this URL with the following parameter:\n\n- **recipeID**: The recipe id will be used to determine which recipe is to be removed from the shopping list."
+					},
+					"response": []
+				},
+				{
+					"name": "Change Serving Size",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "recipeID",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "servingSize",
+									"value": "",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/shopping-list/change-serving-size",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"shopping-list",
+								"change-serving-size"
+							]
+						},
+						"description": "This API endpoint allows users to alter the serving size of a recipe in the user's shopping list. Request should be sent to this URL with the following parameter:\n\n- recipeID: The recipe id will be used to determine which recipe's serving size is to be altered.\n- servingSize: The serving size will be used to determine how much of each ingredient is needed to create the recipe with that particular serving size."
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "token",
+			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjc4NjY4ODMyLCJpYXQiOjE2Nzg1ODI0MzIsImp0aSI6IjI1NDVlZTU3MmEwODRiMWM5ZDk2NWE1M2VkZDkzZjZiIiwidXNlcl9pZCI6MX0.SUrlRaTuqDGNj-31NagL2lKo3lXxIKwxV7mMRM9EiHk"
+		}
+	]
+}
