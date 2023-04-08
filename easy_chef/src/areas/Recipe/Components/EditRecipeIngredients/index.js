@@ -3,76 +3,89 @@ import * as React from 'react';
 import {forwardRef, useImperativeHandle, useState} from "react";
 import {Table} from 'reactstrap'
 
-const EditRecipeIngredients = forwardRef(({onAddIngredient, onEditIngredient}, ref) => {
+const EditRecipeIngredients = forwardRef(({onAddIngredient, onEditIngredient, onRefreshIngredients}, ref) => {
     const [ingredients, setIngredients] = useState([])
     const [editedIngredients, setEditedIngredients] = useState({})
 
     useImperativeHandle(ref, () => ({
-        addNewIngredient(name, quantity) {
+        async addNewIngredient(name, quantity) {
             const newIngredient = {"name": name, "quantity": quantity}
             const updatedIngredients = ingredients.concat(newIngredient);
-            setIngredients(updatedIngredients);
-            },
-        editIngredient(name, quantity){
+            await setIngredients(updatedIngredients);
+            onRefreshIngredients();
+        },
+        async editIngredient(name, quantity) {
             const updatedIngredients = ingredients.map((ingredient) => {
                 if (ingredient === editedIngredients) {
-                    return { ...ingredient,name, quantity };
+                    return {...ingredient, name, quantity};
                 }
                 return ingredient;
             });
-            setIngredients(updatedIngredients);
+            await setIngredients(updatedIngredients);
+            onRefreshIngredients();
+        },
+        getIngredients() {
+            return ingredients;
         }
     }));
 
-    function removeIngredient(ingredient){
+    function removeIngredient(ingredient) {
         const updatedIngredients = ingredients.filter((item) => item !== ingredient);
         setIngredients(updatedIngredients);
+        setTimeout(function () {
+            onRefreshIngredients();
+        }, 100);
     }
 
-    function editIngredient(ingredient){
+    function editIngredient(ingredient) {
         onEditIngredient(ingredient);
         setEditedIngredients(ingredient);
     }
-    
+
     function ingredientsTable() {
         if (ingredients.length > 0) {
             return (
                 <Table hover responsive>
                     <thead>
-                        <tr>
-                            <th>Ingredient Name</th>
-                            <th>Quantity/Amount</th>
-                            <th>Actions</th>
-                        </tr>
+                    <tr>
+                        <th>Ingredient Name</th>
+                        <th>Quantity/Amount</th>
+                        <th>Actions</th>
+                    </tr>
                     </thead>
                     <tbody>
-                        {ingredients.map(function (ingredient) {
-                            return (
-                                <tr>
-                                    <td>
-                                        <b>{ingredient.name}</b>
-                                    </td>
-                                    <td>{ingredient.quantity}</td>
-                                    <td>
-                                        <Button color='secondary' className="btn btn-icon btn-outline-secondary waves-effect" onClick={e => editIngredient(ingredient)} style={{ border: 'none', 'background-color': '#fef3f300 !important'}}>
-                                            <i className="ti ti-pencil me-1"></i>
-                                        </Button>
-                                        <Button color='danger' className="btn btn-icon btn-outline-primary waves-effect" onClick={e => removeIngredient(ingredient)} style={{ border: 'none', 'background-color': '#fef3f300 !important'}}>
-                                            <i className="ti ti-trash me-1"></i>
-                                        </Button>
-                                    </td>
-                                </tr>
-                                );
-                        })}
+                    {ingredients.map(function (ingredient) {
+                        return (
+                            <tr>
+                                <td>
+                                    <b>{ingredient.name}</b>
+                                </td>
+                                <td>{ingredient.quantity}</td>
+                                <td>
+                                    <Button color='secondary'
+                                            className="btn btn-icon btn-outline-secondary waves-effect"
+                                            onClick={e => editIngredient(ingredient)}
+                                            style={{border: 'none', 'background-color': '#fef3f300 !important'}}>
+                                        <i className="ti ti-pencil me-1"></i>
+                                    </Button>
+                                    <Button color='danger' className="btn btn-icon btn-outline-primary waves-effect"
+                                            onClick={e => removeIngredient(ingredient)}
+                                            style={{border: 'none', 'background-color': '#fef3f300 !important'}}>
+                                        <i className="ti ti-trash me-1"></i>
+                                    </Button>
+                                </td>
+                            </tr>
+                        );
+                    })}
                     </tbody>
                 </Table>
-                );
+            );
         } else {
             return (
                 <div className="text-center">
                     <p className="text-muted my-5">No Ingredients Added</p>
                 </div>
-                );
+            );
         }
     }
 
@@ -83,10 +96,10 @@ const EditRecipeIngredients = forwardRef(({onAddIngredient, onEditIngredient}, r
                     <div className="col-6">
                         <div
                             style={{
-                            "font-weight": "500",
+                                "font-weight": "500",
                                 "font-size": "1.285rem",
                                 "margin-top": "0.4rem"
-                        }}>
+                            }}>
                             Ingredients
                         </div>
                     </div>
@@ -103,7 +116,7 @@ const EditRecipeIngredients = forwardRef(({onAddIngredient, onEditIngredient}, r
                 {ingredientsTable()}
             </div>
         </div>
-        );
+    );
 })
 
 export default EditRecipeIngredients

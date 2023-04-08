@@ -14,24 +14,54 @@ import EditRecipeIngredients from "../../Components/EditRecipeIngredients";
 import AddIngredient from "../../Modals/AddIngredient";
 
 const EditRecipe = () => {
+    const [recipeName, setRecipeName] = useState('')
+    const [recipeServing, setRecipeServing] = useState('')
+    const [recipeDiets, setRecipeDiets] = useState([])
+    const [recipeCuisine, setRecipeCuisine] = useState()
+    const [recipeCookingTime, setRecipeCookingTime] = useState()
+    const [recipePrepTime, setRecipePrepTime] = useState()
+    const [refreshIngredients, setRefreshIngredients] = useState(false)
+    const RecipeSchema = yup.object().shape({
+        name: yup.string().required('The name is required'),
+        serving: yup.number().typeError('Serving must be a number').required('The number is required').test(
+            'Is positive?',
+            'The number must be greater than 0',
+            (value) => value > 0
+        ),
+    })
+
     const animatedComponents = makeAnimated({DropdownIndicator: () => null, IndicatorSeparator: () => null})
     const [dietOptions, setdietOptions] = useState([])
+    const [userFullName, setuserFullName] = useState('')
     const [previewPicture, setpreviewPicture] = useState('')
     const editRecipeIngredientsRef = useRef();
     const fileInputRef = useRef(null);
     const addIngredientRef = useRef();
     const [addIngredientModal, setIngredientModal] = useState(false)
     const [cuisineOptions, setcuisineOptions] = useState([])
-    const [timeOptions, setTimeOptions] = useState([
+
+    const timeOptions = [
         {"id": 1, "name": "15 minutes"},
         {"id": 2, "name": "30 minutes"},
         {"id": 3, "name": "45 minutes"},
         {"id": 4, "name": "1 hour"},
-        {"id": 4, "name": "2 hour"},
-        {"id": 4, "name": "3 hour"},
-        {"id": 4, "name": "4 hour"},
-        {"id": 4, "name": "5+ hour"},
-    ])
+        {"id": 5, "name": "2 hour"},
+        {"id": 6, "name": "3 hour"},
+        {"id": 7, "name": "4 hour"},
+        {"id": 8, "name": "5+ hour"},
+    ]
+
+    useEffect(() => {
+        const requestOptions = {
+            method: "GET",
+        };
+
+        api.get('/accounts/edit-profile/', requestOptions)
+            .then((response) => {
+                let data = response.data;
+                setuserFullName(data.full_name);
+            })
+    }, [])
 
     const selectThemeColors = theme => ({
         ...theme,
@@ -80,15 +110,6 @@ const EditRecipe = () => {
         })
     }
 
-    const RecipeSchema = yup.object().shape({
-        name: yup.string().required('The name is required'),
-        serving: yup.number().typeError('Serving must be a number').required('The number is required').test(
-            'Is positive?',
-            'The number must be greater than 0',
-            (value) => value > 0
-        ),
-    })
-
     useEffect(() => {
         const requestOptions = {
             method: "GET",
@@ -132,23 +153,55 @@ const EditRecipe = () => {
     };
 
 
-    function ingredientAdded(name, quantity){
+    function ingredientAdded(name, quantity) {
         editRecipeIngredientsRef.current.addNewIngredient(name, quantity)
         addIngredientRef.current.Close()
     }
 
-    function ingredientEdited(name, quantity){
+    function ingredientEdited(name, quantity) {
         editRecipeIngredientsRef.current.editIngredient(name, quantity)
         addIngredientRef.current.Close()
     }
 
-    function editIngredient(ingredient){
+    function editIngredient(ingredient) {
         setIngredientModal(!addIngredientModal)
         addIngredientRef.current.EditIngredient(ingredient)
     }
 
-    const onSubmit = data => {
+    function onNameChange(name) {
+        setRecipeName(name);
+    }
 
+    function onServingChange(serving) {
+        setRecipeServing(serving);
+    }
+
+    function onDietChange(diets) {
+        setRecipeDiets(diets)
+        console.log(diets);
+    }
+
+    function onCuisineChange(cuisine) {
+        setRecipeCuisine(cuisine);
+    }
+
+    function onCookingTimeChange(cuisine) {
+        setRecipeCookingTime(cuisine);
+    }
+
+    function onPrepTimeChange(cuisine) {
+        setRecipePrepTime(cuisine);
+    }
+
+    function Refresh() {
+        setRefreshIngredients(!refreshIngredients);
+    }
+
+    const onSubmit = data => {
+        let ingredients = editRecipeIngredientsRef.current.getIngredients();
+        if (ingredients.length <= 0) {
+
+        }
     }
 
     return (
@@ -189,8 +242,13 @@ const EditRecipe = () => {
                                                 name='name'
                                                 defaultValue=''
                                                 control={control}
-                                                render={({field}) => <Input {...field} placeholder='Recipe Name'
-                                                                            invalid={errors.name && true}/>}
+                                                render={({field: {value, onChange, ...field}}) => <Input {...field}
+                                                                                                         onChange={({target: {value}}) => {
+                                                                                                             onChange(value);
+                                                                                                             onNameChange(value);
+                                                                                                         }}
+                                                                                                         placeholder='Recipe Name'
+                                                                                                         invalid={errors.name && true}/>}
                                             />
                                             {errors.name &&
                                                 <FormFeedback>{errors.name.message}</FormFeedback>}
@@ -204,8 +262,13 @@ const EditRecipe = () => {
                                                 name='serving'
                                                 defaultValue=''
                                                 control={control}
-                                                render={({field}) => <Input {...field} placeholder='Serving'
-                                                                            invalid={errors.serving && true}/>}
+                                                render={({field: {value, onChange, ...field}}) => <Input {...field}
+                                                                                                         placeholder='Serving'
+                                                                                                         onChange={({target: {value}}) => {
+                                                                                                             onChange(value);
+                                                                                                             onServingChange(value);
+                                                                                                         }}
+                                                                                                         invalid={errors.serving && true}/>}
                                             />
                                             {errors.serving &&
                                                 <FormFeedback>{errors.serving.message}</FormFeedback>}
@@ -219,9 +282,11 @@ const EditRecipe = () => {
                                                 getOptionLabel={option => option.name}
                                                 getOptionValue={option => option.id}
                                                 isClearable={false}
-                                                closeMenuOnSelect={false}
+                                                closeMenuOnSelect={true}
+                                                blurInputOnSelect={true}
                                                 components={animatedComponents}
                                                 defaultValue={[]}
+                                                onChange={onDietChange}
                                                 isMulti
                                                 styles={customStyles}
                                                 options={dietOptions}
@@ -245,6 +310,7 @@ const EditRecipe = () => {
                                                 className='react-select'
                                                 classNamePrefix='select'
                                                 defaultValue={[]}
+                                                onChange={onCuisineChange}
                                                 styles={customStyles}
                                                 name='clear'
                                                 options={cuisineOptions}
@@ -267,6 +333,7 @@ const EditRecipe = () => {
                                                 className='react-select'
                                                 classNamePrefix='select'
                                                 defaultValue={[]}
+                                                onChange={onPrepTimeChange}
                                                 styles={customStyles}
                                                 name='clear'
                                                 options={timeOptions}
@@ -289,6 +356,7 @@ const EditRecipe = () => {
                                                 className='react-select'
                                                 classNamePrefix='select'
                                                 defaultValue={[]}
+                                                onChange={onCookingTimeChange}
                                                 styles={customStyles}
                                                 name='clear'
                                                 options={timeOptions}
@@ -300,19 +368,24 @@ const EditRecipe = () => {
                                 </Row>
                             </div>
                         </div>
-                        <EditRecipeIngredients ref={editRecipeIngredientsRef} onAddIngredient={()=> setIngredientModal(!addIngredientModal)} onEditIngredient={editIngredient}></EditRecipeIngredients>
+                        <EditRecipeIngredients ref={editRecipeIngredientsRef}
+                                               onAddIngredient={() => setIngredientModal(!addIngredientModal)}
+                                               onEditIngredient={editIngredient}
+                                               onRefreshIngredients={Refresh}></EditRecipeIngredients>
                         <EditRecipeSteps></EditRecipeSteps>
                     </div>
                     <div className="col-4">
-                        <div style={{"height": "38rem"}} className="card">
+                        <div style={{"height": "33rem"}} className="card">
                             <img style={{"object-fit": "cover", "max-height": "250px"}}
                                  className="card-img-top h-50 object-fit-fill"
-                                src={previewPicture ? previewPicture : require('../../../../assets/img/no-image.jpg')}
+                                 src={previewPicture ? previewPicture : require('../../../../assets/img/no-image.jpg')}
                                  alt="Card image cap"/>
+                            <span
+                                class="badge bg-label-primary">Cooking Time:{recipeCookingTime ? recipeCookingTime.name : "Not Set"}</span>
                             <div className="card-body">
-                                <h5 className="card-title text-truncate">New Recipe Name (Preview)</h5>
-                                <h6 className="card-subtitle text-muted">Creator: <a href="javascript:void(0)">Brittney
-                                    Doe</a>
+                                <h5 className="card-title text-truncate">{recipeName ? recipeName : "New Recipe Name"} (Preview)</h5>
+                                <h6 className="card-subtitle text-muted">Creator:
+                                    <a className="ms-1" href="javascript:void(0)">{userFullName}</a>
                                 </h6>
                                 <p className="card-text mt-2 mb-1">
                                     <small className="card-text text-uppercase">Details</small>
@@ -320,23 +393,22 @@ const EditRecipe = () => {
                                 <ul className="list-unstyled mb-4" style={{"margin-left": "-8px"}}>
                                     <li className="d-flex mb-1-3">
                                         <span className="fw-bold mx-2">Serving:</span>
-                                        <span className="text-truncate">0</span>
+                                        <span className="text-truncate">{recipeServing ? recipeServing : "0"}</span>
                                     </li>
                                     <li className="d-flex mb-1-3">
                                         <span className="fw-bold mx-2">Cuisine:</span>
-                                        <span className="text-truncate">Selected Cuisine</span>
+                                        <span
+                                            className="text-truncate">{recipeCuisine ? recipeCuisine.name : "Selected Cuisine"}</span>
                                     </li>
                                     <li className="d-flex mb-1-3">
                                         <span className="fw-bold mx-2">Diets:</span>
-                                        <span className="text-truncate">Selected Diets</span>
+                                        <span
+                                            className="text-truncate">{recipeDiets.length > 0 ? recipeDiets.map((diet) => diet.name).join(", ") : "Selected Diets"}</span>
                                     </li>
                                     <li className="d-flex mb-1-3">
                                         <span className="fw-bold mx-2">Ingredients:</span>
-                                        <span className="text-truncate">Selected Ingredients</span>
-                                    </li>
-                                    <li className="d-flex mb-1-3">
-                                        <span className="fw-bold mx-2">Steps:</span>
-                                        <span>Partial steps detalis will display here after you add them</span>
+                                        <span
+                                            className="text-truncate">{editRecipeIngredientsRef.current && editRecipeIngredientsRef.current.getIngredients().length > 0 ? editRecipeIngredientsRef.current.getIngredients().map((ingredient) => ingredient.name).join(", ") : "Selected Ingredients"}</span>
                                     </li>
                                 </ul>
                                 <hr></hr>
@@ -344,13 +416,14 @@ const EditRecipe = () => {
                                     <input
                                         type="file"
                                         ref={fileInputRef}
-                                        style={{ display: "none" }}
+                                        style={{display: "none"}}
                                         onChange={handleFileChange}
                                     />
                                     <Button onClick={handlePreviewPictureUploadClick} color='primary' type='button'>
                                         Change Preview Picture
                                     </Button>
-                                    <Button onClick={handlePreviewPictureResetClick} outline color='primary' type='button'>
+                                    <Button onClick={handlePreviewPictureResetClick} outline color='primary'
+                                            type='button'>
                                         Reset
                                     </Button>
                                 </div>
@@ -359,7 +432,9 @@ const EditRecipe = () => {
                     </div>
                 </div>
             </Form>
-        <AddIngredient ref={addIngredientRef} show={addIngredientModal} onClose={()=>setIngredientModal(!addIngredientModal)} onIngredientAdded={ingredientAdded} onIngredientEdited={ingredientEdited}></AddIngredient>
+            <AddIngredient ref={addIngredientRef} show={addIngredientModal}
+                           onClose={() => setIngredientModal(!addIngredientModal)} onIngredientAdded={ingredientAdded}
+                           onIngredientEdited={ingredientEdited}></AddIngredient>
         </>
     )
 }
