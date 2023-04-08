@@ -72,6 +72,18 @@ const Home = () => {
                 </div>
               </div>
             </div>
+            <script src="./assets/libs/jquery/jquery.js"></script>
+            <script src="./assets/libs/popper/popper.js"></script>
+            <script src="./assets/js/bootstrap.js"></script>
+            <script
+              src="./assets/libs/perfect-scrollbar/perfect-scrollbar.js"></script>
+            <script src="./assets/libs/node-waves/node-waves.js"></script>
+            <script src="./assets/libs/hammer/hammer.js"></script>
+
+            <script src="./assets/js/menu.js"></script>
+            <script src="./assets/libs/swiper/swiper.js"></script>
+            <script src="./assets/js/main.js"></script>
+            <script src="./assets/libs/ui-carousel/ui-carousel.js"></script>
         </div>
     )
 }

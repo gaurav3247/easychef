@@ -1,0 +1,36 @@
+.w-192 {
+    width: 192px;
+}
+
+.w-90 {
+    width: 90%;
+}
+
+.h-400 {
+    height:400px;
+}
+
+.lb0 {
+    left: 0px;
+    bottom: 0px
+}
+
+.lw0 {
+    left: 0px;
+    width: 0px;
+}
+
+.thr0 {
+    top: 0px;
+    height: 10px;
+    right: 0px;
+}
+
+.th0 {
+    top: 0px;
+    height: 10px;
+}
+
+.ml8 {
+    margin-left: 8px;
+}

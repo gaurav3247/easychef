@@ -142,7 +142,23 @@ const UserProfile = () => {
                     </div>
                   </div>
                 </div>
-              </div>
+                <div class="col-lg-9">
+                  <ul class="nav nav-pills flex-column flex-md-row mb-4">
+                    <li class="nav-item">
+                      <a class="nav-link active" href="javascript:void(0);"><i
+                          class="ti-xs ti ti-chef-hat me-1"></i>Recipes</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" href=""><i class="ti-xs ti
+                          ti-bookmarks me-1"></i>Favorite Recipes</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" href=""><i class="ti-xs ti ti-history
+                          me-1"></i>Interactions</a>
+                    </li>
+                  </ul>
+                </div>
+              </div>     
             </div>
         </div>
     )
