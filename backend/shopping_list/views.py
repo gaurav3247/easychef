@@ -52,6 +52,8 @@ class ShoppingListIngredientsView(ListAPIView):
         user = self.request.user
         recipes_ids = ShoppingListItem.objects.filter(user=user).values_list('recipeID', flat=True).distinct()
         str_recipes_ids = str(tuple(recipes_ids))
+        if len(recipes_ids) == 1:
+            str_recipes_ids = str_recipes_ids.replace(',', '')
 
         query = "SELECT * " \
                 "FROM recipe_ingredient " \
@@ -61,14 +63,17 @@ class ShoppingListIngredientsView(ListAPIView):
         ingredients_dict = {}
 
         for ingredient in ingredients:
+            recipe_id = ingredient.recipe
+            serving_size = ShoppingListItem.objects.get(user=user, recipeID=recipe_id).servingSize
             if ingredient.name not in ingredients_dict:
-                ingredients_dict[ingredient.name] = ingredient.quantity
+                ingredients_dict[ingredient.name] = ingredient.quantity * serving_size
             else:
-                ingredients_dict[ingredient.name] += ingredient.quantity
+                ingredients_dict[ingredient.name] += ingredient.quantity * serving_size
 
         return ingredients_dict
 
     def get(self, request, *args, **kwargs):
-        ingredients = self.get_queryset()
+        ingredients_dict = self.get_queryset()
+        ingredients = [{"Ingredient": ingredient, "Quantity": ingredients_dict[ingredient]} for ingredient in list(ingredients_dict)]
 
-        return JsonResponse(ingredients)
+        return JsonResponse({'ingredients': ingredients})

@@ -9,17 +9,18 @@ from shopping_list.models import ShoppingListItem
 
 class ShoppingListSerializer(serializers.ModelSerializer):
     recipe_name = serializers.CharField(source='recipeID.name', read_only=True)
+    recipe_img = serializers.CharField(source='recipeID.preview_picture',
+                                       read_only=True)
 
     class Meta:
         model = ShoppingListItem
-        fields = ('servingSize', 'recipe_name', 'recipeID')
+        fields = ('servingSize', 'recipe_name', 'recipeID', 'recipe_img')
 
     def create(self, validated_data):
         request = self.context['request']
         user = get_user_profile(request.user.id)
         recipe_id = request.POST.get('recipeID', '')
         recipe = get_object_or_404(Recipe, id=recipe_id)
-
         if ShoppingListItem.objects.filter(user=user, recipeID=recipe_id):
             raise ValidationError("Recipe already in shopping list")
 
