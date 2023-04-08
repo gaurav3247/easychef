@@ -1,0 +1,25 @@
+.margin-top_2{
+    margin-top: 2px;
+}
+
+.font-size_9{
+    font-size: 0.9rem;
+}
+
+.hw_31{
+    height: 31px;
+    width: 31px;
+}
+
+.width_35{
+    width: 35%;
+}
+
+.card_fit_height{
+    object-fit: cover; 
+    max-height: 250px;
+}
+
+.margin-left_n8{
+    margin-left: -8px;
+}
