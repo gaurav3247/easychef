@@ -8,6 +8,7 @@ import ShoppingList from "./areas/Recipe/Pages/ShoppingList";
 import EditRecipe from "./areas/Recipe/Pages/EditRecipe";
 import UserProfile from "./areas/User/Pages/Profile";
 import UserLogout from "./areas/User/Pages/Logout";
+import ViewRecipe from "./areas/Recipe/Pages/ViewRecipe";
 import {useCallback, useState} from "react";
 
 function App() {
@@ -24,6 +25,7 @@ function App() {
                         <Route path="new-recipe" element={<EditRecipe />} />
                         <Route path="user-profile" element={<UserProfile />} />
                         <Route path="log-out" element={<UserLogout />} />
+                        <Route path="view-recipe" element={<ViewRecipe />} />
                     </Route>
                 </Routes>
             </MainLayout>
