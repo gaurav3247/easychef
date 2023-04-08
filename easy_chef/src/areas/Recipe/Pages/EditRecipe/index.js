@@ -16,7 +16,9 @@ import AddIngredient from "../../Modals/AddIngredient";
 const EditRecipe = () => {
     const animatedComponents = makeAnimated({DropdownIndicator: () => null, IndicatorSeparator: () => null})
     const [dietOptions, setdietOptions] = useState([])
+    const [previewPicture, setpreviewPicture] = useState('')
     const editRecipeIngredientsRef = useRef();
+    const fileInputRef = useRef(null);
     const addIngredientRef = useRef();
     const [addIngredientModal, setIngredientModal] = useState(false)
     const [cuisineOptions, setcuisineOptions] = useState([])
@@ -111,6 +113,24 @@ const EditRecipe = () => {
         handleSubmit,
         formState: {errors}
     } = useForm({mode: 'onChange', resolver: yupResolver(RecipeSchema)})
+
+    const handlePreviewPictureUploadClick = () => {
+        fileInputRef.current.click();
+    };
+
+    const handlePreviewPictureResetClick = () => {
+        setpreviewPicture('');
+    };
+
+    const handleFileChange = (event) => {
+        const file = event.target.files[0];
+        const reader = new FileReader();
+        reader.onload = () => {
+            setpreviewPicture(reader.result);
+        };
+        reader.readAsDataURL(file);
+    };
+
 
     function ingredientAdded(name, quantity){
         editRecipeIngredientsRef.current.addNewIngredient(name, quantity)
@@ -287,7 +307,7 @@ const EditRecipe = () => {
                         <div style={{"height": "38rem"}} className="card">
                             <img style={{"object-fit": "cover", "max-height": "250px"}}
                                  className="card-img-top h-50 object-fit-fill"
-                                 src={require('../../../../assets/img/no-image.jpg')}
+                                src={previewPicture ? previewPicture : require('../../../../assets/img/no-image.jpg')}
                                  alt="Card image cap"/>
                             <div className="card-body">
                                 <h5 className="card-title text-truncate">New Recipe Name (Preview)</h5>
@@ -321,10 +341,16 @@ const EditRecipe = () => {
                                 </ul>
                                 <hr></hr>
                                 <div className="text-center demo-inline-spacing mt-n3">
-                                    <Button color='primary' type='button'>
+                                    <input
+                                        type="file"
+                                        ref={fileInputRef}
+                                        style={{ display: "none" }}
+                                        onChange={handleFileChange}
+                                    />
+                                    <Button onClick={handlePreviewPictureUploadClick} color='primary' type='button'>
                                         Change Preview Picture
                                     </Button>
-                                    <Button outline color='primary' type='button'>
+                                    <Button onClick={handlePreviewPictureResetClick} outline color='primary' type='button'>
                                         Reset
                                     </Button>
                                 </div>

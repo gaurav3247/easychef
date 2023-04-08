@@ -8,7 +8,7 @@ import {
     Toolbar
 } from '@syncfusion/ej2-react-richtexteditor';
 import * as React from 'react';
-
+import "./index.css";
 function EditRecipeSteps() {
     let rteObj;
     return (
@@ -29,43 +29,9 @@ function EditRecipeSteps() {
             </div>
             <div className="card-body">
                 <div className='mt-1 ms-n4 me-n4 mb-n3'>
-                    <RichTextEditorComponent width="100%" id="defaultRTE" ref={(richtexteditor) => {
+                    <RichTextEditorComponent placeholder="Start typing you steps" width="100%" id="defaultRTE" ref={(richtexteditor) => {
                         rteObj = richtexteditor;
                     }}>
-                        <p>The Rich Text Editor steps components.</p>
-                        <p><b>Steps:</b></p>
-                        <ul>
-                            <li>
-                                <p>Provides &lt;IFRAME&gt; and &lt;DIV&gt; modes</p>
-                            </li>
-                            <li>
-                                <p>Capable of handling markdown editing.</p>
-                            </li>
-                            <li>
-                                <p>Contains a modular library to load the necessary functionality on demand.</p>
-                            </li>
-                            <li>
-                                <p>Provides a fully customizable toolbar.</p>
-                            </li>
-                            <li>
-                                <p>Provides HTML view to edit the source directly for developers.</p>
-                            </li>
-                            <li>
-                                <p>Supports third-party library integration.</p>
-                            </li>
-                            <li>
-                                <p>Allows a preview of modified content before saving it.</p>
-                            </li>
-                            <li>
-                                <p>Handles images, hyperlinks, video, hyperlinks, uploads, etc.</p>
-                            </li>
-                            <li>
-                                <p>Contains undo/redo manager.</p>
-                            </li>
-                            <li>
-                                <p>Creates bulleted and numbered lists.</p>
-                            </li>
-                        </ul>
                         <Inject services={[HtmlEditor, Toolbar, Image, Link, QuickToolbar]}/>
                     </RichTextEditorComponent>
                 </div>
