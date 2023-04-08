@@ -4,14 +4,23 @@ import * as yup from 'yup'
 import {yupResolver} from '@hookform/resolvers/yup'
 import {useForm, Controller} from 'react-hook-form'
 import {Card, CardHeader, CardTitle, CardBody, Button, Form, Label, Input, FormFeedback} from 'reactstrap'
+
 import Select, {components} from 'react-select'
 import makeAnimated from 'react-select/animated'
-import {useEffect, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import api from "../../../../core/baseAPI";
+import EditRecipeSteps from "../../Components/EditRecipeSteps";
+import EditRecipeIngredients from "../../Components/EditRecipeIngredients";
+import AddIngredient from "../../Modals/AddIngredient";
 
 const EditRecipe = () => {
     const animatedComponents = makeAnimated({DropdownIndicator: () => null, IndicatorSeparator: () => null})
     const [dietOptions, setdietOptions] = useState([])
+    const [previewPicture, setpreviewPicture] = useState('')
+    const editRecipeIngredientsRef = useRef();
+    const fileInputRef = useRef(null);
+    const addIngredientRef = useRef();
+    const [addIngredientModal, setIngredientModal] = useState(false)
     const [cuisineOptions, setcuisineOptions] = useState([])
     const [timeOptions, setTimeOptions] = useState([
         {"id": 1, "name": "15 minutes"},
@@ -22,7 +31,8 @@ const EditRecipe = () => {
         {"id": 4, "name": "3 hour"},
         {"id": 4, "name": "4 hour"},
         {"id": 4, "name": "5+ hour"},
-        ])
+    ])
+
     const selectThemeColors = theme => ({
         ...theme,
         colors: {
@@ -34,6 +44,7 @@ const EditRecipe = () => {
             neutral30: '#dbdade' // for input hover border-color
         }
     })
+
     const customStyles = {
         multiValue: (styles) => ({
             ...styles,
@@ -102,6 +113,39 @@ const EditRecipe = () => {
         handleSubmit,
         formState: {errors}
     } = useForm({mode: 'onChange', resolver: yupResolver(RecipeSchema)})
+
+    const handlePreviewPictureUploadClick = () => {
+        fileInputRef.current.click();
+    };
+
+    const handlePreviewPictureResetClick = () => {
+        setpreviewPicture('');
+    };
+
+    const handleFileChange = (event) => {
+        const file = event.target.files[0];
+        const reader = new FileReader();
+        reader.onload = () => {
+            setpreviewPicture(reader.result);
+        };
+        reader.readAsDataURL(file);
+    };
+
+
+    function ingredientAdded(name, quantity){
+        editRecipeIngredientsRef.current.addNewIngredient(name, quantity)
+        addIngredientRef.current.Close()
+    }
+
+    function ingredientEdited(name, quantity){
+        editRecipeIngredientsRef.current.editIngredient(name, quantity)
+        addIngredientRef.current.Close()
+    }
+
+    function editIngredient(ingredient){
+        setIngredientModal(!addIngredientModal)
+        addIngredientRef.current.EditIngredient(ingredient)
+    }
 
     const onSubmit = data => {
 
@@ -256,61 +300,14 @@ const EditRecipe = () => {
                                 </Row>
                             </div>
                         </div>
-
-                        <div className="card mt-3" data-select2-id="18">
-                            <div className="card-header border-bottom my-n1">
-                                <div className="row my-n2" style={{"margin-left": "-1.2rem"}}>
-                                    <div className="col-6">
-                                        <div
-                                            style={{
-                                                "font-weight": "500",
-                                                "font-size": "1.285rem",
-                                                "margin-top": "0.4rem"
-                                            }}>
-                                            Ingredients
-                                        </div>
-                                    </div>
-                                    <div className="col-6">
-                                        <div className="text-end">
-                                            <Button outline color='primary' type='submit'>
-                                                Add Ingredient
-                                            </Button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="card-body" style={{"padding": "0"}}>
-                                <div className="text-center">
-                                    <p className="text-muted my-5">No Ingredients Added</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="card mt-3" data-select2-id="18">
-                            <div className="card-header border-bottom my-n1">
-                                <div className="row my-n2" style={{"margin-left": "-1.2rem"}}>
-                                    <div className="col-6">
-                                        <div
-                                            style={{
-                                                "font-weight": "500",
-                                                "font-size": "1.285rem",
-                                                "margin-top": "0.4rem"
-                                            }}>
-                                            Steps
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="card-body">
-
-                            </div>
-                        </div>
+                        <EditRecipeIngredients ref={editRecipeIngredientsRef} onAddIngredient={()=> setIngredientModal(!addIngredientModal)} onEditIngredient={editIngredient}></EditRecipeIngredients>
+                        <EditRecipeSteps></EditRecipeSteps>
                     </div>
                     <div className="col-4">
                         <div style={{"height": "38rem"}} className="card">
                             <img style={{"object-fit": "cover", "max-height": "250px"}}
                                  className="card-img-top h-50 object-fit-fill"
-                                 src={require('../../../../assets/img/no-image.jpg')}
+                                src={previewPicture ? previewPicture : require('../../../../assets/img/no-image.jpg')}
                                  alt="Card image cap"/>
                             <div className="card-body">
                                 <h5 className="card-title text-truncate">New Recipe Name (Preview)</h5>
@@ -344,16 +341,25 @@ const EditRecipe = () => {
                                 </ul>
                                 <hr></hr>
                                 <div className="text-center demo-inline-spacing mt-n3">
-                                    <a href="javascript:void(0)" className="btn btn-primary waves-effect">Change Preview
-                                        Picture</a>
-                                    <a href="javascript:void(0)"
-                                       className="btn btn-outline-primary waves-effect">Reset</a>
+                                    <input
+                                        type="file"
+                                        ref={fileInputRef}
+                                        style={{ display: "none" }}
+                                        onChange={handleFileChange}
+                                    />
+                                    <Button onClick={handlePreviewPictureUploadClick} color='primary' type='button'>
+                                        Change Preview Picture
+                                    </Button>
+                                    <Button onClick={handlePreviewPictureResetClick} outline color='primary' type='button'>
+                                        Reset
+                                    </Button>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </Form>
+        <AddIngredient ref={addIngredientRef} show={addIngredientModal} onClose={()=>setIngredientModal(!addIngredientModal)} onIngredientAdded={ingredientAdded} onIngredientEdited={ingredientEdited}></AddIngredient>
         </>
     )
 }

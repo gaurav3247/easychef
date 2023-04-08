@@ -77,8 +77,7 @@ const NavBar = ({OnLoggedIn}) => {
                 <div className="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
                     <ul className="navbar-nav flex-row align-items-center ms-auto">
                         {userData()}
-                        <UserLoginModal show={loginModal} onClose={onLoginClosed}
-                                        onOpenRegister={openRegister}/>
+                        <UserLoginModal show={loginModal} onClose={onLoginClosed} onOpenRegister={openRegister}/>
                         <UserRegisterModal show={registerModal} onClose={() => setRegisterModal(!registerModal)}
                                            onOpenLogin={openLogin}></UserRegisterModal>
                     </ul>
