@@ -35,6 +35,7 @@ const EditRecipe = () => {
     const [userFullName, setuserFullName] = useState('')
     const [previewPicture, setpreviewPicture] = useState('')
     const editRecipeIngredientsRef = useRef();
+    const editRecipeStepsRef = useRef();
     const fileInputRef = useRef(null);
     const addIngredientRef = useRef();
     const [addIngredientModal, setIngredientModal] = useState(false)
@@ -199,8 +200,12 @@ const EditRecipe = () => {
 
     const onSubmit = data => {
         let ingredients = editRecipeIngredientsRef.current.getIngredients();
+        let steps = editRecipeStepsRef.current.getSteps();
         if (ingredients.length <= 0) {
-
+            console.log("ingredients error")
+        }
+        if(steps.length <= 0){
+            console.log("steps error")
         }
     }
 
@@ -372,7 +377,7 @@ const EditRecipe = () => {
                                                onAddIngredient={() => setIngredientModal(!addIngredientModal)}
                                                onEditIngredient={editIngredient}
                                                onRefreshIngredients={Refresh}></EditRecipeIngredients>
-                        <EditRecipeSteps></EditRecipeSteps>
+                        <EditRecipeSteps  ref={editRecipeStepsRef}></EditRecipeSteps>
                     </div>
                     <div className="col-4">
                         <div style={{"height": "33rem"}} className="card">

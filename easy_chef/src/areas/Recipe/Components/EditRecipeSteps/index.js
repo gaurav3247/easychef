@@ -9,8 +9,39 @@ import {
 } from '@syncfusion/ej2-react-richtexteditor';
 import * as React from 'react';
 import "./index.css";
-function EditRecipeSteps() {
+import {forwardRef, useImperativeHandle, useState} from "react";
+
+const EditRecipeSteps = forwardRef(({}, ref) => {
+    const [steps, setSteps] = useState('')
     let rteObj;
+    let toolbarSettings = {
+        items: ['FontName', 'FontSize','Bold', 'Underline', 'BackgroundColor','|',
+                'Alignments', 'CreateLink', 'Image', '|',
+                'Undo', 'Redo', 'FullScreen'
+        ],
+        type: 'Expand'
+    };
+
+    useImperativeHandle(ref, () => ({
+        getSteps() {
+            return steps;
+        },
+        setSteps(steps){
+            setSteps(steps)
+        }
+    }));
+
+
+
+    function onStepsChanged(event) {
+        if (event.value) {
+            setSteps(event.value)
+        }
+        else{
+            setSteps('')
+        }
+    }
+
     return (
         <div className="card mt-3" data-select2-id="18">
             <div className="card-header border-bottom my-n1">
@@ -29,7 +60,8 @@ function EditRecipeSteps() {
             </div>
             <div className="card-body">
                 <div className='mt-1 ms-n4 me-n4 mb-n3'>
-                    <RichTextEditorComponent placeholder="Start typing you steps" width="100%" id="defaultRTE" ref={(richtexteditor) => {
+                    <RichTextEditorComponent toolbarSettings={toolbarSettings} value={steps} change={onStepsChanged} placeholder="Start typing you steps" width="100%"
+                                             id="defaultRTE" ref={(richtexteditor) => {
                         rteObj = richtexteditor;
                     }}>
                         <Inject services={[HtmlEditor, Toolbar, Image, Link, QuickToolbar]}/>
@@ -38,6 +70,6 @@ function EditRecipeSteps() {
             </div>
         </div>
     );
-}
+})
 
 export default EditRecipeSteps
