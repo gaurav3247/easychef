@@ -3,6 +3,7 @@ import './profile.css'
 import api from "../../../../core/baseAPI";
 
 const UserProfile = () => {
+  const pgh = 1;
     const [profileName, setProfileName] = useState("");
     const [profileAvatar, setProfileAvatar] = useState("");
     const [profileEmail, setProfileEmail] = useState("");
@@ -10,16 +11,17 @@ const UserProfile = () => {
     const [profileCreated, setProfileCreated] = useState("");
     const [profileSaved, setProfileSaved] = useState("");
     const [profileRating, setProfileRating] = useState("");
-    api.get(`/accounts/login/`, {params: {ID: 1}})
-      .then((response) => {
-          setProfileName(`${response.data.results[0].first_name} ${response.data.results[0].last_name}`);
-          setProfileAvatar(response.data.results[0].avatar);
-          setProfileEmail(response.data.results[0].email);
-          setProfilePhone(response.data.results[0].phone_number);
-          setProfileCreated(response.data.results[0].number_of_recipes_created);
-          setProfileSaved(response.data.results[0].number_of_recipes_saved);
-          setProfileRating(response.data.results[0].average_rating);
-      });
+    api.get(`/accounts/details/${pgh}/`)
+    .then((response) => {
+      console.log(response.data);
+          setProfileName(response.data.full_name);
+          setProfileAvatar(response.data.avatar);
+          setProfileEmail(response.data.email);
+          setProfilePhone(response.data.phone_number);
+          setProfileCreated(response.data.number_of_recipes_created);
+          setProfileSaved(response.data.number_of_recipes_saved);
+          setProfileRating(response.data.average_rating);
+    });
 
     return (
         <div>
@@ -95,7 +97,6 @@ const UserProfile = () => {
                                     414.918,499.295 256.814,384.427
                                     98.713,499.295 159.102,313.435 1,198.566
                                     196.426,198.566 "></polygon></svg>
-                                <span class="text">(234)</span>
                               </div>
                             </div>
                           </div>
