@@ -3,18 +3,19 @@ import api from '../../../../core/baseAPI'
 import logo from '../../../../assets/img/logo.png'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { Modal, ModalBody, ModalHeader } from 'reactstrap'
+import { Button, Form, FormFeedback, Input, Label, Modal, ModalBody, ModalHeader } from 'reactstrap'
+import { Controller, useForm } from 'react-hook-form'
 
 const ChangePasswordModal = ({show, onClose, profileEmail}) => {
-
     const [apiError, setApiError] = useState('')
+
     const ChangePasswordSchema = yup.object().shape({
-        oldpassword: yup.string().required(),
-        newpassword1: yup.string().min(6).required(),
-        newpassword2: yup.string().oneOf([yup.ref('newpassword1'), null], 'Passwords must match').required()
+        old_password: yup.string().required("This field is required"),
+        password: yup.string().min(6, "Password must be at least 6 characters").required(),
+        password2: yup.string().oneOf([yup.ref('password'), null], 'Passwords must match').required("This is a required field")
     })
 
-    function ChangePassword(oldpassword, newPassword1, newPassword2) {
+    function changePassword(oldpassword, newPassword1, newPassword2) {
         const requestOptions = {
             method: "PUT",
             headers: {"Content-Type": "application/json"},
@@ -24,14 +25,34 @@ const ChangePasswordModal = ({show, onClose, profileEmail}) => {
         };
 
         return api.put('/accounts/change-password/', requestOptions)
-            .then(response => {
-                console.log(response)
+            .then((response) => {
+                return response
+            })
+            .catch(function (error) {
+                setApiError("Change password failed")
             })
     }
 
+    const {
+        control,
+        handleSubmit,
+        formState: {errors},
+        reset
+    } = useForm({mode: 'onChange', resolver: yupResolver(ChangePasswordSchema)})
+
     function close() {
-        setApiError('')
+        setApiError("")
         onClose()
+        reset()
+    }
+
+    const onSubmit = data => {
+        changePassword(data.old_password, data.password, data.password2)
+            .then((token_data) => {
+                if (token_data.status === 200) {
+                    close()
+                }
+            })
     }
 
     if (!show) {
@@ -43,40 +64,77 @@ const ChangePasswordModal = ({show, onClose, profileEmail}) => {
             <Modal style={{width: 385}} isOpen={show} toggle={close} centered>
                 <ModalHeader toggle={close}></ModalHeader>
                 <ModalBody>
-                <div class="card-body">
-                            <div class="app-brand justify-content-center mb-4 mt-2">
-                              <a href="index.html" class="app-brand-link gap-2">
-                                <span class="app-brand-logo demo">
-                                  <img alt='logo' src={logo} style={{ maxHeight: "50px" }}></img>
-                                </span>
-                                <span class="app-brand-text demo text-body fw-bold ms-1">EasyChef</span>
-                              </a>
+                    <div class="card-body">
+                        <div class="app-brand justify-content-center mb-2 mt-n4">
+                            <a href="index.html" class="app-brand-link gap-2">
+                            <span class="app-brand-logo demo">
+                                <img alt='logo' src={logo} style={{ maxHeight: "50px" }}></img>
+                            </span>
+                            <span class="app-brand-text demo text-body fw-bold ms-1">EasyChef</span>
+                            </a>
+                        </div>
+                        <h4 class="mb-1 pt-2">Change Password 🔒</h4>
+                        <p class="mb-4">for <span class="fw-bold">{profileEmail}</span></p>
+                        <Form onSubmit={handleSubmit(onSubmit)}>
+                            <div className='mb-1'>
+                                <Label className='form-label' for='old_password'>
+                                    Current Password
+                                </Label>
+                                <Controller
+                                    id='old_password'
+                                    name='old_password'
+                                    defaultValue=''
+                                    control={control}
+                                    render={({field}) => (
+                                        <Input {...field} type='password' placeholder="············"
+                                                invalid={errors.old_password && true}/>
+                                    )}
+                                />
+                                {errors.old_password && <FormFeedback>{errors.old_password.message}</FormFeedback>}
                             </div>
-                            <h4 class="mb-1 pt-2">Change Password 🔒</h4>
-                            <p class="mb-4">for <span class="fw-bold">{profileEmail}</span></p>
-                            <form>
-                              <div class="mb-3 form-password-toggle fv-plugins-icon-container">
-                                <label class="form-label" for="old-password">Old Password</label>
-                                <div class="input-group input-group-merge has-validation">
-                                  <input type="password" id="old-password" class="form-control" name="password" placeholder="············" aria-describedby="password" />
-                                </div>
-                              </div>
-                              <div class="mb-3 form-password-toggle fv-plugins-icon-container">
-                                <label class="form-label" for="new-password">New Password</label>
-                                <div class="input-group input-group-merge has-validation">
-                                  <input type="password" id="new-password" class="form-control" name="password" placeholder="············" aria-describedby="password" />
-                                </div>
-                              </div>
-                              <div class="mb-3 form-password-toggle fv-plugins-icon-container">
-                                <label class="form-label" for="confirm-password">Confirm Password</label>
-                                <div class="input-group input-group-merge has-validation">
-                                  <input type="password" id="confirm-password" class="form-control" name="confirm-password" placeholder="············" aria-describedby="password" />
-                                </div>
-                              </div>
-                              <button class="btn btn-primary d-grid w-100 mb-3 waves-effect waves-light">Set new password</button>
-                              <input type="hidden" />
-                            </form>
-                          </div>
+                            <div className='mb-1'>
+                                <Label className='form-label' for='password'>
+                                    New Password
+                                </Label>
+                                <Controller
+                                    id='password'
+                                    name='password'
+                                    defaultValue=''
+                                    control={control}
+                                    render={({field}) => (
+                                        <Input {...field} type='password' placeholder="············"
+                                                invalid={errors.password && true}/>
+                                    )}
+                                />
+                                {errors.password && <FormFeedback>{errors.password.message}</FormFeedback>}
+                            </div>
+                            <div className='mb-1'>
+                                <Label className='form-label' for='password2'>
+                                    Confirm Password
+                                </Label>
+                                <Controller
+                                    id='password2'
+                                    name='password2'
+                                    defaultValue=''
+                                    control={control}
+                                    render={({field}) => (
+                                        <Input {...field} type='password' placeholder="············"
+                                                invalid={errors.password2 && true}/>
+                                    )}
+                                />
+                                {errors.password2 && <FormFeedback>{errors.password2.message}</FormFeedback>}
+                            </div>
+                            <div className='d-flex text-danger mt-1 mt-2 mb-2 justify-content-center'>
+                                {apiError}
+                            </div>
+                            <div className='d-flex'>
+                                <Button className="btn btn-primary d-grid w-100 mb-2 waves-effect waves-light" color='primary'
+                                        type='submit'>
+                                    Save Password
+                                </Button>
+                            </div>
+                        </Form>
+                    </div>
                 </ModalBody>
             </Modal>
         </>
