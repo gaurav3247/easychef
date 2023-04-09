@@ -3,6 +3,7 @@ import Ingredients_List from "./Components/shopping-cart"
 import { useState, useEffect } from "react"
 import { saveAs } from "file-saver";
 import api from "../../../../core/baseAPI"
+import cartEmpty from '../../../../assets/img/cart-empty.png';
 
 const ShoppingList = () => {
     const [ingredients, setItems] = useState([])
@@ -27,6 +28,13 @@ const ShoppingList = () => {
         saveAs(blob, "shopping_list.txt")
     }
 
+    if (ingredients.length === 0) {
+        return (
+            <div className="container justify-items-center">
+                <img src={cartEmpty} alt="Card image cap" style={{maxHeight: "60vh", margin: "auto", display: "block"}}></img>
+            </div>
+        )
+    }
     return (
     <div className="row">
         <div className="col-sm-12 col-lg-8">
