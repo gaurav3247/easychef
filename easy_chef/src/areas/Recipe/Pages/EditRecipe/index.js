@@ -5,13 +5,15 @@ import {yupResolver} from '@hookform/resolvers/yup'
 import {useForm, Controller} from 'react-hook-form'
 import {Card, CardHeader, CardTitle, CardBody, Button, Form, Label, Input, FormFeedback} from 'reactstrap'
 
-import Select, {components} from 'react-select'
+import Select from 'react-select'
 import makeAnimated from 'react-select/animated'
 import {useEffect, useRef, useState} from "react";
 import api from "../../../../core/baseAPI";
 import EditRecipeSteps from "../../Components/EditRecipeSteps";
 import EditRecipeIngredients from "../../Components/EditRecipeIngredients";
 import AddIngredient from "../../Modals/AddIngredient";
+import toast from 'react-hot-toast'
+import { useNavigate } from "react-router-dom";
 
 const EditRecipe = () => {
     const [recipeName, setRecipeName] = useState('')
@@ -34,10 +36,12 @@ const EditRecipe = () => {
     const [dietOptions, setdietOptions] = useState([])
     const [userFullName, setuserFullName] = useState('')
     const [previewPicture, setpreviewPicture] = useState('')
+    const [previewPictureFile, setPriviewPictureFile] = useState('')
     const editRecipeIngredientsRef = useRef();
     const editRecipeStepsRef = useRef();
     const fileInputRef = useRef(null);
     const addIngredientRef = useRef();
+    const navigate = useNavigate();
     const [addIngredientModal, setIngredientModal] = useState(false)
     const [cuisineOptions, setcuisineOptions] = useState([])
 
@@ -142,12 +146,15 @@ const EditRecipe = () => {
 
     const handlePreviewPictureResetClick = () => {
         setpreviewPicture('');
+        setPriviewPictureFile('');
     };
 
     const handleFileChange = (event) => {
         const file = event.target.files[0];
         const reader = new FileReader();
         reader.onload = () => {
+            console.log(event.target);
+            setPriviewPictureFile(file);
             setpreviewPicture(reader.result);
         };
         reader.readAsDataURL(file);
@@ -202,11 +209,70 @@ const EditRecipe = () => {
         let ingredients = editRecipeIngredientsRef.current.getIngredients();
         let steps = editRecipeStepsRef.current.getSteps();
         if (ingredients.length <= 0) {
-            console.log("ingredients error")
+            toast.error('At least 1 ingredient is required')
+            return;
         }
-        if(steps.length <= 0){
-            console.log("steps error")
+        if (steps.length < 100) {
+            toast.error('At least 100 characters for steps is required')
+            return;
         }
+
+        createRecipe(steps, ingredients)
+    }
+
+    function createRecipe(steps, ingredients) {
+        const requestOptions = {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            name: recipeName,
+            serving: Number(recipeServing),
+            steps: steps,
+            ingredients: ingredients
+        };
+
+        if (recipeCuisine) {
+            requestOptions['cuisine'] = recipeCuisine.id;
+        }
+        if (recipePrepTime) {
+            requestOptions['prep_time'] = recipePrepTime.name;
+        }
+        if (recipeCookingTime) {
+            requestOptions['cooking_time'] = recipeCookingTime.name;
+        }
+        if (recipeDiets) {
+            requestOptions['diets'] = recipeDiets.map(obj => ({"id": obj.id}));
+        }
+//        if(previewPictureFile){
+//            requestOptions['preview_picture'] = previewPictureFile;
+//        }
+
+        return api.post(`/recipe/save/`, requestOptions)
+            .then((response) => {
+                if (response.status === 201) {
+                    if (previewPictureFile) {
+                        console.log(previewPictureFile);
+                        const pictureRequestOptions = {
+                            method: "PUT",
+                            preview_picture: previewPicture,
+                            mode: 'same-origin',
+                            headers:{
+                                'Accept': 'application/json',
+                                'X-Requested-With': 'XMLHttpRequest',
+                            },
+                        };
+                        api.put(`/recipe/upload-preview-pricture/${response.data.id}/`, pictureRequestOptions)
+                            .then((response) => {
+                                if (response.status !== 200) {
+                                    toast.success('Some error occured')
+                                }
+                            });
+                    }
+                    toast.success('Recipe Created!')
+                    navigate("/view-recipe/");
+
+                } else
+                    toast.success('Some error occured')
+            });
     }
 
     return (
@@ -377,7 +443,7 @@ const EditRecipe = () => {
                                                onAddIngredient={() => setIngredientModal(!addIngredientModal)}
                                                onEditIngredient={editIngredient}
                                                onRefreshIngredients={Refresh}></EditRecipeIngredients>
-                        <EditRecipeSteps  ref={editRecipeStepsRef}></EditRecipeSteps>
+                        <EditRecipeSteps ref={editRecipeStepsRef}></EditRecipeSteps>
                     </div>
                     <div className="col-4">
                         <div style={{"height": "33rem"}} className="card">
