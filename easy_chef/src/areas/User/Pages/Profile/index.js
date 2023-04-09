@@ -37,53 +37,6 @@ const UserProfile = () => {
               <h4>Personal Profile</h4>
               <div class="row">
                 <ChangePasswordModal show={showPopup} onClose={onClose} profileEmail={profileEmail} />
-              {/* /*{ {showPopup &&
-              <>
-                  <div class="modal fade show" id="smallModal" tabindex="-1" style={{ display: "block" }} aria-modal="true" role="dialog">
-                    <div class="modal-dialog modal-sm" role="document">
-                      <div class="modal-content">
-                        <div class="modal-header">
-                          <button type="button" class="btn-close" data-bs-dismiss="modal" onClick={() => setPopup(false)} aria-label="Close"></button>
-                          <div class="card-body">
-                            <div class="app-brand justify-content-center mb-4 mt-2">
-                              <a href="index.html" class="app-brand-link gap-2">
-                                <span class="app-brand-logo demo">
-                                  <img alt='logo' src={logo} style={{ maxHeight: "50px" }}></img>
-                                </span>
-                                <span class="app-brand-text demo text-body fw-bold ms-1">EasyChef</span>
-                              </a>
-                            </div>
-                            <h4 class="mb-1 pt-2">Change Password 🔒</h4>
-                            <p class="mb-4">for <span class="fw-bold">{profileEmail}</span></p>
-                            <form>
-                              <div class="mb-3 form-password-toggle fv-plugins-icon-container">
-                                <label class="form-label" for="old-password">Old Password</label>
-                                <div class="input-group input-group-merge has-validation">
-                                  <input onChange={(e) => setInput(setOldPassword, e)} type="password" id="old-password" class="form-control" name="password" placeholder="············" aria-describedby="password" />
-                                </div>
-                              </div>
-                              <div class="mb-3 form-password-toggle fv-plugins-icon-container">
-                                <label class="form-label" for="new-password">New Password</label>
-                                <div class="input-group input-group-merge has-validation">
-                                  <input onChange={(e) => setInput(setNewPassword1, e)} type="password" id="new-password" class="form-control" name="password" placeholder="············" aria-describedby="password" />
-                                </div>
-                              </div>
-                              <div class="mb-3 form-password-toggle fv-plugins-icon-container">
-                                <label class="form-label" for="confirm-password">Confirm Password</label>
-                                <div class="input-group input-group-merge has-validation">
-                                  <input onChange={(e) => setInput(setNewPassword2, e)} type="password" id="confirm-password" class="form-control" name="confirm-password" placeholder="············" aria-describedby="password" />
-                                </div>
-                              </div>
-                              <button class="btn btn-primary d-grid w-100 mb-3 waves-effect waves-light" onClick={() => handleChangePassword()}>Set new password</button>
-                              <input type="hidden" />
-                            </form>
-                          </div>
-                        </div>
-
-                      </div>
-                    </div>
-                  </div></>
-              } */}
                 <div class="col-lg-3">
                   <div class="card py-4 px-3">
                     <div class="d-flex justify-content-center">
