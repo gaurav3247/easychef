@@ -1,9 +1,25 @@
-import React, { useState } from 'react'
-import ad1 from '../../assets/img/Carousel_img.png'
-import ad2 from '../../assets/img/Carousel_img.png'
-import ad3 from '../../assets/img/Carousel_img.png'
+import React, { useState, useEffect } from 'react';
+import api from "../../core/baseAPI";
+import ad1 from '../../assets/img/Carousel_img.png';
+import ad2 from '../../assets/img/Carousel_img.png';
+import ad3 from '../../assets/img/Carousel_img.png';
+import Top from './Top';
+import Popular from './Popular';
+import Recent from './Recent';
 
 const Home = () => {
+  const [topCreators, setTopCreators] = useState([]);
+
+  useEffect(() => {
+    api.get(`/recipe/top-creators/?take=10`)
+    .then((response) => {
+        setTopCreators(response.data);
+    })
+    .catch(error => {
+      console.error(error);
+    });
+  }, []);
+
     return (
         <div>
             <div class="container-xxl flex-grow-1 container-p-y">
@@ -52,7 +68,13 @@ const Home = () => {
                 </div>
                 <div class="col-lg-3">
                   <h4>Top Creators</h4>
-                  (//insert top creators here)
+                  <div class="card-body">
+                    <ul class="list-unstyled mb-0">
+                      {topCreators.map(t => (
+                        <Top avatar={t.avatar} full_name={t.full_name} number_of_recipes_created = {t.number_of_recipes_created}/>
+                      ))}
+                    </ul>
+                  </div>
                 </div>
               </div>
 
@@ -72,18 +94,6 @@ const Home = () => {
                 </div>
               </div>
             </div>
-            <script src="./assets/libs/jquery/jquery.js"></script>
-            <script src="./assets/libs/popper/popper.js"></script>
-            <script src="./assets/js/bootstrap.js"></script>
-            <script
-              src="./assets/libs/perfect-scrollbar/perfect-scrollbar.js"></script>
-            <script src="./assets/libs/node-waves/node-waves.js"></script>
-            <script src="./assets/libs/hammer/hammer.js"></script>
-
-            <script src="./assets/js/menu.js"></script>
-            <script src="./assets/libs/swiper/swiper.js"></script>
-            <script src="./assets/js/main.js"></script>
-            <script src="./assets/libs/ui-carousel/ui-carousel.js"></script>
         </div>
     )
 }

@@ -1,27 +1,57 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import './profile.css'
 import api from "../../../../core/baseAPI";
+import { useParams } from 'react-router-dom';
 
 const UserProfile = () => {
-  const pgh = 1;
-    const [profileName, setProfileName] = useState("");
-    const [profileAvatar, setProfileAvatar] = useState("");
-    const [profileEmail, setProfileEmail] = useState("");
-    const [profilePhone, setProfilePhone] = useState("");
-    const [profileCreated, setProfileCreated] = useState("");
-    const [profileSaved, setProfileSaved] = useState("");
-    const [profileRating, setProfileRating] = useState("");
-    api.get(`/accounts/details/${pgh}/`)
-    .then((response) => {
-      console.log(response.data);
-          setProfileName(response.data.full_name);
-          setProfileAvatar(response.data.avatar);
-          setProfileEmail(response.data.email);
-          setProfilePhone(response.data.phone_number);
-          setProfileCreated(response.data.number_of_recipes_created);
-          setProfileSaved(response.data.number_of_recipes_saved);
-          setProfileRating(response.data.average_rating);
-    });
+  const { id } = useParams();
+  const [profileName, setProfileName] = useState("");
+  const [profileAvatar, setProfileAvatar] = useState("");
+  const [profileEmail, setProfileEmail] = useState("");
+  const [profilePhone, setProfilePhone] = useState("");
+  const [profileCreated, setProfileCreated] = useState("");
+  const [profileSaved, setProfileSaved] = useState("");
+  const [profileRating, setProfileRating] = useState("");
+  const [buttonData, setButtonData] = useState("");
+  const [buttonClicked, setButtonClicked] = useState(0);
+
+  useEffect(() => {
+    api.get(`/accounts/details/${id}/`)
+      .then((response) => {
+        setProfileName(response.data.full_name);
+        setProfileAvatar(response.data.avatar);
+        setProfileEmail(response.data.email);
+        setProfilePhone(response.data.phone_number);
+        setProfileCreated(response.data.number_of_recipes_created);
+        setProfileSaved(response.data.number_of_recipes_saved);
+        setProfileRating(response.data.average_rating);
+      });
+  }, [id]);
+
+
+  function CreatorRecipe(){
+    setButtonClicked(0);
+    api.get(`/recipe/list?creator=${id}`)
+      .then((response) => {
+        setButtonData(response.data);
+      });
+  }
+
+  function FavRecipe(){
+    setButtonClicked(1);
+    api.get(`/recipe/favorites/`)
+      .then((response) => {
+        setButtonData(response.data);
+      });
+  };
+
+  function InteractRecipe(){
+    setButtonClicked(2);
+    api.get(`/recipe/interactions/`)
+      .then((response) => {
+        setButtonData(response.data);
+      });
+  };
 
     return (
         <div>
@@ -31,7 +61,7 @@ const UserProfile = () => {
                 <div class="col-lg-3">
                   <div class="card py-4 px-3">
                     <div class="d-flex justify-content-center">
-                      <img src={profileAvatar} alt="user avatar"
+                      <img src={`../../../../assets/img/${profileAvatar}`} alt="user avatar"
                         class="d-block h-auto rounded user-profile-img"></img>
                     </div>
                     <div class="text-center m-3 mb-0"><h4>{profileName}</h4></div>
@@ -145,18 +175,20 @@ const UserProfile = () => {
                 <div class="col-lg-9">
                   <ul class="nav nav-pills flex-column flex-md-row mb-4">
                     <li class="nav-item">
-                      <a class="nav-link active" href="javascript:void(0);"><i
-                          class="ti-xs ti ti-chef-hat me-1"></i>Recipes</a>
+                      <button className={`nav-link ${buttonClicked === 0 ? 'active' : ''}`} onClick={CreatorRecipe}><i
+                          class="ti-xs ti ti-chef-hat me-1"></i>Recipes</button>
                     </li>
                     <li class="nav-item">
-                      <a class="nav-link" href=""><i class="ti-xs ti
-                          ti-bookmarks me-1"></i>Favorite Recipes</a>
+                      <button className={`nav-link ${buttonClicked === 1 ? 'active' : ''}`} onClick={FavRecipe}><i class="ti-xs ti
+                          ti-bookmarks me-1"></i>Favorite Recipes</button>
                     </li>
                     <li class="nav-item">
-                      <a class="nav-link" href=""><i class="ti-xs ti ti-history
-                          me-1"></i>Interactions</a>
+                      <button className={`nav-link ${buttonClicked === 2 ? 'active' : ''}`} onClick={InteractRecipe}><i class="ti-xs ti ti-history
+                          me-1"></i>Interactions</button>
                     </li>
                   </ul>
+                  <div class="row" id='interaction-buttons'>
+                  </div>
                 </div>
               </div>     
             </div>
