@@ -23,9 +23,9 @@ function App() {
                         <Route path="shopping-list" element={<ShoppingList />} />
                         <Route path="edit-recipe/:id" element={<EditRecipe />} />
                         <Route path="new-recipe" element={<EditRecipe />} />
-                        <Route path="user-profile" element={<UserProfile />} />
+                        <Route path="user-profile/:id" element={<UserProfile />} />
                         <Route path="log-out" element={<UserLogout />} />
-                        <Route path="view-recipe" element={<ViewRecipe />} />
+                        <Route path="view-recipe/:id" element={<ViewRecipe />} />
                     </Route>
                 </Routes>
             </MainLayout>
