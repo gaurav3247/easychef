@@ -2,7 +2,9 @@ import {NavLink} from "react-router-dom";
 import {useForm, Controller} from 'react-hook-form'
 import * as yup from 'yup'
 import {yupResolver} from '@hookform/resolvers/yup'
+import {AutoCompleteComponent} from '@syncfusion/ej2-react-dropdowns';
 import api from "../../../../core/baseAPI";
+import "./index.css"
 import {
     Modal,
     ModalHeader,
@@ -15,51 +17,56 @@ import {
     FormFeedback,
     Button, ModalFooter
 } from 'reactstrap'
-import {forwardRef, useImperativeHandle, useState} from "react";
+import {forwardRef, useEffect, useImperativeHandle, useState} from "react";
 
 const AddIngredient = forwardRef(({show, onClose, onIngredientAdded, onIngredientEdited}, ref) => {
         const [isEditMode, setIsEditMode] = useState(false)
-        const AddIngredientSchema = yup.object().shape({
-            ingredientName: yup.string().required(),
-            quantity: yup.number().typeError('Serving must be a number').required('The number is required').test(
-                'Is positive?',
-                'The number must be greater than 0',
-                (value) => value > 0
-            ),
-        })
+        const [suggestions, setSuggestions] = useState([])
+        const [ingredientName, setingredientName] = useState("")
+        const [ingredientNameError, setIngredientNameError] = useState("")
+        const [ingredientQuality, setIngredientQuality] = useState("")
+        const [ingredientQuantityError, setIngredientQuantityError] = useState("")
 
         useImperativeHandle(ref, () => ({
             Close() {
                 Close()
             },
             EditIngredient(ingredient) {
-                setValue("ingredientName", ingredient.name)
-                setValue("quantity", ingredient.quantity)
+                setingredientName(ingredient.name)
+                setIngredientQuality(ingredient.quantity)
                 setIsEditMode(true);
             }
         }));
 
+        useEffect(() => {
+            api.get('/recipe/filters/ingredients/').then(response => setSuggestions(response.data))
+        }, [])
+
         function Close() {
-            reset();
             onClose();
             setIsEditMode(false);
-            setValue("ingredientName", '')
-            setValue("quantity", '')
+            setingredientName('')
+            setIngredientQuality('')
         }
 
-        const {
-            control,
-            handleSubmit,
-            reset,
-            setValue,
-            formState: {errors}
-        } = useForm({mode: 'onChange', resolver: yupResolver(AddIngredientSchema)})
 
-        const onSubmit = data => {
+        function onSubmit () {
+            if (!ingredientName) {
+                setIngredientNameError("Ingredient name is required");
+                return;
+            }
+            if (!ingredientQuality) {
+                setIngredientQuantityError("Quantity is required.")
+                return;
+            } else if (!Number(ingredientQuality) || ingredientQuality <= 0) {
+                setIngredientQuantityError("Quantity must be positive number")
+                return;
+            }
+
             if (isEditMode) {
-                onIngredientEdited(data.ingredientName, data.quantity)
+                onIngredientEdited(ingredientName, ingredientQuality)
             } else {
-                onIngredientAdded(data.ingredientName, data.quantity)
+                onIngredientAdded(ingredientName,ingredientQuality)
             }
         }
 
@@ -78,70 +85,106 @@ const AddIngredient = forwardRef(({show, onClose, onIngredientAdded, onIngredien
         function modalButton() {
             if (isEditMode) {
                 return (
-                    <Button color='primary' type='submit'>
+                    <Button onClick={onSubmit} color='primary' type='button'>
                         Save Changes
                     </Button>
                 )
             } else {
                 return (
-                    <Button color='primary' type='submit'>
+                    <Button onClick={onSubmit}  color='primary' type='submit'>
                         Add Ingredient
                     </Button>
                 )
             }
         }
 
+        const localFields = {value: 'name'};
+
+        function noRecordsTemplate() {
+            return (<span className='norecord'></span>);
+        }
+
+        function ingredientValidationError() {
+            if (ingredientNameError) {
+                return (<div style={{
+                    "width": "100%",
+                    "margin-top": "0.25rem",
+                    "font-size": "0.8125rem",
+                    "color": "#ca3e00"
+                }}>{ingredientNameError}</div>)
+            } else {
+                return (<></>)
+            }
+        }
+
+        function ingredientQuantityValidationError() {
+            if (ingredientQuantityError) {
+                return (<div style={{
+                    "width": "100%",
+                    "margin-top": "0.25rem",
+                    "font-size": "0.8125rem",
+                    "color": "#ca3e00"
+                }}>{ingredientQuantityError}</div>)
+            } else {
+                return (<></>)
+            }
+        }
+
+        function onIngredientNameChange(name) {
+            if (name) {
+                console.log(name.value)
+                setingredientName(name.value);
+                setIngredientNameError('');
+            } else {
+                setingredientName('');
+            }
+        }
+
+        function onIngredientQualityChange(quality) {
+            if (quality) {
+                setIngredientQuality(quality.target.value);
+                setIngredientQuantityError(null);
+            } else {
+                setIngredientQuality(null);
+            }
+        }
+
         return (
             <div>
                 <Modal style={{width: 385}} isOpen={show} toggle={Close} centered>
-                    <Form onSubmit={handleSubmit(onSubmit)}>
-                        {modalHeader()}
-                        <ModalBody>
-                            <div className="card-body">
-                                <div className='mb-3'>
-                                    <Label className='form-label' for='email'>
-                                        Ingredient Name
-                                    </Label>
-                                    <Controller
-                                        id='ingredientName'
-                                        name='ingredientName'
-                                        defaultValue=''
-                                        control={control}
-                                        render={({field}) => (
-                                            <Input {...field}
-                                                   type='ingredientName'
-                                                   placeholder='Ingredient Name'
-                                                   invalid={errors.ingredientName && true}/>
-                                        )}
-                                    />
-                                    {errors.ingredientName && <FormFeedback>{errors.ingredientName.message}</FormFeedback>}
-                                </div>
-                                <div className='mb-1'>
-                                    <Label className='form-label' for='email'>
-                                        Quantity/Amount
-                                    </Label>
-                                    <Controller
-                                        id='quantity'
-                                        name='quantity'
-                                        defaultValue=''
-                                        control={control}
-                                        render={({field}) => (
-                                            <Input {...field} type='quantity'
-                                                   placeholder='Ingredient Quantity'
-                                                   invalid={errors.quantity && true}/>
-                                        )}
-                                    />
-                                    {errors.quantity && <FormFeedback>{errors.quantity.message}</FormFeedback>}
-                                </div>
+
+                    {modalHeader()}
+                    <ModalBody>
+                        <div className="card-body">
+                            <div className='mb-3'>
+                                <Label className='form-label' for='email'>
+                                    Ingredient Name
+                                </Label>
+                                <AutoCompleteComponent value={ingredientName} change={onIngredientNameChange}
+                                                       fields={localFields} id="suggestions"
+                                                       dataSource={suggestions}
+                                                       noRecordsTemplate={noRecordsTemplate = noRecordsTemplate.bind(this)}
+                                                       placeholder="Ingredient Name"/>
+
+                                {ingredientValidationError()}
                             </div>
-                        </ModalBody>
-                        <ModalFooter>
-                            {modalButton()}
-                            <Button color='outline-secondary' onClick={() => Close()}>
-                                Cancel
-                            </Button>
-                        </ModalFooter>
-                    </Form>
+                            <div className='mb-1'>
+                                <Label className='form-label' for='email'>
+                                    Quantity/Amount
+                                </Label>
+                                <Input value={ingredientQuality} onChange={onIngredientQualityChange} type='quantity'
+                                       placeholder='Ingredient Quantity'/>
+                                {ingredientQuantityValidationError()}
+                            </div>
+                        </div>
+                    </ModalBody>
+                    <ModalFooter>
+                        {modalButton()}
+                        <Button color='outline-secondary' onClick={() => Close()}>
+                            Cancel
+                        </Button>
+                    </ModalFooter>
+
                 </Modal>
             </div>
         )
