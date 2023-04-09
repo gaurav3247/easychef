@@ -11,8 +11,6 @@ const Ingredients_List = ({ingredients}) => {
         setTotal(total_)
     }, [ingredients])
 
-    console.log(ingredients.length)
-
     return (
         <>
             <h5>Ingredients</h5>
