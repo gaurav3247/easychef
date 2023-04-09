@@ -1,23 +1,14 @@
 import React, { useState } from 'react'
-import ChangePassword from './change-password-popup';
 import './profile.css'
 import api from "../../../../core/baseAPI";
-import logo from '../../../../assets/img/logo.png'
 import { Modal, ModalHeader } from 'reactstrap';
+import ChangePasswordModal from '../../Modals/Change Password/change-password-popup';
 
 const UserProfile = () => {
-  const [oldPassword, setOldPassword] = useState("")
-  const [newPassword1, setNewPassword1] = useState("")
-  const [newPassword2, setNewPassword2] = useState("")
   const [showPopup, setPopup] = useState(false)
 
-  function setInput(setFunction, e) {
-    setFunction(e.target.value)
-  }
-
-  const handleChangePassword = () => {
-    let data = {old_password: oldPassword, password: newPassword1, password2: newPassword2}
-    return ChangePassword(data={data})
+  const onClose = () => {
+    setPopup(!showPopup)
   }
 
   const pgh = 1;
@@ -39,13 +30,14 @@ const UserProfile = () => {
           setProfileSaved(response.data.number_of_recipes_saved);
           setProfileRating(response.data.average_rating);
         });
-        
+
         return (
           <div>
             <div class="container-xxl flex-grow-1 container-p-y">
               <h4>Personal Profile</h4>
               <div class="row">
-              {showPopup &&
+                <ChangePasswordModal show={showPopup} onClose={onClose} profileEmail={profileEmail} />
+              {/* /*{ {showPopup &&
               <>
                   <div class="modal fade show" id="smallModal" tabindex="-1" style={{ display: "block" }} aria-modal="true" role="dialog">
                     <div class="modal-dialog modal-sm" role="document">
@@ -83,14 +75,15 @@ const UserProfile = () => {
                                 </div>
                               </div>
                               <button class="btn btn-primary d-grid w-100 mb-3 waves-effect waves-light" onClick={() => handleChangePassword()}>Set new password</button>
-                              <input type="hidden" /></form>
+                              <input type="hidden" />
+                            </form>
                           </div>
                         </div>
 
                       </div>
                     </div>
                   </div></>
-              }
+              } */}
                 <div class="col-lg-3">
                   <div class="card py-4 px-3">
                     <div class="d-flex justify-content-center">
