@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react'
 import './profile.css'
 import api from "../../../../core/baseAPI";
 import { useParams } from 'react-router-dom';
+import { Modal, ModalHeader } from 'reactstrap';
+import ChangePasswordModal from '../../Modals/Change Password/change-password-popup';
 
 const UserProfile = () => {
   const { id } = useParams();
@@ -14,6 +16,12 @@ const UserProfile = () => {
   const [profileRating, setProfileRating] = useState("");
   const [buttonData, setButtonData] = useState("");
   const [buttonClicked, setButtonClicked] = useState(0);
+
+  const [showPopup, setPopup] = useState(false)
+
+  const onClose = () => {
+    setPopup(!showPopup)
+  }
 
   useEffect(() => {
     api.get(`/accounts/details/${id}/`)
@@ -53,11 +61,12 @@ const UserProfile = () => {
       });
   };
 
-    return (
-        <div>
+        return (
+          <div>
             <div class="container-xxl flex-grow-1 container-p-y">
               <h4>Personal Profile</h4>
               <div class="row">
+                <ChangePasswordModal show={showPopup} onClose={onClose} profileEmail={profileEmail} />
                 <div class="col-lg-3">
                   <div class="card py-4 px-3">
                     <div class="d-flex justify-content-center">
@@ -162,7 +171,7 @@ const UserProfile = () => {
                       <div class="d-flex"><h6 class="me-2">Status:</h6><span
                           class="badge bg-label-success w-25 h-50">Active</span></div>
                       <div class="d-flex"><h6 class="me-1">Email:</h6><small>{profileEmail}</small></div>
-                      <div class="d-flex"><h6 class="me-1">Password:</h6><small class="me-1">*********</small><small><a href="">(Change Password)</a></small></div>
+                      <div class="d-flex"><h6 class="me-1">Password:</h6><small class="me-1">*********</small><small><a href="javascript:void(0)" onClick={() => setPopup(true)}>(Change Password)</a></small></div>
                       <div class="d-flex"><h6 class="me-1">Phone Number:</h6><small>{profilePhone}</small></div>
                     </div>
                     <div class="d-flex justify-content-center">
@@ -192,6 +201,7 @@ const UserProfile = () => {
                 </div>
               </div>     
             </div>
+            <script src="../../assets/js/ui-modals.js"></script>
         </div>
     )
 }

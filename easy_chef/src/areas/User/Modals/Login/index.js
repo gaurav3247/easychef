@@ -31,7 +31,7 @@ const UserLoginModal = ({show, onClose, onOpenRegister}) => {
             username: email,
             password: password
         };
-
+        
         return api.post(`/accounts/login/`, requestOptions)
             .then((response) => {
                 localStorage.setItem("user_tokens", JSON.stringify(response.data));

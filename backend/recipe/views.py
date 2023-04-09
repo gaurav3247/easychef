@@ -14,6 +14,8 @@ from rest_framework.generics import CreateAPIView, DestroyAPIView, ListAPIView, 
 from recipe.serializers import RatingSerializer, RecipeSerializers, IngredientAutocompleteSerializer, \
     RecipeListSerializer, CreatorSerializer, CuisineSerializer, DietSerializer, CookingTimeSerializer, \
     FavoriteSerializer, AddCommentSerializer, RecipePreviewPictureUploadSerializers
+import base64
+from django.core.files.base import ContentFile
 
 
 class RecipeView(APIView):
@@ -60,6 +62,15 @@ class RecipePreviewPictureUploadView(APIView):
         recipe = Recipe.objects.get(id=recipe_id)
         if recipe.user.id != request.user.id:
             return Response({"error": "You can't edit this recipe."}, status=status.HTTP_403_FORBIDDEN)
+
+        image_data = request.data["preview_picture"]
+        format, imgstr = image_data.split(';base64,')
+        print("format", format)
+        ext = format.split('/')[-1]
+
+        data = ContentFile(base64.b64decode(imgstr))
+        data.name = f"{recipe.id}_preview_picture.png"
+        request.data["preview_picture"] = data
 
         serializer = self.serializer_class(recipe, data=request.data)
         if serializer.is_valid():

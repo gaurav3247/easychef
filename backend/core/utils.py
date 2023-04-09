@@ -45,9 +45,8 @@ def get_item(item_model, request):
     """Gets instance of type item_model, using user and recipe_id.
     Returns 400 error if recipe_id is not int and 404 if instance not
     found."""
-
     user = request.user
-    recipe = request.POST.get('recipeID')
+    recipe = request.data.get('recipeID')
     try:
         return get_object_or_404(item_model, user=user, recipeID=recipe)
     except ValueError:
