@@ -11,22 +11,46 @@ const Recipe_List = ({ updateIngredientsList }) => {
             })
     }, [])
 
+    function delete_recipe(recipeID) {
+        const requestOptions = {
+            method: "DELETE",
+            headers: {"Content-Type": "application/json"},
+            recipeID: recipeID
+        };
+        console.log(requestOptions)
+        api.delete('/shopping-list/remove-recipe/', {data: requestOptions})
+            .then(response => {
+                console.log(response)
+                const updatedRecipes = [...recipes]
+                const index = updatedRecipes.findIndex(recipe => recipe.recipeID === recipeID)
+                setRecipes(oldValues => {
+                    return oldValues.filter((_, i) => i !== index)
+                })
+                get_ingredients()
+            })
+    }
+
+    function get_ingredients() {
+        api.get('/shopping-list/ingredients/')
+        .then(response => {
+            updateIngredientsList(response.data.ingredients)
+        })
+    }
     function change_serving(recipeID, servingSize) {
         const requestOptions = {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
             recipeID: recipeID,
             servingSize: servingSize
         };
+        console.log(requestOptions)
         api.patch('/shopping-list/change-serving-size/', requestOptions)
             .then(response => {
-                const updatedRecipes = [...recipes];
-                const index = updatedRecipes.findIndex(recipe => recipe.recipeID === recipeID);
-                updatedRecipes[index].servingSize = servingSize;
-                setRecipes(updatedRecipes);
-
-                api.get('/shopping-list/ingredients/')
-                    .then(response => {
-                        updateIngredientsList(response.data.ingredients)
-                    })
+                const updatedRecipes = [...recipes]
+                const index = updatedRecipes.findIndex(recipe => recipe.recipeID === recipeID)
+                updatedRecipes[index].servingSize = servingSize
+                setRecipes(updatedRecipes)
+                get_ingredients()
             })
 
     }
@@ -35,6 +59,7 @@ const Recipe_List = ({ updateIngredientsList }) => {
             {recipes.map(recipe => (
                 <div className="col-lg-4 mb-2">
                     <div className="card h-80 clickable">
+                    <button type="button" onClick={() => {delete_recipe(recipe.recipeID)}} className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         <img className="card-img-top object-fit-fill mb-n2" src={recipe.recipe_img} alt="Card image cap"style={{height: '164px'}}></img>
                         <div className="card-body" style={{textAlign: 'center'}}>
                             <h5 className="card-title">{recipe.recipe_name}</h5>
