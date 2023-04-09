@@ -31,9 +31,12 @@ class DeleteShoppingItem(DestroyAPIView):
 
     def delete(self, request, *args, **kwargs):
         item = self.get_object()
+        recipe_name = item.recipeID.name
         response = 'Removed ' + str(item) + ' from list'
         self.perform_destroy(item)
-        return Response(response)
+        return Response({'removed_id': item.recipeID.id,
+                         'removed_name': recipe_name,
+                         'numServings': item.servingSize})
 
 
 class ChangeServingSizeView(UpdateAPIView):
