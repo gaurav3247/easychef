@@ -1,3 +1,4 @@
+from django.conf.urls.static import static
 from django.urls import path
 from recipe.views import DuplicateRecipeView, RecipeView, RecipeDetailsView, \
   IngredientsAutocomplete, RecipeListView, AddRatingView, \
@@ -28,5 +29,6 @@ urlpatterns = [
   path('popular-recipes/', PopularRecipesView.as_view()),
   path('top-creators/', TopCreatorsView.as_view()),
   path('add-diet/', AddDietView.as_view()),
-  path('add-cuisine/', AddCuisineView.as_view())
-]
+  path('add-cuisine/', AddCuisineView.as_view()),
+] + static('preview_picture/', document_root='recipe/preview_picture') \
+              + static('comment_attachment/', document_root='recipe/comment_attachment')

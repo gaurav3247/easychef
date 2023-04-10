@@ -8,6 +8,10 @@ const EditRecipeIngredients = forwardRef(({onAddIngredient, onEditIngredient, on
     const [editedIngredients, setEditedIngredients] = useState({})
 
     useImperativeHandle(ref, () => ({
+
+        setIngredients(ingr){
+            setIngredients(ingr);
+        },
         async addNewIngredient(name, quantity) {
             const newIngredient = {"name": name, "quantity": quantity}
             const updatedIngredients = ingredients.concat(newIngredient);

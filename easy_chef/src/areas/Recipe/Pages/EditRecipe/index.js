@@ -96,38 +96,63 @@ const EditRecipe = () => {
     }
 
     useEffect(() => {
-        const requestOptions = {
-            method: "GET",
-        };
-        if (id) {
-            api.get(`/recipe/details/${id}/`, requestOptions)
-                .then((response) => {
-                    let recipe = response.data;
-                    setRecipeName(recipe.name);
-                    setRecipeServing(recipe.serving)
-                    setRecipeDiets(recipe.diets)
-                    setRecipeCookingTime(recipe.cooking_time)
-                })
-        }
+            const requestOptions = {
+                method: "GET",
+            };
+            const fetchData = async () => {
+                if (id) {
+                    api.get(`/recipe/details/${id}/`, requestOptions)
+                        .then((response) => {
+                                let recipe = response.data;
+                                setRecipeName(recipe.name);
+                                setRecipeServing(recipe.serving)
+                                if (recipe.cuisine) {
+                                    api.get('/recipe/filters/cuisines/', requestOptions)
+                                        .then((response) => {
+                                            let data = response.data;
+                                            let cuisine = data.find(item => item.id === recipe.cuisine);
+                                            if (cuisine) {
+                                                setRecipeCuisine(cuisine)
+                                            }
+                                        })
+                                }
+                                if (recipe.prep_time) {
+                                    let time = timeOptions.find(item => item.name === recipe.prep_time);
+                                    setRecipePrepTime(time)
+                                }
+                                if (recipe.cooking_time) {
+                                    let time = timeOptions.find(item => item.name === recipe.cooking_time);
+                                    setRecipeCookingTime(time)
+                                }
+                                setpreviewPicture(recipe.preview_picture)
+                                setRecipeDiets(recipe.diets)
+                                editRecipeIngredientsRef.current.setIngredients(recipe.ingredients)
+                                editRecipeStepsRef.current.setSteps(recipe.steps)
+                            }
+                        )
+                }
 
-        api.get('/accounts/edit-profile/', requestOptions)
-            .then((response) => {
-                let data = response.data;
-                setuserFullName(data.full_name);
-            })
+                api.get('/accounts/edit-profile/', requestOptions)
+                    .then((response) => {
+                        let data = response.data;
+                        setuserFullName(data.full_name);
+                    })
 
-        api.get('/recipe/filters/diets/', requestOptions)
-            .then((response) => {
-                let data = response.data;
-                setdietOptions(data);
-            })
+                api.get('/recipe/filters/diets/', requestOptions)
+                    .then((response) => {
+                        let data = response.data;
+                        setdietOptions(data);
+                    })
 
-        api.get('/recipe/filters/cuisines/', requestOptions)
-            .then((response) => {
-                let data = response.data;
-                setcuisineOptions(data);
-            })
-    }, [])
+                api.get('/recipe/filters/cuisines/', requestOptions)
+                    .then((response) => {
+                        let data = response.data;
+                        setcuisineOptions(data);
+                    })
+            }
+            fetchData().catch(console.error)
+        }, []
+    )
 
     const handlePreviewPictureUploadClick = () => {
         fileInputRef?.current?.click();
@@ -213,8 +238,11 @@ const EditRecipe = () => {
             toast.error('At least 50 characters for steps is required')
             return;
         }
-
-        createRecipe(steps, ingredients)
+        if (id) {
+            saveRecipe(steps, ingredients)
+        } else {
+            createRecipe(steps, ingredients)
+        }
     }
 
     function recipeNameValidationError() {
@@ -296,12 +324,17 @@ const EditRecipe = () => {
             });
     }
 
+    function saveRecipe(steps, ingredients) {
+        toast.success('Recipe Saved!')
+    }
+
     try {
         return (
             <>
                 <div>
                     <div>
-                        <BreadCrumbs basePage="My Recipes" currentPage="Create New Recipe"></BreadCrumbs>
+                        <BreadCrumbs basePage="My Recipes"
+                                     currentPage={id ? "Edit Recipe" : "Create New Recipe"}></BreadCrumbs>
                     </div>
                     <div className="row">
                         <div className="col-8">
@@ -321,7 +354,7 @@ const EditRecipe = () => {
                                         <div className="col-6">
                                             <div className="text-end">
                                                 <Button color='primary' type='button' onClick={onSubmit}>
-                                                    Publish Recipe
+                                                    {id ? "Save Changes" : "Publish Recipe"}
                                                 </Button>
                                             </div>
                                         </div>
@@ -414,6 +447,7 @@ const EditRecipe = () => {
                                                     className='react-select'
                                                     classNamePrefix='select'
                                                     defaultValue={[]}
+                                                    value={recipePrepTime}
                                                     onChange={onPrepTimeChange}
                                                     styles={customStyles}
                                                     name='clear'
@@ -437,6 +471,7 @@ const EditRecipe = () => {
                                                     className='react-select'
                                                     classNamePrefix='select'
                                                     defaultValue={[]}
+                                                    value={recipeCookingTime}
                                                     onChange={onCookingTimeChange}
                                                     styles={customStyles}
                                                     name='clear'
@@ -463,7 +498,7 @@ const EditRecipe = () => {
                             <div style={{"height": "33rem"}} className="card">
                                 <img style={{"objectFit": "cover", "maxHeight": "250px"}}
                                      className="card-img-top h-50 object-fit-fill"
-                                     src={previewPicture ? previewPicture : require('../../../../assets/img/no-image.jpg')}
+                                     src={previewPicture ? `http://127.0.0.1:8000/${previewPicture}` : require('../../../../assets/img/no-image.jpg')}
                                      alt="Card image cap"/>
                                 <span
                                     className="badge bg-label-primary">Cooking Time:{recipeCookingTime ? recipeCookingTime.name : "Not Set"}</span>
