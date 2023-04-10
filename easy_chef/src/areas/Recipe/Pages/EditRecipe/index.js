@@ -27,6 +27,7 @@ const EditRecipe = () => {
     const animatedComponents = makeAnimated({DropdownIndicator: () => null, IndicatorSeparator: () => null})
     const [dietOptions, setdietOptions] = useState([])
     const [userFullName, setuserFullName] = useState('')
+    const [userId, setUserId] = useState('')
     const [previewPicture, setpreviewPicture] = useState('')
     const [previewPictureFile, setPriviewPictureFile] = useState('')
     const editRecipeIngredientsRef = useRef();
@@ -136,6 +137,7 @@ const EditRecipe = () => {
                     .then((response) => {
                         let data = response.data;
                         setuserFullName(data.full_name);
+                        setUserId(data.id)
                     })
 
                 api.get('/recipe/filters/diets/', requestOptions)
@@ -298,7 +300,6 @@ const EditRecipe = () => {
             .then((response) => {
                 if (response.status === 201) {
                     if (previewPictureFile) {
-                        console.log(previewPictureFile);
                         const pictureRequestOptions = {
                             method: "PUT",
                             preview_picture: previewPicture,
@@ -325,7 +326,72 @@ const EditRecipe = () => {
     }
 
     function saveRecipe(steps, ingredients) {
-        toast.success('Recipe Saved!')
+        const requestOptions = {
+            method: "PUT",
+            headers: {"Content-Type": "application/json"},
+            id: id,
+            name: recipeName,
+            serving: Number(recipeServing),
+            steps: steps,
+            ingredients: ingredients,
+            user: userId
+        };
+
+        if (recipeCuisine) {
+            requestOptions['cuisine'] = recipeCuisine.id;
+        }
+        else{
+            requestOptions['cuisine'] = null;
+        }
+        if (recipePrepTime) {
+            requestOptions['prep_time'] = recipePrepTime.name;
+        }
+        else{
+            requestOptions['prep_time'] = "";
+        }
+        if (recipeCookingTime) {
+            requestOptions['cooking_time'] = recipeCookingTime.name;
+        }
+        else{
+            requestOptions['cooking_time'] = "";
+        }
+        if (recipeDiets) {
+            requestOptions['diets'] = recipeDiets.map(obj => ({"id": obj.id}));
+        }
+        else{
+            requestOptions['diets'] = []
+        }
+        if(!previewPicture){
+            requestOptions['preview_picture'] = null;
+        }
+
+        return api.put(`/recipe/save/`, requestOptions)
+            .then((response) => {
+                if (response.status === 200) {
+                    if (previewPictureFile) {
+                        const pictureRequestOptions = {
+                            method: "PUT",
+                            preview_picture: previewPicture,
+                            mode: 'same-origin',
+                            headers: {
+                                'Accept': 'application/json',
+                                'X-Requested-With': 'XMLHttpRequest',
+                            },
+                        };
+                        api.put(`/recipe/upload-preview-pricture/${response.data.id}/`, pictureRequestOptions)
+                            .then((response) => {
+                                if (response.status !== 200) {
+                                    toast.success('Some error occured')
+                                }
+                            });
+                    }
+                    toast.success('Recipe Saved!')
+                    navigate("/view-recipe/");
+
+                } else {
+                    toast.error('Some error occured')
+                }
+            });
     }
 
     try {
@@ -495,10 +561,11 @@ const EditRecipe = () => {
                             </div>
                         </div>
                         <div className="col-4">
-                            <div style={{"height": "33rem"}} className="card">
+                            <div className="card">
                                 <img style={{"objectFit": "cover", "maxHeight": "250px"}}
                                      className="card-img-top h-50 object-fit-fill"
-                                     src={previewPicture ? `http://127.0.0.1:8000/${previewPicture}` : require('../../../../assets/img/no-image.jpg')}
+                                    src={ previewPicture && !previewPictureFile ? `http://127.0.0.1:8000/${previewPicture}` :
+                                    previewPicture && previewPictureFile ? previewPicture : require('../../../../assets/img/no-image.jpg')}
                                      alt="Card image cap"/>
                                 <span
                                     className="badge bg-label-primary">Cooking Time:{recipeCookingTime ? recipeCookingTime.name : "Not Set"}</span>
