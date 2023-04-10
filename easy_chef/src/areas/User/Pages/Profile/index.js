@@ -191,9 +191,8 @@ const UserProfile = () => {
                                 <div class="d-flex"><h6 class="me-2">Status:</h6><span
                                     class="badge bg-label-success w-25 h-50">Active</span></div>
                                 <div class="d-flex"><h6 class="me-1">Email:</h6><small>{profileEmail}</small></div>
-                                <div class="d-flex"><h6 class="me-1">Password:</h6><small class="me-1">*********</small><small><a
-                                    href="javascript:void(0)" onClick={() => setPopup(true)}>(Change
-                                    Password)</a></small></div>
+                                <div class="d-flex"><h6 class="me-1">Password:</h6><small class="me-1">*********</small><small><button onClick={() => setPopup(true)}>(Change
+                                    Password)</button></small></div>
                                 <div class="d-flex"><h6 class="me-1">Phone Number:</h6><small>{profilePhone}</small>
                                 </div>
                             </div>

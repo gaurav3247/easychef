@@ -25,11 +25,11 @@ function RecipeButtons(props) {
     }
 
     return (
-        <div class="card mb-4 p-2">
-            <Link to='../EditRecipe' class="btn btn-primary btn-md waves-effect waves-light btn_space m-1" type="button">Edit</Link>
-            <Link to='../EditRecipe' class="btn btn-primary btn-md waves-effect waves-light btn_space m-1" type="button">Convert to New Recipe</Link>
-            <button onClick={addClick} class="btn btn-primary btn-md waves-effect waves-light btn_space m-1" type="button">Add to Shopping Cart</button>
-            <button onClick={deleteClick} class="btn btn-outline-primary btn-md waves-effect waves-light btn_space m-1" type="button">Delete</button>
+        <div className="card mb-4 p-2">
+            <Link to='../EditRecipe' className="btn btn-primary btn-md waves-effect waves-light btn_space m-1" type="button">Edit</Link>
+            <Link to='../EditRecipe' className="btn btn-primary btn-md waves-effect waves-light btn_space m-1" type="button">Convert to New Recipe</Link>
+            <button onClick={addClick} className="btn btn-primary btn-md waves-effect waves-light btn_space m-1" type="button">Add to Shopping Cart</button>
+            <button onClick={deleteClick} className="btn btn-outline-primary btn-md waves-effect waves-light btn_space m-1" type="button">Delete</button>
         </div>
     );
 }
