@@ -65,26 +65,26 @@ const UserProfile = () => {
 
     return (
         <div>
-            <div class="container-xxl flex-grow-1 container-p-y">
+            <div className="container-xxl flex-grow-1 container-p-y">
                 <h4>Personal Profile</h4>
-                <div class="row">
+                <div className="row">
                     <ChangePasswordModal show={showPopup} onClose={onClose} profileEmail={profileEmail}/>
-                    <div class="col-lg-3">
-                        <div class="card py-4 px-3">
-                            <div class="d-flex justify-content-center">
-                                <img src={`../../../../assets/img/${profileAvatar}`} alt="user avatar"
-                                     class="d-block h-auto rounded user-profile-img"></img>
+                    <div className="col-lg-3">
+                        <div className="card py-4 px-3">
+                            <div className="d-flex justify-content-center">
+                                <img src={profileAvatar ? `http://127.0.0.1:8000/${profileAvatar}` : require('../../../../assets/img/default-avatar.png')}
+                                 alt="Avatar" className="rounded-circle d-block h-auto user-profile-img"/>
                             </div>
-                            <div class="text-center m-3 mb-0"><h4>{profileName}</h4></div>
-                            <div class="row">
-                                <div class="col-lg-12">
+                            <div className="text-center m-3 mb-0"><h4>{profileName}</h4></div>
+                            <div className="row">
+                                <div className="col-lg-12">
                                     <p>
-                                        <div class="jq-ry-container text-center mt-n4 mb-n2">
+                                        <div className="jq-ry-container text-center mt-n4 mb-n2">
                                             <div
-                                                class="jq-ry-group-wrapper">
+                                                className="jq-ry-group-wrapper">
                                                 <div
-                                                    class="jq-ry-normal-group jq-ry-group
-                                star-icon"><span class="text">{profileRating}</span>
+                                                    className="jq-ry-normal-group jq-ry-group
+                                star-icon"><span className="text">{profileRating}</span>
                                                     <svg version="1.1"
                                                          xmlns="http://www.w3.org/2000/svg" viewBox="0
                                   12.705 512 486.59" x="0px" y="0px"
@@ -112,7 +112,7 @@ const UserProfile = () => {
                                                          xmlns="http://www.w3.org/2000/svg" viewBox="0
                                   12.705 512 486.59" x="0px" y="0px"
                                                          width="15px"
-                                                         height="15px" fill="orange" class="star-next">
+                                                         height="15px" fill="orange" className="star-next">
                                                         <polygon
                                                             points="256.814,12.705 317.205,198.566
                                     512.631,198.566 354.529,313.435
@@ -124,7 +124,7 @@ const UserProfile = () => {
                                                          xmlns="http://www.w3.org/2000/svg" viewBox="0
                                   12.705 512 486.59" x="0px" y="0px"
                                                          width="15px"
-                                                         height="15px" fill="orange" class="star-next">
+                                                         height="15px" fill="orange" className="star-next">
                                                         <polygon
                                                             points="256.814,12.705 317.205,198.566
                                     512.631,198.566 354.529,313.435
@@ -136,7 +136,7 @@ const UserProfile = () => {
                                                          xmlns="http://www.w3.org/2000/svg" viewBox="0
                                   12.705 512 486.59" x="0px" y="0px"
                                                          width="15px"
-                                                         height="15px" fill="orange" class="star-next">
+                                                         height="15px" fill="orange" className="star-next">
                                                         <polygon
                                                             points="256.814,12.705 317.205,198.566
                                     512.631,198.566 354.529,313.435
@@ -148,7 +148,7 @@ const UserProfile = () => {
                                                          xmlns="http://www.w3.org/2000/svg" viewBox="0
                                   12.705 512 486.59" x="0px" y="0px"
                                                          width="15px"
-                                                         height="15px" fill="grey" class="star-next">
+                                                         height="15px" fill="grey" className="star-next">
                                                         <polygon
                                                             points="256.814,12.705 317.205,198.566
                                     512.631,198.566 354.529,313.435
@@ -162,70 +162,70 @@ const UserProfile = () => {
                                     </p>
                                 </div>
                             </div>
-                            <div class="d-flex justify-content-around my-2 pt-75">
-                                <div class="d-flex align-items-start">
-                        <span style={{height: "31px", width: "31px"}} class="badge
+                            <div className="d-flex justify-content-around my-2 pt-75">
+                                <div className="d-flex align-items-start">
+                        <span style={{height: "31px", width: "31px"}} className="badge
                           badge-center bg-label-primary rounded mt-1 me-2">
-                          <i class="ti-xs ti ti-chef-hat"></i>
+                          <i className="ti-xs ti ti-chef-hat"></i>
                         </span>
-                                    <div class="ml-75 margin-top_2">
-                                        <h5 class="mb-n1 font-size_9">{profileSaved}</h5>
+                                    <div className="ml-75 margin-top_2">
+                                        <h5 className="mb-n1 font-size_9">{profileSaved}</h5>
                                         <small>Saved</small>
                                     </div>
                                 </div>
 
-                                <div class="d-flex align-items-start">
-                        <span class="badge
+                                <div className="d-flex align-items-start">
+                        <span className="badge
                           badge-center bg-label-primary rounded mt-1 me-2 hw_31">
-                          <i class="ti-xs ti ti-bookmarks"></i>
+                          <i className="ti-xs ti ti-bookmarks"></i>
                         </span>
-                                    <div class="ml-75 margin-top_2">
-                                        <h5 class="mb-n1 font-size_9">{profileCreated}</h5>
+                                    <div className="ml-75 margin-top_2">
+                                        <h5 className="mb-n1 font-size_9">{profileCreated}</h5>
                                         <small>Created</small>
                                     </div>
                                 </div>
                             </div>
-                            <div class="chat-history-header border-bottom"></div>
+                            <div className="chat-history-header border-bottom"></div>
                             <div>
-                                <p class="py-3 mb-0">DETAILS</p>
-                                <div class="d-flex"><h6 class="me-2">Status:</h6><span
-                                    class="badge bg-label-success w-25 h-50">Active</span></div>
-                                <div class="d-flex"><h6 class="me-1">Email:</h6><small>{profileEmail}</small></div>
-                                <div class="d-flex"><h6 class="me-1">Password:</h6><small class="me-1">*********</small><small><button onClick={() => setPopup(true)}>(Change
+                                <p className="py-3 mb-0">DETAILS</p>
+                                <div className="d-flex"><h6 className="me-2">Status:</h6><span
+                                    className="badge bg-label-success w-25 h-50">Active</span></div>
+                                <div className="d-flex"><h6 className="me-1">Email:</h6><small>{profileEmail}</small></div>
+                                <div className="d-flex"><h6 className="me-1">Password:</h6><small className="me-1">*********</small><small><button onClick={() => setPopup(true)}>(Change
                                     Password)</button></small></div>
-                                <div class="d-flex"><h6 class="me-1">Phone Number:</h6><small>{profilePhone}</small>
+                                <div className="d-flex"><h6 className="me-1">Phone Number:</h6><small>{profilePhone}</small>
                                 </div>
                             </div>
-                            <div class="d-flex justify-content-center">
-                                <button class="btn btn-primary btn-sm
+                            <div className="d-flex justify-content-center">
+                                <button className="btn btn-primary btn-sm
                         waves-effect waves-light btn_space my-1 width_35" type="button"
                                         data-bs-toggle="modal" data-bs-target="#edit-profile">Edit
                                 </button>
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-9">
-                        <ul class="nav nav-pills flex-column flex-md-row mb-4">
-                            <li class="nav-item">
-                                <button className={`nav-link ${buttonClicked === 0 ? 'active' : ''}`}
+                    <div className="col-lg-9">
+                        <ul className="nav nav-pills flex-column flex-md-row mb-4">
+                            <li className="nav-item">
+                                <button classNameName={`nav-link ${buttonClicked === 0 ? 'active' : ''}`}
                                         onClick={CreatorRecipe}><i
-                                    class="ti-xs ti ti-chef-hat me-1"></i>Recipes
+                                    className="ti-xs ti ti-chef-hat me-1"></i>Recipes
                                 </button>
                             </li>
-                            <li class="nav-item">
-                                <button className={`nav-link ${buttonClicked === 1 ? 'active' : ''}`}
-                                        onClick={FavRecipe}><i class="ti-xs ti
+                            <li className="nav-item">
+                                <button classNameName={`nav-link ${buttonClicked === 1 ? 'active' : ''}`}
+                                        onClick={FavRecipe}><i className="ti-xs ti
                           ti-bookmarks me-1"></i>Favorite Recipes
                                 </button>
                             </li>
-                            <li class="nav-item">
-                                <button className={`nav-link ${buttonClicked === 2 ? 'active' : ''}`}
-                                        onClick={InteractRecipe}><i class="ti-xs ti ti-history
+                            <li className="nav-item">
+                                <button classNameName={`nav-link ${buttonClicked === 2 ? 'active' : ''}`}
+                                        onClick={InteractRecipe}><i className="ti-xs ti ti-history
                           me-1"></i>Interactions
                                 </button>
                             </li>
                         </ul>
-                        <div class="row" id='interaction-buttons'>
+                        <div className="row" id='interaction-buttons'>
                         </div>
                     </div>
                 </div>
