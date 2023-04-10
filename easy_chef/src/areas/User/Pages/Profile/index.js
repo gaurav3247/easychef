@@ -53,7 +53,7 @@ const UserProfile = () => {
             .then((response) => {
                 setButtonData(response.data);
             });
-    };
+    }
 
     function InteractRecipe() {
         setButtonClicked(2);
@@ -61,7 +61,35 @@ const UserProfile = () => {
             .then((response) => {
                 setButtonData(response.data);
             });
-    };
+    }
+
+    function ProfileTabsContent() {
+        if (buttonClicked === 0) {
+            return (
+                <>
+                    <div>
+                        This is my recipe
+                    </div>
+                </>
+            )
+        } else if (buttonClicked === 1) {
+            return (
+                <>
+                    <div>
+                        This is favorite recipe
+                    </div>
+                </>
+            )
+        } else if (buttonClicked === 2) {
+            return (
+                <>
+                    <div>
+                        This is interactions
+                    </div>
+                </>
+            )
+        }
+    }
 
     return (
         <div>
@@ -75,7 +103,7 @@ const UserProfile = () => {
                                 <img style={{"height": "90px"}}
                                      src={profileAvatar ? `http://127.0.0.1:8000/${profileAvatar}` : require('../../../../assets/img/default-avatar.png')}
                                      alt=""
-                                     className="d-block h-auto rounded user-profile-img"/>
+                                     className="d-block rounded user-profile-img"/>
                             </div>
                             <div className="text-center m-3 mb-0"><h4>{profileName}</h4></div>
                             <div className="row">
@@ -166,10 +194,10 @@ const UserProfile = () => {
                             </div>
                             <div className="d-flex justify-content-around my-2 pt-75">
                                 <div className="d-flex align-items-start">
-                        <span style={{height: "31px", width: "31px"}} className="badge
-                          badge-center bg-label-primary rounded mt-1 me-2">
-                          <i className="ti-xs ti ti-chef-hat"></i>
-                        </span>
+                                    <span style={{height: "31px", width: "31px"}}
+                                          className="badge badge-center bg-label-primary rounded mt-1 me-2">
+                                        <i className="ti-xs ti ti-chef-hat"></i>
+                                    </span>
                                     <div className="ml-75 margin-top_2">
                                         <h5 className="mb-n1 font-size_9">{profileSaved}</h5>
                                         <small>Saved</small>
@@ -234,6 +262,7 @@ const UserProfile = () => {
                             </li>
                         </ul>
                         <div className="row" id='interaction-buttons'>
+                            {ProfileTabsContent()}
                         </div>
                     </div>
                 </div>
