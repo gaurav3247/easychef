@@ -29,7 +29,7 @@ const ViewRecipe = () => {
         setDiet(response.data.diets);
         setServing(response.data.serving);
         setCookingTime(response.data.cooking_time);
-        setStep(response.data.step);
+        setStep(response.data.steps);
         setIngredientList(response.data.ingredients);
     });
     api.get(`/recipe/all-comments/${id}/`)
@@ -41,7 +41,7 @@ const ViewRecipe = () => {
   function FavoriteButtonClick() {
     setFavorite(!isFavorite);
     if (isFavorite) {
-      api.get(`/recipe/add-to-favorite/${id}/`)
+      api.post(`/recipe/add-to-favorite/${id}/`)
         .then((response) => {
           setFavorite(response.data);
         });
@@ -130,7 +130,6 @@ const ViewRecipe = () => {
                       <button type="button" class="btn waves-effect p-0" onClick={FavoriteButtonClick}>
                         <span class="ti ti-bookmarks"></span>
                       </button>
-                      <small>223</small>
                     </div>
                   </div>
                 </div>
@@ -172,7 +171,7 @@ const ViewRecipe = () => {
                 <div class="recipe_card_padding">
                   <h4 class="p-4 text-center mb-0">Steps</h4>
                   <div class="mb-4 px-4">
-                    (//steps here)
+                    {step}
                   </div>
                   <div class="px-4">
                     (//pictures here)
@@ -187,7 +186,7 @@ const ViewRecipe = () => {
                   <div class="chat-history-body bg-body ps ps--active-y h-400">
                   <ul class="list-unstyled chat-history m-3">
                     {allcomment.map(c => (
-                      <Comments date_created={c.date_created} avatar={c.avatar} text={c.text} attachments = {c.attachments} full_name = {c.full_name}/>
+                      <Comments date_created={c.date_created} avatar={c.avatar} text={c.text} full_name = {c.full_name}/>
                     ))}
                   </ul>
                   <div class="ps__rail-x lb0"><div class="ps__thumb-x lw0" tabindex="0"></div></div>

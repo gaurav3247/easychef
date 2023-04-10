@@ -15,7 +15,7 @@ function Comments(props) {
                     <p class="mb-0">{props.text}</p>
                     <div id="carouselExample" class="carousel slide">
                         <div class="carousel-inner">
-                            {props.attachments}.map(CommentImages);
+                            
                         </div>
                         <a class="carousel-control-prev" href="#carouselExample" role="button" data-bs-slide="prev">
                         <span class="carousel-control-prev-icon" aria-hidden="true"></span>

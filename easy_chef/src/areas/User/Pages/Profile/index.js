@@ -16,15 +16,18 @@ const UserProfile = () => {
   const [profileRating, setProfileRating] = useState("");
   const [buttonData, setButtonData] = useState("");
   const [buttonClicked, setButtonClicked] = useState(0);
-
-  const [showPopup, setPopup] = useState(false)
+  const [showPopup, setPopup] = useState(false);
 
   const onClose = () => {
     setPopup(!showPopup)
   }
 
   useEffect(() => {
-    api.get(`/accounts/details/${id}/`)
+    let url = `/accounts/edit-profile/`;
+    if (id) {
+      url = `/accounts/details/${id}/`
+    }
+    api.get(url)
       .then((response) => {
         setProfileName(response.data.full_name);
         setProfileAvatar(response.data.avatar);
