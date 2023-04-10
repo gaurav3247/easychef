@@ -5,7 +5,8 @@ from recipe.views import DuplicateRecipeView, RecipeView, RecipeDetailsView, \
   RecipeFavoriteListView, AddCommentView, AllCommentsView, DeleteRecipeView, \
   RemoveFavouriteView, InteractionsView, AddFavouriteView, CreatorsListView, \
   IngredientsListView, CuisineListView, DietListView, \
-  TopCreatorsView, PopularRecipesView, RecipePreviewPictureUploadView, AddDietView, AddCuisineView, RecipeListCountView
+  TopCreatorsView, PopularRecipesView, RecipePreviewPictureUploadView, AddDietView, AddCuisineView, RecipeListCountView, \
+  RecipeFavoriteCountListView, InteractionsCountView
 
 urlpatterns = [
   path('save/', RecipeView.as_view()),
@@ -17,12 +18,14 @@ urlpatterns = [
   path('list/', RecipeListView.as_view()),
   path('list-count/', RecipeListCountView.as_view()),
   path('favorites/', RecipeFavoriteListView.as_view()),
+  path('favorites-count/', RecipeFavoriteCountListView.as_view()),
   path('all-comments/<int:id>/', AllCommentsView.as_view()),
   path('comment/<int:id>/', AddCommentView.as_view()),
   path('delete/<int:id>/', DeleteRecipeView.as_view()),
   path('add-to-favorite/<int:id>/', AddFavouriteView.as_view()),
   path('remove-from-favorite/<int:id>/', RemoveFavouriteView.as_view()),
   path('interactions/', InteractionsView.as_view()),
+  path('interactions-count/', InteractionsCountView.as_view()),
   path('filters/creator/', CreatorsListView.as_view()),
   path('filters/ingredients/', IngredientsListView.as_view()),
   path('filters/cuisines/', CuisineListView.as_view()),

@@ -146,6 +146,20 @@ class RecipeListCountView(ListAPIView):
         return Response({"count": count}, status=status.HTTP_200_OK)
 
 
+class RecipeFavoriteCountListView(ListAPIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        favorite_recipes = Favorite.objects \
+            .filter(user=self.request.user).select_related('recipe') \
+            .values_list('recipe', flat=True).distinct()
+
+        query = Recipe.objects.filter(id__in=favorite_recipes)
+        data = apply_recipe_filters(query, self.request.query_params)
+        count = data[1]
+        return Response({"count": count}, status=status.HTTP_200_OK)
+
+
 class RecipeFavoriteListView(ListAPIView):
     serializer_class = RecipeListSerializer
     permission_classes = [IsAuthenticated]
@@ -195,6 +209,35 @@ class RemoveFavouriteView(DestroyAPIView):
         item = self.get_object()
         self.perform_destroy(item)
         return Response({"success": f"Removed {item} from favourites"}, status=status.HTTP_200_OK)
+
+
+class InteractionsCountView(ListAPIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        favorite_recipes = Favorite.objects \
+            .filter(user=self.request.user).select_related('recipe') \
+            .values_list('recipe', flat=True).distinct()
+
+        rated_recipes = Rating.objects \
+            .filter(user=self.request.user).select_related('recipeID') \
+            .values_list('recipeID', flat=True).distinct()
+
+        commented = Comment.objects \
+            .filter(user=self.request.user).select_related('recipe') \
+            .values_list('recipe', flat=True).distinct()
+
+        created = Recipe.objects \
+            .filter(user=self.request.user).select_related('recipe') \
+            .values_list('id', flat=True).distinct()
+
+        recipe_ids = list(favorite_recipes) + list(rated_recipes) + list(commented) + list(created)
+        recipe_ids = list(set(recipe_ids))
+
+        query = Recipe.objects.filter(id__in=recipe_ids)
+        data = apply_recipe_filters(query, self.request.query_params)
+        count = data[1]
+        return Response({"count": count}, status=status.HTTP_200_OK)
 
 
 class InteractionsView(ListAPIView):

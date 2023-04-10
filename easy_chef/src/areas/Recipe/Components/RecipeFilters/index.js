@@ -4,7 +4,7 @@ import Select from "react-select";
 import makeAnimated from "react-select/animated";
 import api from "../../../../core/baseAPI";
 
-const RecipeFilters = forwardRef(({applyFilters, filterByCreatorHidden}, ref) => {
+const RecipeFilters = forwardRef(({applyFilters, filterByCreatorHidden, isComponent}, ref) => {
     const [filters, setFilters] = useState([])
     const [canvasOpen, setCanvasOpen] = useState(false)
 
@@ -193,7 +193,7 @@ const RecipeFilters = forwardRef(({applyFilters, filterByCreatorHidden}, ref) =>
 
     return (
         <>
-            <div className="mt-n3 mb-3">
+        <div className={isComponent ? "mt-n3 mb-3 me-4" :"mt-n3 mb-3"}>
                 <div className="row text-end">
                     <div className="col-9">
                         <div className="mx-n2">

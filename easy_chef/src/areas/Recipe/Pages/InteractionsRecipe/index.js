@@ -6,40 +6,25 @@ import BreadCrumbs from "../../../../core/components/breadcrumbs";
 import RecipeFilters from "../../Components/RecipeFilters";
 import RecipePreview from "../../Components/RecipePreview";
 
-const MyRecipes = ({isComponent, userID}) => {
+const InteractionsRecipe = ({isComponent}) => {
     const [recipes, setRecipes] = useState([])
     const [totalItems, setTotalItems] = useState(0)
     const [totalPages, setTotalPages] = useState(0)
     const [skip, setSkip] = useState(0)
-    const [userId, setUserId] = useState(0)
     const [take, setTake] = useState(6)
     const [query, setQuery] = useState('')
 
     useEffect(() => {
-        if (userID){
-            setUserId(userID);
-        }
-        if (userId) {
-            getMyDetails(userId)
-        }
+        getMyInteractions();
     }, [skip])
 
-    useEffect(() => {
-        if(userID) return;
-        api.get('/accounts/edit-profile/')
-            .then((response) => {
-                setUserId(response.data.id);
-                getMyDetails(response.data.id);
-            })
-    }, [])
-
-    function getMyDetails(userId) {
-        api.get(`/recipe/list?skip=${skip}&take=${take}&${query}&creator=${userId}`)
+    function getMyInteractions() {
+        api.get(`/recipe/interactions/?skip=${skip}&take=${take}&${query}`)
             .then((response) => {
                 setRecipes(response.data);
             })
 
-        api.get(`/recipe/list-count?&${query}&creator=${userId}`)
+        api.get(`/recipe/interactions-count/?&${query}`)
             .then((response) => {
                 let total = response.data.count;
                 setTotalItems(total)
@@ -66,12 +51,12 @@ const MyRecipes = ({isComponent, userID}) => {
         const queryString = builder.build();
 
         setQuery(queryString);
-        api.get(`/recipe/list?skip=${skip}&take=${take}&creator=${userId}&${queryString}`)
+        api.get(`/recipe/interactions/?skip=${skip}&take=${take}&${queryString}`)
             .then((response) => {
                 setRecipes(response.data);
             })
 
-        api.get(`/recipe/list-count?creator=${userId}&${queryString}`)
+        api.get(`/recipe/interactions-count/?${queryString}`)
             .then((response) => {
                 let total = response.data.count;
                 setTotalItems(total)
@@ -146,7 +131,7 @@ const MyRecipes = ({isComponent, userID}) => {
         if (!isComponent) {
             return (
                 <>
-                    <BreadCrumbs basePage="Home" currentPage="My Recipes"></BreadCrumbs>
+                    <BreadCrumbs basePage="Home" currentPage="My Interactions"></BreadCrumbs>
                     <RecipeFilters isComponent={isComponent} applyFilters={onApplyFilters}
                                    filterByCreatorHidden={true}></RecipeFilters>
                 </>
@@ -171,4 +156,4 @@ const MyRecipes = ({isComponent, userID}) => {
     )
 }
 
-export default MyRecipes
+export default InteractionsRecipe

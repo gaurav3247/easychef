@@ -4,6 +4,9 @@ import api from "../../../../core/baseAPI";
 import {useParams} from 'react-router-dom';
 import {Modal, ModalHeader} from 'reactstrap';
 import ChangePasswordModal from '../../Modals/Change Password/change-password-popup';
+import MyRecipes from "../../../Recipe/Pages/MyRecipes";
+import FavoriteRecipe from "../../../Recipe/Pages/FavoriteRecipe";
+import InteractionsRecipe from "../../../Recipe/Pages/InteractionsRecipe";
 
 const UserProfile = () => {
     const {id} = useParams();
@@ -41,10 +44,6 @@ const UserProfile = () => {
 
     function CreatorRecipe() {
         setButtonClicked(0);
-        api.get(`/recipe/list?creator=${id}`)
-            .then((response) => {
-                setButtonData(response.data);
-            });
     }
 
     function FavRecipe() {
@@ -65,35 +64,17 @@ const UserProfile = () => {
 
     function ProfileTabsContent() {
         if (buttonClicked === 0) {
-            return (
-                <>
-                    <div>
-                        This is my recipe
-                    </div>
-                </>
-            )
+            return (<MyRecipes isComponent={true} userID={id}></MyRecipes> )
         } else if (buttonClicked === 1) {
-            return (
-                <>
-                    <div>
-                        This is favorite recipe
-                    </div>
-                </>
-            )
+            return (<FavoriteRecipe isComponent={true}></FavoriteRecipe>)
         } else if (buttonClicked === 2) {
-            return (
-                <>
-                    <div>
-                        This is interactions
-                    </div>
-                </>
-            )
+            return (<InteractionsRecipe isComponent={true}></InteractionsRecipe>)
         }
     }
 
     return (
         <div>
-            <div className="container-xxl flex-grow-1 container-p-y">
+            <div>
                 <h4>Personal Profile</h4>
                 <div className="row">
                     <ChangePasswordModal show={showPopup} onClose={onClose} profileEmail={profileEmail}/>
@@ -261,13 +242,12 @@ const UserProfile = () => {
                                 </button>
                             </li>
                         </ul>
-                        <div className="row" id='interaction-buttons'>
+                        <div className="row me-n5" id='interaction-buttons'>
                             {ProfileTabsContent()}
                         </div>
                     </div>
                 </div>
             </div>
-            <script src="../../assets/js/ui-modals.js"></script>
         </div>
     )
 }
