@@ -6,40 +6,38 @@ import {Modal, ModalHeader} from 'reactstrap';
 import ChangePasswordModal from '../../Modals/Change Password/change-password-popup';
 
 const UserProfile = () => {
-    const {id} = useParams();
-    const [profileName, setProfileName] = useState("");
-    const [profileAvatar, setProfileAvatar] = useState("");
-    const [profileEmail, setProfileEmail] = useState("");
-    const [profilePhone, setProfilePhone] = useState("");
-    const [profileCreated, setProfileCreated] = useState("");
-    const [profileSaved, setProfileSaved] = useState("");
-    const [profileRating, setProfileRating] = useState("");
-    const [buttonData, setButtonData] = useState("");
-    const [buttonClicked, setButtonClicked] = useState(0);
-
-    const [showPopup, setPopup] = useState(false)
+  const { id } = useParams();
+  const [profileName, setProfileName] = useState("");
+  const [profileAvatar, setProfileAvatar] = useState("");
+  const [profileEmail, setProfileEmail] = useState("");
+  const [profilePhone, setProfilePhone] = useState("");
+  const [profileCreated, setProfileCreated] = useState("");
+  const [profileSaved, setProfileSaved] = useState("");
+  const [profileRating, setProfileRating] = useState("");
+  const [buttonData, setButtonData] = useState("");
+  const [buttonClicked, setButtonClicked] = useState(0);
+  const [showPopup, setPopup] = useState(false);
 
     const onClose = () => {
         setPopup(!showPopup)
     }
 
-    useEffect(() => {
-        let url = `/accounts/edit-profile/`;
-        if (id)
-            url = `/accounts/details/${id}/`;
-
-        api.get(url)
-            .then((response) => {
-                setProfileName(response.data.full_name);
-                setProfileAvatar(response.data.avatar);
-                setProfileEmail(response.data.email);
-                setProfilePhone(response.data.phone_number);
-                setProfileCreated(response.data.number_of_recipes_created);
-                setProfileSaved(response.data.number_of_recipes_saved);
-                setProfileRating(response.data.average_rating);
-            });
-    }, []);
-
+  useEffect(() => {
+    let url = `/accounts/edit-profile/`;
+    if (id) {
+      url = `/accounts/details/${id}/`
+    }
+    api.get(url)
+      .then((response) => {
+        setProfileName(response.data.full_name);
+        setProfileAvatar(response.data.avatar);
+        setProfileEmail(response.data.email);
+        setProfilePhone(response.data.phone_number);
+        setProfileCreated(response.data.number_of_recipes_created);
+        setProfileSaved(response.data.number_of_recipes_saved);
+        setProfileRating(response.data.average_rating);
+      });
+  }, [id]);
 
     function CreatorRecipe() {
         setButtonClicked(0);
