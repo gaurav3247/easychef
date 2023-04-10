@@ -19,10 +19,11 @@ const MainLayout = ({children}) => {
                     <div className="content-wrapper">
                         <Menu/>
                         <div className="container-xxl flex-grow-1 container-p-y">
-                            <div><Toaster
-                                position="bottom-right"
-                                reverseOrder={false}
-                            /></div>
+                            <div>
+                                <Toaster
+                                    position="bottom-right"
+                                    reverseOrder={false}/>
+                            </div>
                             {children}
                         </div>
                         <Footer/>

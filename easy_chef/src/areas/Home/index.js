@@ -71,7 +71,7 @@ const Home = () => {
                   <div class="card-body">
                     <ul class="list-unstyled mb-0">
                       {topCreators.map(t => (
-                        <Top avatar={t.avatar} full_name={t.full_name} number_of_recipes_created = {t.number_of_recipes_created}/>
+                        <Top id={t.id} avatar={t.avatar} full_name={t.full_name} number_of_recipes_created = {t.number_of_recipes_created}/>
                       ))}
                     </ul>
                   </div>

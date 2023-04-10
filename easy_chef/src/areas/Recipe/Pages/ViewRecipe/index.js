@@ -202,8 +202,8 @@ const ViewRecipe = () => {
                               <input type="file" id="attach-doc" hidden=""></input>
                           </label>
                           <button class="btn btn-primary d-flex send-msg-btn">
-                              <i class="ti ti-send me-md-1 me-0"></i>
-                              <span class="align-middle d-md-inline-block d-none"></span>
+                              <i className="ti ti-send me-md-1 me-0"></i>
+                              <span className="align-middle d-md-inline-block d-none"></span>
                           </button>
                         </div>
                     </form>

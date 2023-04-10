@@ -8,7 +8,7 @@ const Avatar = forwardRef((props, refs) => {
     } = props;
     return (
         <div className="avatar avatar-online">
-            {img === false || img === undefined ? (
+            {!img ? (
                 <img src={require('../../../assets/img/default-avatar.png')} alt="" className="h-auto rounded-circle"/>
             ) : (
                 <img src={require(img)} alt="" className="h-auto rounded-circle"/>

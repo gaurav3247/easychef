@@ -1,9 +1,6 @@
 import BreadCrumbs from "../../../../core/components/breadcrumbs";
 import {Row, Col} from 'reactstrap'
-import * as yup from 'yup'
-import {yupResolver} from '@hookform/resolvers/yup'
-import {useForm, Controller} from 'react-hook-form'
-import {Card, CardHeader, CardTitle, CardBody, Button, Form, Label, Input, FormFeedback} from 'reactstrap'
+import {Button, Label, Input} from 'reactstrap'
 
 import Select from 'react-select'
 import makeAnimated from 'react-select/animated'
@@ -145,7 +142,6 @@ const EditRecipe = () => {
         const file = event.target.files[0];
         const reader = new FileReader();
         reader.onload = () => {
-            console.log(event.target);
             setPriviewPictureFile(file);
             setpreviewPicture(reader.result);
         };
@@ -155,16 +151,14 @@ const EditRecipe = () => {
 
     function ingredientAdded(name, quantity) {
         editRecipeIngredientsRef?.current?.addNewIngredient(name, quantity)
-        addIngredientRef?.current?.Close()
     }
 
     function ingredientEdited(name, quantity) {
         editRecipeIngredientsRef?.current?.editIngredient(name, quantity)
-        addIngredientRef?.current?.Close()
     }
 
     function editIngredient(ingredient) {
-        setIngredientModal(!addIngredientModal)
+        setIngredientModal(true)
         addIngredientRef?.current?.EditIngredient(ingredient)
     }
 
@@ -196,7 +190,7 @@ const EditRecipe = () => {
         setRefreshIngredients(!refreshIngredients);
     }
 
-    const onSubmit = data => {
+    const onSubmit = () => {
         let ingredients = editRecipeIngredientsRef?.current?.getIngredients();
         let steps = editRecipeStepsRef?.current?.getSteps();
         if (!recipeName) {
@@ -296,224 +290,244 @@ const EditRecipe = () => {
                     toast.success('Recipe Created!')
                     navigate("/view-recipe/");
 
-                } else
-                    toast.success('Some error occured')
+                } else {
+                    toast.error('Some error occured')
+                }
             });
     }
 
-    return (
-        <>
-            <BreadCrumbs basePage="My Recipes" currentPage="Create New Recipe"></BreadCrumbs>
-            <div className="row">
-                <div className="col-8">
-                    <div className="card" data-select2-id="18">
-                        <div className="card-header border-bottom my-n1">
-                            <div className="row my-n2" style={{"marginLeft": "-1.2rem"}}>
-                                <div className="col-6">
-                                    <div
-                                        style={{
-                                            "fontWeight": "500",
-                                            "fontSize": "1.285rem",
-                                            "marginTop": "0.4rem"
-                                        }}>
-                                        Recipe Details
+    try {
+        return (
+            <>
+                <div>
+                    <div>
+                        <BreadCrumbs basePage="My Recipes" currentPage="Create New Recipe"></BreadCrumbs>
+                    </div>
+                    <div className="row">
+                        <div className="col-8">
+                            <div className="card" data-select2-id="18">
+                                <div className="card-header border-bottom my-n1">
+                                    <div className="row my-n2" style={{"marginLeft": "-1.2rem"}}>
+                                        <div className="col-6">
+                                            <div
+                                                style={{
+                                                    "fontWeight": "500",
+                                                    "fontSize": "1.285rem",
+                                                    "marginTop": "0.4rem"
+                                                }}>
+                                                Recipe Details
+                                            </div>
+                                        </div>
+                                        <div className="col-6">
+                                            <div className="text-end">
+                                                <Button color='primary' type='button' onClick={onSubmit}>
+                                                    Publish Recipe
+                                                </Button>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                                <div className="col-6">
-                                    <div className="text-end">
-                                        <Button color='primary' type='button' onClick={onSubmit}>
-                                            Publish Recipe
+                                <div className="card-body">
+                                    <Row className='match-height mt-3'>
+                                        <Col lg='6' md='12'>
+                                            <div className=''>
+                                                <Label className='form-label' for='firstName'>Name *</Label>
+                                                <Input value={recipeName}
+                                                       onChange={onNameChange}
+                                                       placeholder='Recipe Name'
+                                                />
+                                                <div>
+                                                    {recipeNameValidationError()}
+                                                </div>
+                                            </div>
+                                        </Col>
+                                        <Col lg='6' md='12'>
+                                            <div className=''>
+                                                <Label className='form-label' for='firstName'>Serving *</Label>
+                                                <Input value={recipeServing}
+                                                       placeholder='Serving'
+                                                       onChange={onServingChange}
+                                                />
+                                                <div>
+                                                    {recipeServingValidationError()}
+                                                </div>
+                                            </div>
+                                        </Col>
+                                        <Col lg='6' md='12'>
+                                            <div className='mt-3'>
+                                                <Label className='form-label'>Diets</Label>
+                                                <Select
+                                                    theme={selectThemeColors}
+                                                    getOptionLabel={option => option.name}
+                                                    getOptionValue={option => option.id}
+                                                    isClearable={false}
+                                                    closeMenuOnSelect={true}
+                                                    blurInputOnSelect={true}
+                                                    components={animatedComponents}
+                                                    defaultValue={[]}
+                                                    value={recipeDiets}
+                                                    onChange={onDietChange}
+                                                    isMulti
+                                                    styles={customStyles}
+                                                    options={dietOptions}
+                                                    className='react-select'
+                                                    classNamePrefix='select'
+                                                    placeholder='Select Diets...'
+                                                />
+                                            </div>
+                                        </Col>
+                                        <Col lg='6' md='12'>
+                                            <div className='mt-3'>
+                                                <Label className='form-label'>Cuisine</Label>
+                                                <Select
+                                                    theme={selectThemeColors}
+                                                    getOptionLabel={option => option.name}
+                                                    getOptionValue={option => option.id}
+                                                    components={{
+                                                        DropdownIndicator: () => null,
+                                                        IndicatorSeparator: () => null
+                                                    }}
+                                                    className='react-select'
+                                                    classNamePrefix='select'
+                                                    defaultValue={[]}
+                                                    value={recipeCuisine}
+                                                    onChange={onCuisineChange}
+                                                    styles={customStyles}
+                                                    name='clear'
+                                                    options={cuisineOptions}
+                                                    isClearable
+                                                    placeholder='Select Cuisine...'
+                                                />
+                                            </div>
+                                        </Col>
+                                        <Col lg='6' md='12'>
+                                            <div className='mt-3'>
+                                                <Label className='form-label'>Prep Time</Label>
+                                                <Select
+                                                    theme={selectThemeColors}
+                                                    getOptionLabel={option => option.name}
+                                                    getOptionValue={option => option.id}
+                                                    components={{
+                                                        DropdownIndicator: () => null,
+                                                        IndicatorSeparator: () => null
+                                                    }}
+                                                    className='react-select'
+                                                    classNamePrefix='select'
+                                                    defaultValue={[]}
+                                                    onChange={onPrepTimeChange}
+                                                    styles={customStyles}
+                                                    name='clear'
+                                                    options={timeOptions}
+                                                    isClearable
+                                                    placeholder='Select Prep Time...'
+                                                />
+                                            </div>
+                                        </Col>
+                                        <Col lg='6' md='12'>
+                                            <div className='mt-3'>
+                                                <Label className='form-label'>Cooking Time</Label>
+                                                <Select
+                                                    theme={selectThemeColors}
+                                                    getOptionLabel={option => option.name}
+                                                    getOptionValue={option => option.id}
+                                                    components={{
+                                                        DropdownIndicator: () => null,
+                                                        IndicatorSeparator: () => null
+                                                    }}
+                                                    className='react-select'
+                                                    classNamePrefix='select'
+                                                    defaultValue={[]}
+                                                    onChange={onCookingTimeChange}
+                                                    styles={customStyles}
+                                                    name='clear'
+                                                    options={timeOptions}
+                                                    isClearable
+                                                    placeholder='Select Cooking Time...'
+                                                />
+                                            </div>
+                                        </Col>
+                                    </Row>
+                                </div>
+                            </div>
+                            <div>
+                                <EditRecipeIngredients ref={editRecipeIngredientsRef}
+                                                       onAddIngredient={() => setIngredientModal(true)}
+                                                       onEditIngredient={editIngredient}
+                                                       onRefreshIngredients={Refresh}></EditRecipeIngredients>
+                            </div>
+                            <div>
+                                <EditRecipeSteps ref={editRecipeStepsRef}></EditRecipeSteps>
+                            </div>
+                        </div>
+                        <div className="col-4">
+                            <div style={{"height": "33rem"}} className="card">
+                                <img style={{"objectFit": "cover", "maxHeight": "250px"}}
+                                     className="card-img-top h-50 object-fit-fill"
+                                     src={previewPicture ? previewPicture : require('../../../../assets/img/no-image.jpg')}
+                                     alt="Card image cap"/>
+                                <span
+                                    className="badge bg-label-primary">Cooking Time:{recipeCookingTime ? recipeCookingTime.name : "Not Set"}</span>
+                                <div className="card-body">
+                                    <h5 className="card-title text-truncate">{recipeName ? recipeName : "New Recipe Name"} (Preview)</h5>
+                                    <h6 className="card-subtitle text-muted">Creator:
+                                        <a className="ms-1" href="javascript:void(0)">{userFullName}</a>
+                                    </h6>
+                                    <p className="card-text mt-2 mb-1">
+                                        <small className="card-text text-uppercase">Details</small>
+                                    </p>
+                                    <ul className="list-unstyled mb-4" style={{"marginLeft": "-8px"}}>
+                                        <li className="d-flex mb-1-3">
+                                            <span className="fw-bold mx-2">Serving:</span>
+                                            <span className="text-truncate">{recipeServing ? recipeServing : "0"}</span>
+                                        </li>
+                                        <li className="d-flex mb-1-3">
+                                            <span className="fw-bold mx-2">Cuisine:</span>
+                                            <span
+                                                className="text-truncate">{recipeCuisine ? recipeCuisine.name : "Selected Cuisine"}</span>
+                                        </li>
+                                        <li className="d-flex mb-1-3">
+                                            <span className="fw-bold mx-2">Diets:</span>
+                                            <span
+                                                className="text-truncate">{recipeDiets.length > 0 ? recipeDiets.map((diet) => diet.name).join(", ") : "Selected Diets"}</span>
+                                        </li>
+                                        <li className="d-flex mb-1-3">
+                                            <span className="fw-bold mx-2">Ingredients:</span>
+                                            <span
+                                                className="text-truncate">{editRecipeIngredientsRef?.current && editRecipeIngredientsRef?.current?.getIngredients()?.length > 0 ? editRecipeIngredientsRef?.current?.getIngredients()?.map((ingredient) => ingredient.name)?.join(", ") : "Selected Ingredients"}</span>
+                                        </li>
+                                    </ul>
+                                    <hr></hr>
+                                    <div className="text-center demo-inline-spacing mt-n3">
+                                        <input
+                                            type="file"
+                                            ref={fileInputRef}
+                                            style={{display: "none"}}
+                                            onChange={handleFileChange}
+                                        />
+                                        <Button onClick={handlePreviewPictureUploadClick} color='primary' type='button'>
+                                            Change Preview Picture
+                                        </Button>
+                                        <Button onClick={handlePreviewPictureResetClick} outline color='primary'
+                                                type='button'>
+                                            Reset
                                         </Button>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div className="card-body">
-                            <Row className='match-height mt-3'>
-                                <Col lg='6' md='12'>
-                                    <div className=''>
-                                        <Label className='form-label' for='firstName'>Name *</Label>
-                                        <Input value={recipeName}
-                                               onChange={onNameChange}
-                                               placeholder='Recipe Name'
-                                        />
-                                        {recipeNameValidationError()}
-                                    </div>
-                                </Col>
-                                <Col lg='6' md='12'>
-                                    <div className=''>
-                                        <Label className='form-label' for='firstName'>Serving *</Label>
-                                        <Input value={recipeServing}
-                                               placeholder='Serving'
-                                               onChange={onServingChange}
-                                        />
-                                        {recipeServingValidationError()}
-                                    </div>
-                                </Col>
-                                <Col lg='6' md='12'>
-                                    <div className='mt-3'>
-                                        <Label className='form-label'>Diets</Label>
-                                        <Select
-                                            theme={selectThemeColors}
-                                            getOptionLabel={option => option.name}
-                                            getOptionValue={option => option.id}
-                                            isClearable={false}
-                                            closeMenuOnSelect={true}
-                                            blurInputOnSelect={true}
-                                            components={animatedComponents}
-                                            defaultValue={[]}
-                                            value={recipeDiets}
-                                            onChange={onDietChange}
-                                            isMulti
-                                            styles={customStyles}
-                                            options={dietOptions}
-                                            className='react-select'
-                                            classNamePrefix='select'
-                                            placeholder='Select Diets...'
-                                        />
-                                    </div>
-                                </Col>
-                                <Col lg='6' md='12'>
-                                    <div className='mt-3'>
-                                        <Label className='form-label'>Cuisine</Label>
-                                        <Select
-                                            theme={selectThemeColors}
-                                            getOptionLabel={option => option.name}
-                                            getOptionValue={option => option.id}
-                                            components={{
-                                                DropdownIndicator: () => null,
-                                                IndicatorSeparator: () => null
-                                            }}
-                                            className='react-select'
-                                            classNamePrefix='select'
-                                            defaultValue={[]}
-                                            value={recipeCuisine}
-                                            onChange={onCuisineChange}
-                                            styles={customStyles}
-                                            name='clear'
-                                            options={cuisineOptions}
-                                            isClearable
-                                            placeholder='Select Cuisine...'
-                                        />
-                                    </div>
-                                </Col>
-                                <Col lg='6' md='12'>
-                                    <div className='mt-3'>
-                                        <Label className='form-label'>Prep Time</Label>
-                                        <Select
-                                            theme={selectThemeColors}
-                                            getOptionLabel={option => option.name}
-                                            getOptionValue={option => option.id}
-                                            components={{
-                                                DropdownIndicator: () => null,
-                                                IndicatorSeparator: () => null
-                                            }}
-                                            className='react-select'
-                                            classNamePrefix='select'
-                                            defaultValue={[]}
-                                            onChange={onPrepTimeChange}
-                                            styles={customStyles}
-                                            name='clear'
-                                            options={timeOptions}
-                                            isClearable
-                                            placeholder='Select Prep Time...'
-                                        />
-                                    </div>
-                                </Col>
-                                <Col lg='6' md='12'>
-                                    <div className='mt-3'>
-                                        <Label className='form-label'>Cooking Time</Label>
-                                        <Select
-                                            theme={selectThemeColors}
-                                            getOptionLabel={option => option.name}
-                                            getOptionValue={option => option.id}
-                                            components={{
-                                                DropdownIndicator: () => null,
-                                                IndicatorSeparator: () => null
-                                            }}
-                                            className='react-select'
-                                            classNamePrefix='select'
-                                            defaultValue={[]}
-                                            onChange={onCookingTimeChange}
-                                            styles={customStyles}
-                                            name='clear'
-                                            options={timeOptions}
-                                            isClearable
-                                            placeholder='Select Cooking Time...'
-                                        />
-                                    </div>
-                                </Col>
-                            </Row>
-                        </div>
                     </div>
-                    <EditRecipeIngredients ref={editRecipeIngredientsRef}
-                                           onAddIngredient={() => setIngredientModal(!addIngredientModal)}
-                                           onEditIngredient={editIngredient}
-                                           onRefreshIngredients={Refresh}></EditRecipeIngredients>
-                    <EditRecipeSteps ref={editRecipeStepsRef}></EditRecipeSteps>
-                </div>
-                <div className="col-4">
-                    <div style={{"height": "33rem"}} className="card">
-                        <img style={{"objectFit": "cover", "maxHeight": "250px"}}
-                             className="card-img-top h-50 object-fit-fill"
-                             src={previewPicture ? previewPicture : require('../../../../assets/img/no-image.jpg')}
-                             alt="Card image cap"/>
-                        <span
-                            className="badge bg-label-primary">Cooking Time:{recipeCookingTime ? recipeCookingTime.name : "Not Set"}</span>
-                        <div className="card-body">
-                            <h5 className="card-title text-truncate">{recipeName ? recipeName : "New Recipe Name"} (Preview)</h5>
-                            <h6 className="card-subtitle text-muted">Creator:
-                                <a className="ms-1" href="javascript:void(0)">{userFullName}</a>
-                            </h6>
-                            <p className="card-text mt-2 mb-1">
-                                <small className="card-text text-uppercase">Details</small>
-                            </p>
-                            <ul className="list-unstyled mb-4" style={{"marginLeft": "-8px"}}>
-                                <li className="d-flex mb-1-3">
-                                    <span className="fw-bold mx-2">Serving:</span>
-                                    <span className="text-truncate">{recipeServing ? recipeServing : "0"}</span>
-                                </li>
-                                <li className="d-flex mb-1-3">
-                                    <span className="fw-bold mx-2">Cuisine:</span>
-                                    <span
-                                        className="text-truncate">{recipeCuisine ? recipeCuisine.name : "Selected Cuisine"}</span>
-                                </li>
-                                <li className="d-flex mb-1-3">
-                                    <span className="fw-bold mx-2">Diets:</span>
-                                    <span
-                                        className="text-truncate">{recipeDiets.length > 0 ? recipeDiets.map((diet) => diet.name).join(", ") : "Selected Diets"}</span>
-                                </li>
-                                <li className="d-flex mb-1-3">
-                                    <span className="fw-bold mx-2">Ingredients:</span>
-                                    <span
-                                        className="text-truncate">{editRecipeIngredientsRef?.current && editRecipeIngredientsRef?.current?.getIngredients()?.length > 0 ? editRecipeIngredientsRef?.current?.getIngredients()?.map((ingredient) => ingredient.name)?.join(", ") : "Selected Ingredients"}</span>
-                                </li>
-                            </ul>
-                            <hr></hr>
-                            <div className="text-center demo-inline-spacing mt-n3">
-                                <input
-                                    type="file"
-                                    ref={fileInputRef}
-                                    style={{display: "none"}}
-                                    onChange={handleFileChange}
-                                />
-                                <Button onClick={handlePreviewPictureUploadClick} color='primary' type='button'>
-                                    Change Preview Picture
-                                </Button>
-                                <Button onClick={handlePreviewPictureResetClick} outline color='primary'
-                                        type='button'>
-                                    Reset
-                                </Button>
-                            </div>
-                        </div>
+                    <div>
+                        <AddIngredient ref={addIngredientRef} show={addIngredientModal}
+                                       onClose={() => setIngredientModal(false)}
+                                       onIngredientAdded={ingredientAdded}
+                                       onIngredientEdited={ingredientEdited}></AddIngredient>
                     </div>
                 </div>
-            </div>
-            <AddIngredient ref={addIngredientRef} show={addIngredientModal}
-                           onClose={() => setIngredientModal(!addIngredientModal)} onIngredientAdded={ingredientAdded}
-                           onIngredientEdited={ingredientEdited}></AddIngredient>
-        </>
-    )
+            </>
+        )
+    } catch (error) {
+        console.log(error)
+    }
 }
 
 export default EditRecipe
