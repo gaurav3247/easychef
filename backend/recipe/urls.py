@@ -5,7 +5,7 @@ from recipe.views import DuplicateRecipeView, RecipeView, RecipeDetailsView, \
   RecipeFavoriteListView, AddCommentView, AllCommentsView, DeleteRecipeView, \
   RemoveFavouriteView, InteractionsView, AddFavouriteView, CreatorsListView, \
   IngredientsListView, CuisineListView, DietListView, \
-  TopCreatorsView, PopularRecipesView, RecipePreviewPictureUploadView, AddDietView, AddCuisineView
+  TopCreatorsView, PopularRecipesView, RecipePreviewPictureUploadView, AddDietView, AddCuisineView, RecipeListCountView
 
 urlpatterns = [
   path('save/', RecipeView.as_view()),
@@ -15,6 +15,7 @@ urlpatterns = [
   path('duplicate/<int:id>/', DuplicateRecipeView.as_view()),
   path('ingredients/atocompleteBy/<str:name>/', IngredientsAutocomplete.as_view()),
   path('list/', RecipeListView.as_view()),
+  path('list-count/', RecipeListCountView.as_view()),
   path('favorites/', RecipeFavoriteListView.as_view()),
   path('all-comments/<int:id>/', AllCommentsView.as_view()),
   path('comment/<int:id>/', AddCommentView.as_view()),

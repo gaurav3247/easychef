@@ -2,6 +2,7 @@ from django.db.models import Avg
 from rest_framework import serializers
 from django.contrib.auth.models import User
 
+from accounts.models import UserProfile
 from core.utils import get_user_profile
 from recipe.models import Rating, Recipe, Ingredient, Diet, RecipeDiets, Comment, Favorite, Cuisine, CommentAttachment
 
@@ -46,14 +47,14 @@ class FavoriteSerializer(serializers.ModelSerializer):
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
-        model = User
-        fields = ('first_name', 'last_name')
+        model = UserProfile
+        fields = ('full_name', )
 
 
 class CreatorSerializer(serializers.ModelSerializer):
     class Meta:
-        model = User
-        fields = ('id', 'first_name', 'last_name')
+        model = UserProfile
+        fields = ('id', 'full_name')
 
 
 class CuisineSerializer(serializers.ModelSerializer):
@@ -73,6 +74,7 @@ class RecipeListSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(read_only=True)
     ingredients = IngredientSerializer(many=True, read_only=True)
     diets = DietSerializer(many=True, read_only=True)
+    cuisine = CuisineSerializer(read_only=True)
     user_full_name = UserSerializer(source='user', read_only=True)
     rating = serializers.SerializerMethodField('get_average_rating')
     number_of_comments = serializers.SerializerMethodField('get_number_of_comments')
@@ -80,7 +82,7 @@ class RecipeListSerializer(serializers.ModelSerializer):
 
     @staticmethod
     def get_number_of_saves(foo):
-        return Favorite.objects.filter(recipe=foo.id).count()
+        return Favorite.objects.filter(recipe=foo.id).count ()
 
     @staticmethod
     def get_number_of_comments(foo):

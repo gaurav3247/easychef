@@ -133,8 +133,17 @@ class RecipeListView(ListAPIView):
 
     def get_queryset(self):
         query = Recipe.objects.all()
-        query = apply_recipe_filters(query, self.request.query_params)
+        data = apply_recipe_filters(query, self.request.query_params)
+        query = data[0]
         return query
+
+
+class RecipeListCountView(ListAPIView):
+    def get(self, request, *args, **kwargs):
+        query = Recipe.objects.all()
+        data = apply_recipe_filters(query, self.request.query_params)
+        count = data[1]
+        return Response({"count": count}, status=status.HTTP_200_OK)
 
 
 class RecipeFavoriteListView(ListAPIView):
@@ -147,7 +156,8 @@ class RecipeFavoriteListView(ListAPIView):
             .values_list('recipe', flat=True).distinct()
 
         query = Recipe.objects.filter(id__in=favorite_recipes)
-        query = apply_recipe_filters(query, self.request.query_params)
+        data = apply_recipe_filters(query, self.request.query_params)
+        query = data[0]
         return query
 
 
@@ -212,8 +222,8 @@ class InteractionsView(ListAPIView):
         recipe_ids = list(set(recipe_ids))
 
         query = Recipe.objects.filter(id__in=recipe_ids)
-        query = apply_recipe_filters(query, self.request.query_params)
-
+        data = apply_recipe_filters(query, self.request.query_params)
+        query = data[0]
         return query
 
 
@@ -225,7 +235,7 @@ class CreatorsListView(ListAPIView):
             .all().select_related('user') \
             .values_list('user', flat=True).distinct()
 
-        return User.objects.filter(id__in=creators)
+        return UserProfile.objects.filter(id__in=creators)
 
 
 class IngredientsListView(ListAPIView):

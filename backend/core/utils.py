@@ -32,13 +32,13 @@ def apply_recipe_filters(query, query_params):
 
     query = query.annotate(number_of_saves=Count('favorites'))
     query = query.order_by('number_of_saves')
-
+    count = query.count()
     if skip:
         query = query[int(skip):]
     if take:
         query = query[:int(take)]
 
-    return query
+    return query, count
 
 
 def get_item(item_model, request):
