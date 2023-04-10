@@ -5,6 +5,7 @@ import RecipeFilters from "../../Components/RecipeFilters";
 import QueryBuilder from "../../../../core/queryBuilder";
 import RecipePreview from "../../Components/RecipePreview";
 import ReactPaginate from 'react-paginate'
+import NoData from '../../../../assets/img/no-data.jpg'
 
 const AllRecipes = () => {
     const [recipes, setRecipes] = useState([])

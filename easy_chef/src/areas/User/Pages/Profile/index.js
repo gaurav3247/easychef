@@ -6,38 +6,38 @@ import {Modal, ModalHeader} from 'reactstrap';
 import ChangePasswordModal from '../../Modals/Change Password/change-password-popup';
 
 const UserProfile = () => {
-  const { id } = useParams();
-  const [profileName, setProfileName] = useState("");
-  const [profileAvatar, setProfileAvatar] = useState("");
-  const [profileEmail, setProfileEmail] = useState("");
-  const [profilePhone, setProfilePhone] = useState("");
-  const [profileCreated, setProfileCreated] = useState("");
-  const [profileSaved, setProfileSaved] = useState("");
-  const [profileRating, setProfileRating] = useState("");
-  const [buttonData, setButtonData] = useState("");
-  const [buttonClicked, setButtonClicked] = useState(0);
-  const [showPopup, setPopup] = useState(false);
+    const {id} = useParams();
+    const [profileName, setProfileName] = useState("");
+    const [profileAvatar, setProfileAvatar] = useState("");
+    const [profileEmail, setProfileEmail] = useState("");
+    const [profilePhone, setProfilePhone] = useState("");
+    const [profileCreated, setProfileCreated] = useState("");
+    const [profileSaved, setProfileSaved] = useState("");
+    const [profileRating, setProfileRating] = useState("");
+    const [buttonData, setButtonData] = useState("");
+    const [buttonClicked, setButtonClicked] = useState(0);
+    const [showPopup, setPopup] = useState(false);
 
     const onClose = () => {
         setPopup(!showPopup)
     }
 
-  useEffect(() => {
-    let url = `/accounts/edit-profile/`;
-    if (id) {
-      url = `/accounts/details/${id}/`
-    }
-    api.get(url)
-      .then((response) => {
-        setProfileName(response.data.full_name);
-        setProfileAvatar(response.data.avatar);
-        setProfileEmail(response.data.email);
-        setProfilePhone(response.data.phone_number);
-        setProfileCreated(response.data.number_of_recipes_created);
-        setProfileSaved(response.data.number_of_recipes_saved);
-        setProfileRating(response.data.average_rating);
-      });
-  }, [id]);
+    useEffect(() => {
+        let url = `/accounts/edit-profile/`;
+        if (id) {
+            url = `/accounts/details/${id}/`
+        }
+        api.get(url)
+            .then((response) => {
+                setProfileName(response.data.full_name);
+                setProfileAvatar(response.data.avatar);
+                setProfileEmail(response.data.email);
+                setProfilePhone(response.data.phone_number);
+                setProfileCreated(response.data.number_of_recipes_created);
+                setProfileSaved(response.data.number_of_recipes_saved);
+                setProfileRating(response.data.average_rating);
+            });
+    }, [id]);
 
     function CreatorRecipe() {
         setButtonClicked(0);
@@ -72,8 +72,10 @@ const UserProfile = () => {
                     <div className="col-lg-3">
                         <div className="card py-4 px-3">
                             <div className="d-flex justify-content-center">
-                                <img src={profileAvatar ? `http://127.0.0.1:8000/${profileAvatar}` : require('../../../../assets/img/default-avatar.png')}
-                                 alt="Avatar" className="rounded-circle d-block h-auto user-profile-img"/>
+                                <img style={{"height": "90px"}}
+                                     src={profileAvatar ? `http://127.0.0.1:8000/${profileAvatar}` : require('../../../../assets/img/default-avatar.png')}
+                                     alt=""
+                                     className="d-block h-auto rounded user-profile-img"/>
                             </div>
                             <div className="text-center m-3 mb-0"><h4>{profileName}</h4></div>
                             <div className="row">
@@ -190,10 +192,16 @@ const UserProfile = () => {
                                 <p className="py-3 mb-0">DETAILS</p>
                                 <div className="d-flex"><h6 className="me-2">Status:</h6><span
                                     className="badge bg-label-success w-25 h-50">Active</span></div>
-                                <div className="d-flex"><h6 className="me-1">Email:</h6><small>{profileEmail}</small></div>
-                                <div className="d-flex"><h6 className="me-1">Password:</h6><small className="me-1">*********</small><small><button onClick={() => setPopup(true)}>(Change
-                                    Password)</button></small></div>
-                                <div className="d-flex"><h6 className="me-1">Phone Number:</h6><small>{profilePhone}</small>
+                                <div className="d-flex"><h6 className="me-1">Email:</h6><small>{profileEmail}</small>
+                                </div>
+                                <div className="d-flex"><h6 className="me-1">Password:</h6><small
+                                    className="me-1">*********</small><small>
+                                    <a href="javascript:void(0)" onClick={() => setPopup(true)}>
+                                        (ChangePassword)
+                                    </a>
+                                </small></div>
+                                <div className="d-flex"><h6 className="me-1">Phone Number:</h6>
+                                    <small>{profilePhone}</small>
                                 </div>
                             </div>
                             <div className="d-flex justify-content-center">
@@ -207,19 +215,19 @@ const UserProfile = () => {
                     <div className="col-lg-9">
                         <ul className="nav nav-pills flex-column flex-md-row mb-4">
                             <li className="nav-item">
-                                <button classNameName={`nav-link ${buttonClicked === 0 ? 'active' : ''}`}
+                                <button className={`nav-link ${buttonClicked === 0 ? 'active' : ''}`}
                                         onClick={CreatorRecipe}><i
                                     className="ti-xs ti ti-chef-hat me-1"></i>Recipes
                                 </button>
                             </li>
                             <li className="nav-item">
-                                <button classNameName={`nav-link ${buttonClicked === 1 ? 'active' : ''}`}
+                                <button className={`nav-link ${buttonClicked === 1 ? 'active' : ''}`}
                                         onClick={FavRecipe}><i className="ti-xs ti
                           ti-bookmarks me-1"></i>Favorite Recipes
                                 </button>
                             </li>
                             <li className="nav-item">
-                                <button classNameName={`nav-link ${buttonClicked === 2 ? 'active' : ''}`}
+                                <button className={`nav-link ${buttonClicked === 2 ? 'active' : ''}`}
                                         onClick={InteractRecipe}><i className="ti-xs ti ti-history
                           me-1"></i>Interactions
                                 </button>

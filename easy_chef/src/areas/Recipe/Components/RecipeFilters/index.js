@@ -4,7 +4,7 @@ import Select from "react-select";
 import makeAnimated from "react-select/animated";
 import api from "../../../../core/baseAPI";
 
-const RecipeFilters = forwardRef(({applyFilters}, ref) => {
+const RecipeFilters = forwardRef(({applyFilters, filterByCreatorHidden}, ref) => {
     const [filters, setFilters] = useState([])
     const [canvasOpen, setCanvasOpen] = useState(false)
 
@@ -21,7 +21,7 @@ const RecipeFilters = forwardRef(({applyFilters}, ref) => {
         {"id": 6, "name": "3 hour"},
         {"id": 7, "name": "4 hour"},
         {"id": 8, "name": "5+ hour"},
-        ]
+    ]
 
     const [filterByName, setFilterByName] = useState('')
     const [filterByCreators, setFilterByCreators] = useState([])
@@ -102,7 +102,7 @@ const RecipeFilters = forwardRef(({applyFilters}, ref) => {
     useImperativeHandle(ref, () => ({
         getFilters() {
             return filters;
-            },
+        },
         setFilters(filter) {
             setFilters(filter)
         }
@@ -112,7 +112,7 @@ const RecipeFilters = forwardRef(({applyFilters}, ref) => {
         let totalFilters = filterByCreators.length + filterByIngredients.length + filterByCuisines.length + filterByDiets.length + filterByCookingTime.length;
         if (totalFilters > 0) {
             return (<span style={{"zIndex": "1"}}
-                className="badge rounded-pill bg-danger text-white badge-notifications">{totalFilters}</span>);
+                          className="badge rounded-pill bg-danger text-white badge-notifications">{totalFilters}</span>);
         }
     }
 
@@ -120,7 +120,7 @@ const RecipeFilters = forwardRef(({applyFilters}, ref) => {
         setCanvasOpen(!canvasOpen)
     }
 
-    function onApplyFilters(){
+    function onApplyFilters() {
         applyFilters(filterByCreators, filterByIngredients, filterByCuisines, filterByDiets, filterByCookingTime, filterByName)
         setCanvasOpen(false);
     }
@@ -136,11 +136,11 @@ const RecipeFilters = forwardRef(({applyFilters}, ref) => {
         toggleCanvas();
     }
 
-    async function onFilterNameChange(name){
+    async function onFilterNameChange(name) {
         await setFilterByName(name.target.value);
         applyFilters(filterByCreators, filterByIngredients, filterByCuisines, filterByDiets, filterByCookingTime, name.target.value)
     }
-    
+
     function onFilterCreatorsChange(creators) {
         setFilterByCreators(creators)
     }
@@ -161,6 +161,36 @@ const RecipeFilters = forwardRef(({applyFilters}, ref) => {
         setfilterByCookingTime(cookingTimes)
     }
 
+    function CreatorFilter() {
+        if (!filterByCreatorHidden) {
+            return (<>
+                <div className='mb-3'>
+                    <Label className='form-label'>Creators</Label>
+                    <Select
+                        theme={selectThemeColors}
+                        getOptionLabel={option => option.full_name}
+                        getOptionValue={option => option.id}
+                        isClearable={false}
+                        closeMenuOnSelect={true}
+                        blurInputOnSelect={true}
+                        components={animatedComponents}
+                        defaultValue={[]}
+                        value={filterByCreators}
+                        onChange={onFilterCreatorsChange}
+                        isMulti
+                        styles={customStyles}
+                        options={creatorsOptions}
+                        className='react-select'
+                        classNamePrefix='select'
+                        placeholder='Select Diets...'
+                    />
+                </div>
+            </>)
+        } else {
+            return (<></>)
+        }
+    }
+
     return (
         <>
             <div className="mt-n3 mb-3">
@@ -177,36 +207,17 @@ const RecipeFilters = forwardRef(({applyFilters}, ref) => {
                         </div>
                     </div>
                     <div className="col-3 d-flex flex-row-reverse bd-highlight">
-                        <input onChange={onFilterNameChange} type="text" className="form-control w-100" id="defaultFormControlInput"
+                        <input onChange={onFilterNameChange} type="text" className="form-control w-100"
+                               id="defaultFormControlInput"
                                placeholder="Search by Name" aria-describedby="defaultFormControlHelp"/>
                     </div>
                     <Offcanvas direction="end" isOpen={canvasOpen} toggle={toggleCanvas}>
                         <OffcanvasHeader toggle={toggleCanvas}>Advanced Filters</OffcanvasHeader>
                         <OffcanvasBody
                             className={''}>
-                            <div className={'mb-5'}>
-                                <div className=''>
-                                    <Label className='form-label'>Creators</Label>
-                                    <Select
-                                        theme={selectThemeColors}
-                                        getOptionLabel={option => option.full_name}
-                                        getOptionValue={option => option.id}
-                                        isClearable={false}
-                                        closeMenuOnSelect={true}
-                                        blurInputOnSelect={true}
-                                        components={animatedComponents}
-                                        defaultValue={[]}
-                                        value={filterByCreators}
-                                        onChange={onFilterCreatorsChange}
-                                        isMulti
-                                        styles={customStyles}
-                                        options={creatorsOptions}
-                                        className='react-select'
-                                        classNamePrefix='select'
-                                        placeholder='Select Diets...'
-                                    />
-                                </div>
-                                <div className='mt-3'>
+                            <div className={'mb-5 mt-n3'}>
+                                {CreatorFilter()}
+                                <div className='mb-3'>
                                     <Label className='form-label'>Ingredients</Label>
                                     <Select
                                         theme={selectThemeColors}
@@ -227,7 +238,7 @@ const RecipeFilters = forwardRef(({applyFilters}, ref) => {
                                         placeholder='Select Ingredients...'
                                     />
                                 </div>
-                                <div className='mt-3'>
+                                <div className='mb-3'>
                                     <Label className='form-label'>Cuisines</Label>
                                     <Select
                                         theme={selectThemeColors}
@@ -248,7 +259,7 @@ const RecipeFilters = forwardRef(({applyFilters}, ref) => {
                                         placeholder='Select Cuisines...'
                                     />
                                 </div>
-                                <div className='mt-3'>
+                                <div className='mb-3'>
                                     <Label className='form-label'>Diets</Label>
                                     <Select
                                         theme={selectThemeColors}
@@ -269,7 +280,7 @@ const RecipeFilters = forwardRef(({applyFilters}, ref) => {
                                         placeholder='Select Diets...'
                                     />
                                 </div>
-                                <div className='mt-3'>
+                                <div className='mb-3'>
                                     <Label className='form-label'>Cooking Times</Label>
                                     <Select
                                         theme={selectThemeColors}
