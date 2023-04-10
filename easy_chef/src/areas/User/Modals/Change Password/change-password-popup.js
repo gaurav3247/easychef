@@ -62,19 +62,9 @@ const ChangePasswordModal = ({show, onClose, profileEmail}) => {
     return (
         <>
             <Modal style={{width: 385}} isOpen={show} toggle={close} centered>
-                <ModalHeader toggle={close}></ModalHeader>
+                <ModalHeader toggle={close}>Password Change</ModalHeader>
                 <ModalBody>
                     <div className="card-body">
-                        <div className="app-brand justify-content-center mb-2 mt-n4">
-                            <a href="index.html" className="app-brand-link gap-2">
-                                <span className="app-brand-logo demo">
-                                <img alt='logo' src={logo} style={{ maxHeight: "50px" }}></img>
-                            </span>
-                                <span className="app-brand-text demo text-body fw-bold ms-1">EasyChef</span>
-                            </a>
-                        </div>
-                        <h4 className="mb-1 pt-2">Change Password 🔒</h4>
-                        <p className="mb-4">for <span className="fw-bold">{profileEmail}</span></p>
                         <Form onSubmit={handleSubmit(onSubmit)}>
                             <div className='mb-1'>
                                 <Label className='form-label' for='old_password'>
