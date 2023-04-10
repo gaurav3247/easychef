@@ -142,10 +142,10 @@ const ViewRecipe = () => {
                       <div><h6 className="d-inline-block me-1">Cuisine:</h6></div>
                     </div>
                     <div className="col-lg-4">
-                      <div><h6 className="d-inline-block me-1">Prep Time: </h6></div>
+                      <div><h6 className="d-inline-block me-1">Prep Time: </h6>{preptime}</div>
                     </div>
                     <div className="col-lg-4">
-                      <div><h6 className="d-inline-block me-1">Diets: </h6>{diet}</div>
+                      <div><h6 className="d-inline-block me-1">Diets: </h6></div>
                     </div>
                     <div className="col-lg-4">
                       <div><h6 className="d-inline-block me-1">Servings: </h6>{serving}<i className="ti ti-pencil ti-sm align-middle mb-2 ms-1 cursor-pointer"></i></div>
