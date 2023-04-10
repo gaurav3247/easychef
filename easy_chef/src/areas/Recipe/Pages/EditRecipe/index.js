@@ -317,7 +317,7 @@ const EditRecipe = () => {
                             });
                     }
                     toast.success('Recipe Created!')
-                    navigate("/view-recipe/");
+                    navigate(`/view-recipe/${response.data.id}`);
 
                 } else {
                     toast.error('Some error occured')
@@ -386,7 +386,7 @@ const EditRecipe = () => {
                             });
                     }
                     toast.success('Recipe Saved!')
-                    navigate("/view-recipe/");
+                    navigate(`/view-recipe/${response.data.id}`);
 
                 } else {
                     toast.error('Some error occured')
