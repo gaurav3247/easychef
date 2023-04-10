@@ -48,18 +48,10 @@ const UserProfile = () => {
 
     function FavRecipe() {
         setButtonClicked(1);
-        api.get(`/recipe/favorites/`)
-            .then((response) => {
-                setButtonData(response.data);
-            });
     }
 
     function InteractRecipe() {
         setButtonClicked(2);
-        api.get(`/recipe/interactions/`)
-            .then((response) => {
-                setButtonData(response.data);
-            });
     }
 
     function ProfileTabsContent() {
