@@ -1,7 +1,4 @@
-import {NavLink} from "react-router-dom";
-import {useForm, Controller} from 'react-hook-form'
-import * as yup from 'yup'
-import {yupResolver} from '@hookform/resolvers/yup'
+import * as React from 'react';
 import {AutoCompleteComponent} from '@syncfusion/ej2-react-dropdowns';
 import api from "../../../../core/baseAPI";
 import "./index.css"
@@ -9,12 +6,8 @@ import {
     Modal,
     ModalHeader,
     ModalBody,
-    CardTitle,
-    CardText,
-    Form,
     Label,
     Input,
-    FormFeedback,
     Button, ModalFooter
 } from 'reactstrap'
 import {forwardRef, useEffect, useImperativeHandle, useState} from "react";
@@ -29,7 +22,7 @@ const AddIngredient = forwardRef(({show, onClose, onIngredientAdded, onIngredien
 
         useImperativeHandle(ref, () => ({
             Close() {
-                Close()
+                CloseModal()
             },
             EditIngredient(ingredient) {
                 setingredientName(ingredient.name)
@@ -42,15 +35,14 @@ const AddIngredient = forwardRef(({show, onClose, onIngredientAdded, onIngredien
             api.get('/recipe/filters/ingredients/').then(response => setSuggestions(response.data))
         }, [])
 
-        function Close() {
+        function CloseModal() {
             onClose();
             setIsEditMode(false);
             setingredientName('')
             setIngredientQuality('')
         }
 
-
-        function onSubmit () {
+        function onSubmit() {
             if (!ingredientName) {
                 setIngredientNameError("Ingredient name is required");
                 return;
@@ -65,19 +57,21 @@ const AddIngredient = forwardRef(({show, onClose, onIngredientAdded, onIngredien
 
             if (isEditMode) {
                 onIngredientEdited(ingredientName, ingredientQuality)
+                CloseModal();
             } else {
-                onIngredientAdded(ingredientName,ingredientQuality)
+                onIngredientAdded(ingredientName, ingredientQuality)
+                CloseModal();
             }
         }
 
         function modalHeader() {
             if (isEditMode) {
                 return (
-                    <ModalHeader toggle={Close}>Edit Ingredient</ModalHeader>
+                    <ModalHeader toggle={CloseModal}>Edit Ingredient</ModalHeader>
                 )
             } else {
                 return (
-                    <ModalHeader toggle={Close}>Add New Ingredient</ModalHeader>
+                    <ModalHeader toggle={CloseModal}>Add New Ingredient</ModalHeader>
                 )
             }
         }
@@ -91,7 +85,7 @@ const AddIngredient = forwardRef(({show, onClose, onIngredientAdded, onIngredien
                 )
             } else {
                 return (
-                    <Button onClick={onSubmit}  color='primary' type='submit'>
+                    <Button onClick={onSubmit} color='primary' type='submit'>
                         Add Ingredient
                     </Button>
                 )
@@ -150,10 +144,11 @@ const AddIngredient = forwardRef(({show, onClose, onIngredientAdded, onIngredien
         }
 
         return (
-            <div>
-                <Modal style={{width: 385}} isOpen={show} toggle={Close} centered>
-
-                    {modalHeader()}
+            <React.Fragment key="add-ingrediet-modal">
+                <Modal style={{width: 385}} isOpen={show} centered unmountOnClose={false}>
+                    <div>
+                        {modalHeader()}
+                    </div>
                     <ModalBody>
                         <div className="card-body">
                             <div className='mb-3'>
@@ -163,10 +158,10 @@ const AddIngredient = forwardRef(({show, onClose, onIngredientAdded, onIngredien
                                 <AutoCompleteComponent value={ingredientName} change={onIngredientNameChange}
                                                        fields={localFields} id="suggestions"
                                                        dataSource={suggestions}
-                                                       noRecordsTemplate={noRecordsTemplate = noRecordsTemplate.bind(this)}
                                                        placeholder="Ingredient Name"/>
-
-                                {ingredientValidationError()}
+                                <div>
+                                    {ingredientValidationError()}
+                                </div>
                             </div>
                             <div className='mb-1'>
                                 <Label className='form-label' for='email'>
@@ -174,19 +169,22 @@ const AddIngredient = forwardRef(({show, onClose, onIngredientAdded, onIngredien
                                 </Label>
                                 <Input value={ingredientQuality} onChange={onIngredientQualityChange} type='quantity'
                                        placeholder='Ingredient Quantity'/>
-                                {ingredientQuantityValidationError()}
+                                <div>
+                                    {ingredientQuantityValidationError()}
+                                </div>
                             </div>
                         </div>
                     </ModalBody>
                     <ModalFooter>
-                        {modalButton()}
-                        <Button color='outline-secondary' onClick={() => Close()}>
+                        <div>
+                            {modalButton()}
+                        </div>
+                        <Button color='outline-secondary' onClick={() => CloseModal()}>
                             Cancel
                         </Button>
                     </ModalFooter>
-
                 </Modal>
-            </div>
+            </React.Fragment>
         )
     }
 )
