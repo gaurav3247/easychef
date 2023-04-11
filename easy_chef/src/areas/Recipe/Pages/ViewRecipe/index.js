@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, {useEffect, useState} from 'react';
 import api from "../../../../core/baseAPI";
 import Comments from "./Comments";
 import Ingredients from './Ingredients';
 import { useParams } from 'react-router-dom';
 import { Link } from "react-router-dom"
+import parse from 'html-react-parser'
 
 const ViewRecipe = () => {
   const [recipeName, setRecipe] = useState("");
@@ -221,7 +222,7 @@ const ViewRecipe = () => {
                 <div className="recipe_card_padding">
                   <h4 className="p-4 text-center mb-0">Steps</h4>
                   <div className="mb-4 px-4">
-                    {step}
+                    {parse(step)}
                   </div>
                   <div className="px-4">
                     (//pictures here)
