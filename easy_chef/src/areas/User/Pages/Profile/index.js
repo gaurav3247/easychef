@@ -9,7 +9,7 @@ import FavoriteRecipe from "../../../Recipe/Pages/FavoriteRecipe";
 import InteractionsRecipe from "../../../Recipe/Pages/InteractionsRecipe";
 import ProfileEdit from "../../Modals/ProfileEdit";
 
-const UserProfile = () => {
+const UserProfile = ({onReRender}) => {
     const {id} = useParams();
     const [profileName, setProfileName] = useState("");
     const [profileAvatar, setProfileAvatar] = useState("");
@@ -23,6 +23,7 @@ const UserProfile = () => {
     const [showEditModal, setshowEditModal] = useState(false);
 
     const onProfileChangesSaved = () => {
+        onReRender();
         api.get('/accounts/edit-profile/')
             .then((response) => {
                 setProfileName(response.data.full_name);

@@ -24,10 +24,10 @@ const ShoppingList = () => {
 
     function saveList(list) {
         let filedata = ''
-        for (var i = 0; i < list.length; i++){
+        for (let i = 0; i < list.length; i++){
             filedata += (i+1) + ') ' + list[i].Ingredient + ': ' + list[i].Quantity + '\n'
         }
-        var blob = new Blob([filedata], { type: "text/plain;charset=utf-8" })
+        let blob = new Blob([filedata], { type: "text/plain;charset=utf-8" })
         saveAs(blob, "shopping_list.txt")
     }
 

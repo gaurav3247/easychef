@@ -1,6 +1,6 @@
 // ** React Imports
 import {Link} from "react-router-dom";
-import React, {useEffect, useState} from 'react';
+import React, {forwardRef, useEffect, useImperativeHandle, useState} from 'react';
 import {useNavigate} from "react-router-dom";
 
 // ** Custom Components
@@ -15,10 +15,16 @@ import {
 } from "reactstrap";
 import api from "../baseAPI";
 
-const UserDropdown = ({OnRefresh}) => {
+const UserDropdown = forwardRef(({OnRefresh}, ref) => {
     const [userFullName, setuserFullName] = useState('')
     const [userAvatar, setUserAvatar] = useState('')
     const navigate = useNavigate();
+
+    useImperativeHandle(ref, () => ({
+        ReRender(){
+            getData();
+        }
+    }));
 
     function logoutUser() {
         localStorage.removeItem("user_tokens");
@@ -29,6 +35,10 @@ const UserDropdown = ({OnRefresh}) => {
     }
 
     useEffect(() => {
+        getData();
+    }, [])
+
+    function getData(){
         const requestOptions = {
             method: "GET",
         };
@@ -39,7 +49,7 @@ const UserDropdown = ({OnRefresh}) => {
                 setuserFullName(data.full_name);
                 setUserAvatar(data.avatar);
             })
-    }, [])
+    }
 
     return (
         <UncontrolledDropdown tag="li" className="dropdown-user nav-item">
@@ -48,7 +58,7 @@ const UserDropdown = ({OnRefresh}) => {
                 tag="a"
                 className="nav-link dropdown-user-link"
                 onClick={(e) => e.preventDefault()}
-            >
+                >
                 <Avatar img={userAvatar}/>
             </DropdownToggle>
             <DropdownMenu end>
@@ -75,7 +85,7 @@ const UserDropdown = ({OnRefresh}) => {
                 </DropdownItem>
             </DropdownMenu>
         </UncontrolledDropdown>
-    );
-};
+        );
+});
 
 export default UserDropdown;

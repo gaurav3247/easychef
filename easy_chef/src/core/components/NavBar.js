@@ -2,12 +2,18 @@ import UserDropdown from './UserDropdown'
 import {NavLink, useLocation} from "react-router-dom";
 import UserLoginModal from "../../areas/User/Modals/Login";
 import {Button} from 'reactstrap'
-import {useState} from 'react'
+import {forwardRef, useImperativeHandle, useRef, useState} from 'react'
 import UserRegisterModal from "../../areas/User/Modals/Register";
 
-const NavBar = ({OnLoggedIn}) => {
+const NavBar = forwardRef(({OnLoggedIn}, ref) => {
     const [loginModal, setLoginModal] = useState(false)
     const [registerModal, setRegisterModal] = useState(false)
+    const dropdownRef = useRef();
+    useImperativeHandle(ref, () => ({
+        ReRender(){
+            dropdownRef.current.ReRender();
+        }
+    }));
 
     const onLoginClosed = ()  => {
         setLoginModal(!loginModal)
@@ -35,7 +41,7 @@ const NavBar = ({OnLoggedIn}) => {
                 <Button color='primary'  onClick={() => setLoginModal(!loginModal)}>
                     Login
                 </Button>
-            )
+                )
         } else {
             return (
                 <>
@@ -49,9 +55,9 @@ const NavBar = ({OnLoggedIn}) => {
                         <i className="ti ti-search ti-md"></i>
                     </a>
                 </li>
-                <UserDropdown OnRefresh={onRefresh} />
+                <UserDropdown ref={dropdownRef}  OnRefresh={onRefresh} />
                 </>
-            )
+                )
         }
     }
 
@@ -79,12 +85,12 @@ const NavBar = ({OnLoggedIn}) => {
                         {userData()}
                         <UserLoginModal show={loginModal} onClose={onLoginClosed} onOpenRegister={openRegister}/>
                         <UserRegisterModal show={registerModal} onClose={() => setRegisterModal(!registerModal)}
-                                           onOpenLogin={openLogin}></UserRegisterModal>
+                            onOpenLogin={openLogin}></UserRegisterModal>
                     </ul>
                 </div>
             </div>
         </nav>
-    )
-}
+        )
+})
 
 export default NavBar

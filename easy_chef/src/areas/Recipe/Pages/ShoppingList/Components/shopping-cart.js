@@ -5,7 +5,7 @@ const Ingredients_List = ({ingredients}) => {
     const [total, setTotal] = useState(0)
     useEffect(() => {
         let total_ = 0
-        for (var i = 0; i < ingredients.length; i++) {
+        for (let i = 0; i < ingredients.length; i++) {
             total_ += ingredients[i].Quantity
         }
         setTotal(total_)
