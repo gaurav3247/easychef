@@ -1,12 +1,19 @@
 import React from "react";
+import { useState, useEffect } from "react";
 
 function Comments(props) {
+    const[profileAvatar, setProfileAvatar] = useState("");
+
+    useEffect(() => {
+        setProfileAvatar(props.avatar);
+    }, [props.avatar]);
     return (
         <li className="chat-message">
         <div className="d-flex overflow-hidden">
             <div className="user-avatar flex-shrink-0 me-3">
                 <div className="avatar avatar-sm">
-                <img src={props.avatar} alt="Avatar" className="rounded-circle" />
+                <img style={{"object-fit": "cover"}} width="42" height="42" src={profileAvatar ? profileAvatar : require('../../../../assets/img/default-avatar.png')}
+                                 alt="Avatar" className="rounded-circle"/>
                 </div>
             </div>
             <div className="chat-message-wrapper flex-grow-1">

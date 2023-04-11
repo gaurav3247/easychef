@@ -4,16 +4,37 @@ import ad1 from '../../assets/img/Carousel_img.png';
 import ad2 from '../../assets/img/Carousel_img.png';
 import ad3 from '../../assets/img/Carousel_img.png';
 import Top from './Top';
-import Popular from './Popular';
-import Recent from './Recent';
+import RecipePreview from '../Recipe/Components/RecipePreview/index';
 
 const Home = () => {
   const [topCreators, setTopCreators] = useState([]);
+  const [popRecipe, setPopRecipe] = useState([]);
+  const [recentRecipe, setRecentRecipe] = useState([]);
 
   useEffect(() => {
     api.get(`/recipe/top-creators/?take=10`)
     .then((response) => {
         setTopCreators(response.data);
+    })
+    .catch(error => {
+      console.error(error);
+    });
+  }, []);
+
+  useEffect(() => {
+    api.get(`/recipe/popular-recipes/?take=3`)
+    .then((response) => {
+        setPopRecipe(response.data);
+    })
+    .catch(error => {
+      console.error(error);
+    });
+  }, []);
+
+  useEffect(() => {
+    api.get(`/recipe/interactions?take=3`)
+    .then((response) => {
+        setRecentRecipe(response.data);
     })
     .catch(error => {
       console.error(error);
@@ -64,7 +85,13 @@ const Home = () => {
                       <a href="all_recipes.html">View all recipes</a>
                     </div>
                   </div>
-                  (//insert all recipes here)
+                  <div class="row">
+                    {popRecipe.map(p => (
+                      <div className="col-md-6 col-xl-4 col-lg-4 mb-3">
+                          <RecipePreview recipe={p}></RecipePreview>
+                      </div>
+                    ))}
+                  </div>
                 </div>
                 <div className="col-lg-3">
                   <h4>Top Creators</h4>
@@ -86,7 +113,13 @@ const Home = () => {
                       <a href="all_recipes.html">View all recently viewed</a>
                     </div>
                   </div>
-                  (//insert recently viewed here)
+                  <div class="row">
+                    {recentRecipe.map(r => (
+                      <div className="col-md-6 col-xl-4 col-lg-4 mb-3">
+                          <RecipePreview recipe={r}></RecipePreview>
+                      </div>
+                    ))}
+                  </div>
                 </div>
                 <div className="col-lg-3">
                   <h4>Recipes We're Loving</h4>
