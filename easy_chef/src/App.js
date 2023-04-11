@@ -31,6 +31,7 @@ function App() {
                         <Route path="shopping-list" element={<ShoppingList/>}/>
                         <Route path="edit-recipe/:id" element={<EditRecipe key={Math.random()}/>}/>
                         <Route path="new-recipe" element={<EditRecipe key={Math.random()}/>}/>
+                        <Route path="new-recipe/:baseId" element={<EditRecipe key={Math.random()}/>}/>
                         <Route path="user-profile/:id" element={<UserProfile onReRender={Rerender} key={Math.random()}/>}/>
                         <Route path="user-profile" element={<UserProfile onReRender={Rerender} key={Math.random()}/>}/>
                         <Route path="log-out" element={<UserLogout/>}/>

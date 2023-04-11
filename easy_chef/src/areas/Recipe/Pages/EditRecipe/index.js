@@ -13,7 +13,7 @@ import toast from 'react-hot-toast'
 import {useNavigate, useParams} from "react-router-dom";
 
 const EditRecipe = () => {
-    const {id} = useParams();
+    const {id, baseId} = useParams();
     const [recipeName, setRecipeName] = useState('')
     const [recipeNameError, setRecipeNameError] = useState('')
     const [recipeServing, setRecipeServing] = useState('')
@@ -101,8 +101,11 @@ const EditRecipe = () => {
                 method: "GET",
             };
             const fetchData = async () => {
-                if (id) {
-                    api.get(`/recipe/details/${id}/`, requestOptions)
+                if (id || baseId) {
+                    let recipeid = id;
+                    if(baseId)
+                        recipeid = baseId;
+                    api.get(`/recipe/details/${recipeid}/`, requestOptions)
                         .then((response) => {
                                 let recipe = response.data;
                                 setRecipeName(recipe.name);
@@ -274,13 +277,14 @@ const EditRecipe = () => {
     }
 
     function createRecipe(steps, ingredients) {
+        console.log(ingredients)
         const requestOptions = {
             method: "POST",
             headers: {"Content-Type": "application/json"},
             name: recipeName,
             serving: Number(recipeServing),
             steps: steps,
-            ingredients: ingredients
+            ingredients: ingredients.map(({ name, quantity }) => ({ name, quantity }))
         };
 
         if (recipeCuisine) {
@@ -294,6 +298,9 @@ const EditRecipe = () => {
         }
         if (recipeDiets) {
             requestOptions['diets'] = recipeDiets.map(obj => ({"id": obj.id}));
+        }
+        if(baseId){
+            requestOptions['base_recipe'] = baseId;
         }
 
         return api.post(`/recipe/save/`, requestOptions)
