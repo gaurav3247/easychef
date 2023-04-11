@@ -21,6 +21,9 @@ const EditRecipeSteps = forwardRef(({}, ref) => {
         ],
         type: 'Expand'
     };
+    let insertImageSettings = {
+        saveFormat: "Base64"
+    };
 
     useImperativeHandle(ref, () => ({
         getSteps() {
@@ -60,7 +63,7 @@ const EditRecipeSteps = forwardRef(({}, ref) => {
             </div>
             <div className="card-body">
                 <div className='mt-1 ms-n4 me-n4 mb-n3'>
-                    <RichTextEditorComponent toolbarSettings={toolbarSettings} value={steps} change={onStepsChanged} placeholder="Start typing you steps" width="100%"
+                    <RichTextEditorComponent toolbarSettings={toolbarSettings} value={steps} change={onStepsChanged} placeholder="Start typing you steps" insertImageSettings={insertImageSettings} width="100%"
                                              id="defaultRTE" ref={(richtexteditor) => {
                         rteObj = richtexteditor;
                     }}>
