@@ -49,8 +49,19 @@ const ViewRecipe = () => {
     if (currentuserid===recipeuserid) {
         return (
             <>
-              <button onClick={addClick} className="btn btn-primary btn-md waves-effect waves-light btn_space m-1" type="button">Add to Shopping Cart</button>
+              <Link to={`../edit-recipe/${id}`} className="btn btn-primary btn-md waves-effect waves-light btn_space m-1" type="button">Edit</Link>
               <button onClick={deleteClick} className="btn btn-outline-primary btn-md waves-effect waves-light btn_space m-1" type="button">Delete</button>
+            </>
+        )
+    }
+  }
+
+  function getloggedinButtons() {
+    if (Number.isInteger(currentuserid)) {
+        return (
+            <>
+              <button onClick={addClick} className="btn btn-primary btn-md waves-effect waves-light btn_space m-1" type="button">Add to Shopping Cart</button>
+              <Link to={`../edit-recipe/${id}`} className="btn btn-primary btn-md waves-effect waves-light btn_space m-1" type="button">Convert to New Recipe</Link>
             </>
         )
     }
@@ -219,8 +230,7 @@ const ViewRecipe = () => {
               </div>
               <div className="col-lg-3">
               <div className="card mb-4 p-2">
-                <Link to={`../edit-recipe/${id}`} className="btn btn-primary btn-md waves-effect waves-light btn_space m-1" type="button">Edit</Link>
-                <Link to={`../edit-recipe/${id}`} className="btn btn-primary btn-md waves-effect waves-light btn_space m-1" type="button">Convert to New Recipe</Link>
+                {getloggedinButtons()}
                 {getPersonalButtons()}
               </div>
                 <div className="col app-chat-history card overflow-hidden">
