@@ -4,7 +4,7 @@ import ad1 from '../../assets/img/Carousel_img.png';
 import ad2 from '../../assets/img/Carousel_img.png';
 import ad3 from '../../assets/img/Carousel_img.png';
 import Top from './Top';
-import RecipePreview from '../Recipe/Components/RecipePreview/index';
+import RecipePreview from '../Recipe/Components/RecipePreview';
 
 const Home = () => {
   const [topCreators, setTopCreators] = useState([]);

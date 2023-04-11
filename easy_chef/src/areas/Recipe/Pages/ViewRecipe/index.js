@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import api from "../../../../core/baseAPI";
 import Comments from "./Comments";
-import RecipeButtons from './RecipeButtons';
 import Ingredients from './Ingredients';
 import { useParams } from 'react-router-dom';
+import { Link } from "react-router-dom"
 
 const ViewRecipe = () => {
   const [recipeName, setRecipe] = useState("");
@@ -18,8 +18,14 @@ const ViewRecipe = () => {
   const [ingredientList, setIngredientList] = useState([]);
   const [isFavorite, setFavorite] = useState(false);
   const { id } = useParams();
+  const [currentuserid, setcurrentuserid] = useState('');
+  const [recipeuserid, setrecipeuserid] = useState('');
 
   useEffect(() => {
+    api.get(`/accounts/edit-profile/`)
+      .then((response) => {
+          setcurrentuserid(response.data.id);
+    });
     api.get(`/recipe/details/${id}/`)
     .then((response) => {
         setRecipe(response.data.name);
@@ -31,12 +37,45 @@ const ViewRecipe = () => {
         setCookingTime(response.data.cooking_time);
         setStep(response.data.steps);
         setIngredientList(response.data.ingredients);
+        setrecipeuserid(response.data.user);
     });
     api.get(`/recipe/all-comments/${id}/`)
     .then((response) => {
         setallcomment(response.data);
     });
   }, [id]);
+
+  function getPersonalButtons() {
+    if (currentuserid===recipeuserid) {
+        return (
+            <>
+              <button onClick={addClick} className="btn btn-primary btn-md waves-effect waves-light btn_space m-1" type="button">Add to Shopping Cart</button>
+              <button onClick={deleteClick} className="btn btn-outline-primary btn-md waves-effect waves-light btn_space m-1" type="button">Delete</button>
+            </>
+        )
+    }
+  }
+
+  function deleteClick() {
+    console.log('Button was clicked');
+    api.delete(`/recipe/delete/${id}`)
+        .then(response => {
+            console.log('User deleted successfully');
+        })
+        .catch(error => {
+            console.error('Error deleting user', error);
+    });
+  }
+  function addClick() {
+      console.log('Button was clicked');
+      api.post(`/shopping-list/add-recipe/${id}`)
+          .then(response => {
+              console.log('User deleted successfully');
+          })
+          .catch(error => {
+              console.error('Error adding recipe to shopping cart', error);
+      });
+  }
 
   function FavoriteButtonClick() {
     setFavorite(!isFavorite);
@@ -179,7 +218,11 @@ const ViewRecipe = () => {
                 </div>
               </div>
               <div className="col-lg-3">
-                <RecipeButtons />
+              <div className="card mb-4 p-2">
+                <Link to={`../edit-recipe/${id}`} className="btn btn-primary btn-md waves-effect waves-light btn_space m-1" type="button">Edit</Link>
+                <Link to={`../edit-recipe/${id}`} className="btn btn-primary btn-md waves-effect waves-light btn_space m-1" type="button">Convert to New Recipe</Link>
+                {getPersonalButtons()}
+              </div>
                 <div className="col app-chat-history card overflow-hidden">
                   <div className="chat-history-wrapper mt-3 ms-3"><h4>Comments</h4></div>
                   <div className="chat-history-header border-bottom"></div>

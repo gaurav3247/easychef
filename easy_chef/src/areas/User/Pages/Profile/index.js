@@ -18,7 +18,6 @@ const UserProfile = () => {
     const [profileCreated, setProfileCreated] = useState("");
     const [profileSaved, setProfileSaved] = useState("");
     const [profileRating, setProfileRating] = useState("");
-    const [buttonData, setButtonData] = useState("");
     const [buttonClicked, setButtonClicked] = useState(0);
     const [showChangePasswordModal, setShowChangePasswordModal] = useState(false);
     const [showEditModal, setshowEditModal] = useState(false);
