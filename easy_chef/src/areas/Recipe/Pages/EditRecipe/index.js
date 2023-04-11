@@ -103,10 +103,18 @@ const EditRecipe = () => {
             const fetchData = async () => {
                 if (id || baseId) {
                     let recipeid = id;
-                    if(baseId)
+                    if (baseId)
                         recipeid = baseId;
                     api.get(`/recipe/details/${recipeid}/`, requestOptions)
                         .then((response) => {
+                                if (!baseId) {
+                                    api.get('/accounts/edit-profile/', requestOptions)
+                                        .then((response_user) => {
+                                            if (response_user.data.id !== response.data.user) {
+                                                navigate('/*')
+                                            }
+                                        })
+                                }
                                 let recipe = response.data;
                                 setRecipeName(recipe.name);
                                 setRecipeServing(recipe.serving)
@@ -284,7 +292,7 @@ const EditRecipe = () => {
             name: recipeName,
             serving: Number(recipeServing),
             steps: steps,
-            ingredients: ingredients.map(({ name, quantity }) => ({ name, quantity }))
+            ingredients: ingredients.map(({name, quantity}) => ({name, quantity}))
         };
 
         if (recipeCuisine) {
@@ -299,7 +307,7 @@ const EditRecipe = () => {
         if (recipeDiets) {
             requestOptions['diets'] = recipeDiets.map(obj => ({"id": obj.id}));
         }
-        if(baseId){
+        if (baseId) {
             requestOptions['base_recipe'] = baseId;
         }
 
@@ -346,29 +354,25 @@ const EditRecipe = () => {
 
         if (recipeCuisine) {
             requestOptions['cuisine'] = recipeCuisine.id;
-        }
-        else{
+        } else {
             requestOptions['cuisine'] = null;
         }
         if (recipePrepTime) {
             requestOptions['prep_time'] = recipePrepTime.name;
-        }
-        else{
+        } else {
             requestOptions['prep_time'] = "";
         }
         if (recipeCookingTime) {
             requestOptions['cooking_time'] = recipeCookingTime.name;
-        }
-        else{
+        } else {
             requestOptions['cooking_time'] = "";
         }
         if (recipeDiets) {
             requestOptions['diets'] = recipeDiets.map(obj => ({"id": obj.id}));
-        }
-        else{
+        } else {
             requestOptions['diets'] = []
         }
-        if(!previewPicture){
+        if (!previewPicture) {
             requestOptions['preview_picture'] = null;
         }
 
@@ -571,8 +575,8 @@ const EditRecipe = () => {
                             <div className="card">
                                 <img style={{"objectFit": "cover", "maxHeight": "250px"}}
                                      className="card-img-top h-50 object-fit-fill"
-                                    src={ previewPicture && !previewPictureFile ? `http://127.0.0.1:8000/${previewPicture}` :
-                                    previewPicture && previewPictureFile ? previewPicture : require('../../../../assets/img/no-image.jpg')}
+                                     src={previewPicture && !previewPictureFile ? `http://127.0.0.1:8000/${previewPicture}` :
+                                         previewPicture && previewPictureFile ? previewPicture : require('../../../../assets/img/no-image.jpg')}
                                      alt="Card image cap"/>
                                 <span
                                     className="badge bg-label-primary">Cooking Time:{recipeCookingTime ? recipeCookingTime.name : "Not Set"}</span>

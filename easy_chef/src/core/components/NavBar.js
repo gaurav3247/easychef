@@ -11,12 +11,17 @@ const NavBar = forwardRef(({OnLoggedIn}, ref) => {
     const dropdownRef = useRef();
     useImperativeHandle(ref, () => ({
         ReRender(){
-            dropdownRef.current.ReRender();
+            dropdownRef?.current?.ReRender();
         }
     }));
 
     const onLoginClosed = ()  => {
         setLoginModal(!loginModal)
+        onRefresh();
+    }
+
+    const OnRegisterClose = () => {
+        setRegisterModal(!registerModal);
         onRefresh();
     }
 
@@ -84,7 +89,7 @@ const NavBar = forwardRef(({OnLoggedIn}, ref) => {
                     <ul className="navbar-nav flex-row align-items-center ms-auto">
                         {userData()}
                         <UserLoginModal show={loginModal} onClose={onLoginClosed} onOpenRegister={openRegister}/>
-                        <UserRegisterModal show={registerModal} onClose={() => setRegisterModal(!registerModal)}
+                        <UserRegisterModal show={registerModal} onClose={OnRegisterClose}
                             onOpenLogin={openLogin}></UserRegisterModal>
                     </ul>
                 </div>

@@ -4,17 +4,18 @@ import Footer from './Footer'
 import {forwardRef, useImperativeHandle, useRef, useState} from "react";
 import {Toaster} from "react-hot-toast";
 
-const MainLayout = forwardRef(({children}, ref) => {
+const MainLayout = forwardRef(({children, onRefreshRoutes}, ref) => {
     const [refresh, setRefresh] = useState(false);
     const nabBarRef = useRef();
 
     function Refresh() {
+        onRefreshRoutes();
         setRefresh(!refresh);
         nabBarRef.current.ReRender();
     }
 
     useImperativeHandle(ref, () => ({
-        ReRender(){
+        ReRender() {
             Refresh();
         }
     }));
@@ -40,7 +41,7 @@ const MainLayout = forwardRef(({children}, ref) => {
                 </div>
             </div>
         </div>
-        )
+    )
 });
 
 export default MainLayout
