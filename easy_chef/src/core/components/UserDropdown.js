@@ -1,7 +1,7 @@
 // ** React Imports
 import {Link} from "react-router-dom";
 import React, {useEffect, useState} from 'react';
-import { useNavigate } from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 
 // ** Custom Components
 import Avatar from "../components/avatar";
@@ -17,6 +17,7 @@ import api from "../baseAPI";
 
 const UserDropdown = ({OnRefresh}) => {
     const [userFullName, setuserFullName] = useState('')
+    const [userAvatar, setUserAvatar] = useState('')
     const navigate = useNavigate();
 
     function logoutUser() {
@@ -33,10 +34,11 @@ const UserDropdown = ({OnRefresh}) => {
         };
 
         api.get('/accounts/edit-profile/', requestOptions)
-        .then((response) => {
-            let data = response.data;
-            setuserFullName(data.full_name);
-        })
+            .then((response) => {
+                let data = response.data;
+                setuserFullName(data.full_name);
+                setUserAvatar(data.avatar);
+            })
     }, [])
 
     return (
@@ -47,15 +49,14 @@ const UserDropdown = ({OnRefresh}) => {
                 className="nav-link dropdown-user-link"
                 onClick={(e) => e.preventDefault()}
             >
-                <Avatar/>
+                <Avatar img={userAvatar}/>
             </DropdownToggle>
             <DropdownMenu end>
                 <DropdownItem tag={Link} to="/user-profile">
                     <div className="d-flex">
                         <div className="flex-shrink-0 me-3">
                             <div className="avatar avatar-online">
-                                <img src={require('../../assets/img/default-avatar.png')} alt=""
-                                     className="h-auto rounded-circle"/>
+                                <Avatar img={userAvatar}/>
                             </div>
                         </div>
                         <div className="flex-grow-1">

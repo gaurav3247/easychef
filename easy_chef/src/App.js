@@ -23,8 +23,8 @@ function App() {
                         <Route path="shopping-list" element={<ShoppingList />} />
                         <Route path="edit-recipe/:id" element={<EditRecipe key={Math.random()}/>} />
                         <Route path="new-recipe" element={<EditRecipe key={Math.random()}/>} />
-                        <Route path="user-profile/:id" element={<UserProfile />} />
-                        <Route path="user-profile" element={<UserProfile />} />
+                        <Route path="user-profile/:id" element={<UserProfile key={Math.random()}/>} />
+                        <Route path="user-profile" element={<UserProfile key={Math.random()}/>} />
                         <Route path="log-out" element={<UserLogout />} />
                         <Route path="view-recipe/:id" element={<ViewRecipe />} />
                     </Route>

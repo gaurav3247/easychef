@@ -312,7 +312,7 @@ const EditRecipe = () => {
                         api.put(`/recipe/upload-preview-pricture/${response.data.id}/`, pictureRequestOptions)
                             .then((response) => {
                                 if (response.status !== 200) {
-                                    toast.success('Some error occured')
+                                    toast.error('Some error occured')
                                 }
                             });
                     }

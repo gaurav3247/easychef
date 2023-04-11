@@ -18,9 +18,7 @@ const MyRecipes = ({isComponent, userID}) => {
     useEffect(() => {
         if (userID){
             setUserId(userID);
-        }
-        if (userId) {
-            getMyDetails(userId)
+            getMyDetails(userID)
         }
     }, [skip])
 
@@ -34,7 +32,7 @@ const MyRecipes = ({isComponent, userID}) => {
     }, [])
 
     function getMyDetails(userId) {
-        api.get(`/recipe/list?skip=${skip}&take=${take}&${query}&creator=${userId}`)
+        api.get(`/recipe/list?skip=${skip}&take=${take}&creator=${userId}&${query}`)
             .then((response) => {
                 setRecipes(response.data);
             })
