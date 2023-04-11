@@ -21,7 +21,7 @@ function App() {
         mainLayoutRef.current.ReRender();
     }
 
-    function RefreshRoutes(){
+    function RefreshRoutes() {
         setRerender(!render);
     }
 
@@ -38,6 +38,7 @@ function App() {
                     <Route path="new-recipe" element={<EditRecipe key={Math.random()}/>}/>
                     <Route path="new-recipe/:baseId" element={<EditRecipe key={Math.random()}/>}/>
                     <Route path="user-profile/:id" element={<UserProfile onReRender={Rerender} key={Math.random()}/>}/>
+                    <Route path="user-profile//:isInteractions" element={<UserProfile onReRender={Rerender} key={Math.random()}/>}/>
                     <Route path="user-profile" element={<UserProfile onReRender={Rerender} key={Math.random()}/>}/>
                     <Route path="log-out" element={<UserLogout/>}/>
                     <Route path="view-recipe/:id" element={<ViewRecipe/>}/>

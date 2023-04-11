@@ -10,7 +10,7 @@ import InteractionsRecipe from "../../../Recipe/Pages/InteractionsRecipe";
 import ProfileEdit from "../../Modals/ProfileEdit";
 
 const UserProfile = ({onReRender}) => {
-    const {id} = useParams();
+    const {id, isInteractions} = useParams();
     const [profileName, setProfileName] = useState("");
     const [profileAvatar, setProfileAvatar] = useState("");
     const [profileEmail, setProfileEmail] = useState("");
@@ -59,6 +59,10 @@ const UserProfile = ({onReRender}) => {
                 setProfileSaved(response.data.number_of_recipes_saved);
                 setProfileRating(response.data.average_rating);
             });
+
+        if(isInteractions){
+            setButtonClicked(2);
+        }
     }, [id]);
 
     function CreatorRecipe() {

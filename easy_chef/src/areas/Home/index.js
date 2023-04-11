@@ -5,6 +5,7 @@ import ad2 from '../../assets/img/Carousel_img.png';
 import ad3 from '../../assets/img/Carousel_img.png';
 import Top from './Top';
 import RecipePreview from '../Recipe/Components/RecipePreview';
+import {Link} from "react-router-dom";
 
 const Home = () => {
   const [topCreators, setTopCreators] = useState([]);
@@ -82,7 +83,7 @@ const Home = () => {
                   <div className="d-flex">
                     <h4>Popular Recipes</h4>
                     <div className="ms-auto mt-1">
-                      <a href="all_recipes.html">View all recipes</a>
+                      <Link to="/all-recipes">View all recipes</Link>
                     </div>
                   </div>
                   <div class="row">
@@ -110,7 +111,7 @@ const Home = () => {
                   <div className="d-flex">
                     <h4>Recently Viewed</h4>
                     <div className="ms-auto mt-1">
-                      <a href="all_recipes.html">View all recently viewed</a>
+                      <Link to="/user-profile//isInteractions=true">View all recently viewed</Link>
                     </div>
                   </div>
                   <div class="row">
