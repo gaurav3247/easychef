@@ -12,13 +12,14 @@ const ViewRecipe = () => {
     const [cuisineName, setCuisine] = useState("");
     const [preptime, setPrepTime] = useState("");
     const [diet, setDiet] = useState([]);
-    const [serving, setServing] = useState("");
+    const [serving, setServing] = useState(1);
     const [cookingTime, setCookingTime] = useState("");
     const [allcomment, setallcomment] = useState([]);
     const [step, setStep] = useState("");
     const [ingredientList, setIngredientList] = useState([]);
     const [isFavorite, setFavorite] = useState(false);
     const {id} = useParams();
+    const rec_id = id;
     const [currentuserid, setcurrentuserid] = useState('');
     const [recipeuserid, setrecipeuserid] = useState('');
 
@@ -92,25 +93,28 @@ const ViewRecipe = () => {
     }
 
     function deleteClick() {
-        console.log('Button was clicked');
         api.delete(`/recipe/delete/${id}`)
             .then(response => {
-                console.log('User deleted successfully');
+                console.log('Recipe deleted successfully');
             })
             .catch(error => {
-                console.error('Error deleting user', error);
+                console.error('Error deleting recipe', error);
             });
     }
 
     function addClick() {
-        console.log('Button was clicked');
-        api.post(`/shopping-list/add-recipe/${id}`)
-            .then(response => {
-                console.log('User deleted successfully');
-            })
-            .catch(error => {
-                console.error('Error adding recipe to shopping cart', error);
-            });
+        api.post(`/shopping-list/add-recipe/`, {
+            params:{
+                servingSize: serving,
+                recipeID: rec_id
+            }
+        })
+        .then(response => {
+            console.log('Recipe added to shopping list');
+        })
+        .catch(error => {
+            console.error('Error adding recipe to shopping cart', error);
+        });
     }
 
     function FavoriteButtonClick() {
@@ -127,6 +131,10 @@ const ViewRecipe = () => {
                 });
         }
     }
+
+    const handleServingChange = (event) => {
+        setServing(event.target.value);
+    };
 
     return (
         <div>
@@ -278,7 +286,7 @@ const ViewRecipe = () => {
                                 </div>
                                 <div className="col-lg-4">
                                     <div className='d-flex'>
-                                        <h6 className="me-2">Serving:</h6> <input type="number" className="form-control form-control-sm w-px-75 h-px-20" value="1" min="1" max="5" />
+                                        <h6 className="me-2">Serving:</h6> <input type="number" className="form-control form-control-sm w-px-75 h-px-20" value={serving} onChange={handleServingChange} min="1" />
                                     </div>
                                 </div>
                                 <div className="col-lg-4">
