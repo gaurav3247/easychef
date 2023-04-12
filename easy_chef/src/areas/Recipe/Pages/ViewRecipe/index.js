@@ -79,17 +79,17 @@ const ViewRecipe = () => {
         }
     }
 
-    function getloggedindiv(){
-      if (Number.isInteger(currentuserid)) {
-        return (
-          <>
-            <div className="card mb-4 p-2">
-                {getloggedinButtons()}
-                {getPersonalButtons()}
-            </div>
-          </>
-        )
-      }
+    function getloggedindiv() {
+        if (Number.isInteger(currentuserid)) {
+            return (
+                <>
+                    <div className="card mb-4 p-2">
+                        {getloggedinButtons()}
+                        {getPersonalButtons()}
+                    </div>
+                </>
+            )
+        }
     }
 
     function deleteClick() {
@@ -103,18 +103,20 @@ const ViewRecipe = () => {
     }
 
     function addClick() {
-        api.post(`/shopping-list/add-recipe/`, {
-            params:{
-                servingSize: serving,
-                recipeID: rec_id
-            }
-        })
-        .then(response => {
-            console.log('Recipe added to shopping list');
-        })
-        .catch(error => {
-            console.error('Error adding recipe to shopping cart', error);
-        });
+        const requestOptions = {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            servingSize: String(serving),
+            recipeID: String(rec_id)
+        };
+
+        api.post(`/shopping-list/add-recipe/`, requestOptions)
+            .then(response => {
+                console.log('Recipe added to shopping list');
+            })
+            .catch(error => {
+                console.error('Error adding recipe to shopping cart', error);
+            });
     }
 
     function FavoriteButtonClick() {
@@ -138,7 +140,7 @@ const ViewRecipe = () => {
 
     return (
         <div>
-            <div classNameName="container-xxl flex-grow-1 container-p-y">
+            <div className="container-xxl flex-grow-1 container-p-y">
                 <h4>View Recipe</h4>
                 <div className="row">
                     <div className="col-lg-9 card py-3 px-0">
@@ -150,7 +152,7 @@ const ViewRecipe = () => {
                                             data-bs-target="#offcanvasEnd" aria-controls="offcanvasEnd">
                                         <span className="ti ti-star"></span>
                                     </button>
-                                    <div className="offcanvas offcanvas-end" tabindex="-1" id="offcanvasEnd"
+                                    <div className="offcanvas offcanvas-end" tabIndex="-1" id="offcanvasEnd"
                                          aria-labelledby="offcanvasEndLabel">
                                         <div className="offcanvas-header">
                                             <h5 id="offcanvasEndLabel" className="offcanvas-title">Rating</h5>
@@ -275,18 +277,25 @@ const ViewRecipe = () => {
                                     <div><h6 className="d-inline-block me-1">Prep Time: </h6>{preptime}</div>
                                 </div>
                                 <div className="col-lg-4">
-                                    <div><h6 className="d-inline-block me-1">Diets: 
-                                        {diet.map((item, index) => (
-                                            <React.Fragment key={index}>
-                                            {item}
-                                            {index !== diet.length - 1 && ', '}
-                                            </React.Fragment>
-                                        ))}
-                                    </h6></div>
+                                    <div>
+                                        <h6 className="d-inline-block me-1">Diets:
+                                            {diet.length > 0 ? diet.map((diet) => diet.name).join(", ") : "No diets selected"}
+                                            {/*{diet.map((item, index) => (*/}
+                                            {/*    <React.Fragment key={index}>*/}
+                                            {/*        {item}*/}
+                                            {/*        {index !== diet.length - 1 && ', '}*/}
+                                            {/*    </React.Fragment>*/}
+                                            {/*))}*/}
+                                        </h6>
+                                    </div>
                                 </div>
                                 <div className="col-lg-4">
                                     <div className='d-flex'>
-                                        <h6 className="me-2">Serving:</h6> <input type="number" className="form-control form-control-sm w-px-75 h-px-20" value={serving} onChange={handleServingChange} min="1" />
+                                        <h6 className="me-2">Serving:</h6> <input type="number"
+                                                                                  className="form-control form-control-sm w-px-75 h-px-20"
+                                                                                  value={serving}
+                                                                                  onChange={handleServingChange}
+                                                                                  min="1"/>
                                     </div>
                                 </div>
                                 <div className="col-lg-4">
@@ -330,10 +339,10 @@ const ViewRecipe = () => {
                                     ))}
                                 </ul>
                                 <div className="ps__rail-x lb0">
-                                    <div className="ps__thumb-x lw0" tabindex="0"></div>
+                                    <div className="ps__thumb-x lw0" tabIndex="0"></div>
                                 </div>
                                 <div className="ps__rail-y thr0">
-                                    <div className="ps__thumb-y th0" tabindex="0"></div>
+                                    <div className="ps__thumb-y th0" tabIndex="0"></div>
                                 </div>
                             </div>
                             <div className="chat-history-footer shadow-sm p-2">
@@ -341,13 +350,13 @@ const ViewRecipe = () => {
                                     <input className="form-control message-input border-0 me-1 shadow-none"
                                            placeholder="Type comment here"></input>
                                     <div className="message-actions d-flex align-items-center">
-                                        <label for="attach-doc" className="form-label mb-0">
+                                        <label htmlFor="attach-doc" className="form-label mb-0">
                                             <i className="ti ti-paperclip ti-sm cursor-pointer mx-1"></i>
                                             <input type="file" id="attach-doc" hidden=""></input>
                                         </label>
                                         <button className="btn btn-primary d-flex send-msg-btn">
-                                            <i classNameName="ti ti-send me-md-1 me-0"></i>
-                                            <span classNameName="align-middle d-md-inline-block d-none"></span>
+                                            <i className="ti ti-send me-md-1 me-0"></i>
+                                            <span className="align-middle d-md-inline-block d-none"></span>
                                         </button>
                                     </div>
                                 </form>

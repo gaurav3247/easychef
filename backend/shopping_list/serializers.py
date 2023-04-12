@@ -19,7 +19,7 @@ class ShoppingListSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         request = self.context['request']
         user = get_user_profile(request.user.id)
-        recipe_id = request.POST.get('recipeID', '')
+        recipe_id = request.data.get('recipeID', '')
         recipe = get_object_or_404(Recipe, id=recipe_id)
         if ShoppingListItem.objects.filter(user=user, recipeID=recipe_id):
             raise ValidationError("Recipe already in shopping list")
