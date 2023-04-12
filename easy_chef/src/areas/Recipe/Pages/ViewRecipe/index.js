@@ -78,6 +78,19 @@ const ViewRecipe = () => {
         }
     }
 
+    function getloggedindiv(){
+      if (Number.isInteger(currentuserid)) {
+        return (
+          <>
+            <div className="card mb-4 p-2">
+                {getloggedinButtons()}
+                {getPersonalButtons()}
+            </div>
+          </>
+        )
+      }
+    }
+
     function deleteClick() {
         console.log('Button was clicked');
         api.delete(`/recipe/delete/${id}`)
@@ -289,10 +302,7 @@ const ViewRecipe = () => {
                         </div>
                     </div>
                     <div className="col-lg-3">
-                        <div className="card mb-4 p-2">
-                            {getloggedinButtons()}
-                            {getPersonalButtons()}
-                        </div>
+                        {getloggedindiv()}
                         <div className="col app-chat-history card overflow-hidden">
                             <div className="chat-history-wrapper mt-3 ms-3"><h4>Comments</h4></div>
                             <div className="chat-history-header border-bottom"></div>
