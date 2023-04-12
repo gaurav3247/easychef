@@ -11,7 +11,7 @@ const ViewRecipe = () => {
     const [creatorName, setCreatorName] = useState("");
     const [cuisineName, setCuisine] = useState("");
     const [preptime, setPrepTime] = useState("");
-    const [diet, setDiet] = useState("");
+    const [diet, setDiet] = useState([]);
     const [serving, setServing] = useState("");
     const [cookingTime, setCookingTime] = useState("");
     const [allcomment, setallcomment] = useState([]);
@@ -30,7 +30,7 @@ const ViewRecipe = () => {
         api.get(`/recipe/details/${id}/`)
             .then((response) => {
                 setRecipe(response.data.name);
-                setCreatorName(response.data.full_name);
+                setCreatorName(response.data.user_full_name.full_name);
                 setCuisine(response.data.cuisine);
                 setPrepTime(response.data.prep_time);
                 setDiet(response.data.diets);
@@ -267,11 +267,19 @@ const ViewRecipe = () => {
                                     <div><h6 className="d-inline-block me-1">Prep Time: </h6>{preptime}</div>
                                 </div>
                                 <div className="col-lg-4">
-                                    <div><h6 className="d-inline-block me-1">Diets: </h6></div>
+                                    <div><h6 className="d-inline-block me-1">Diets: 
+                                        {diet.map((item, index) => (
+                                            <React.Fragment key={index}>
+                                            {item}
+                                            {index !== diet.length - 1 && ', '}
+                                            </React.Fragment>
+                                        ))}
+                                    </h6></div>
                                 </div>
                                 <div className="col-lg-4">
-                                    <div><h6 className="d-inline-block me-1">Servings: </h6>{serving}<i
-                                        className="ti ti-pencil ti-sm align-middle mb-2 ms-1 cursor-pointer"></i></div>
+                                    <div className='d-flex'>
+                                        <h6 className="me-2">Serving:</h6> <input type="number" className="form-control form-control-sm w-px-75 h-px-20" value="1" min="1" max="5" />
+                                    </div>
                                 </div>
                                 <div className="col-lg-4">
                                     <div><h6 className="d-inline-block me-1">Cooking Time: </h6>{cookingTime}</div>

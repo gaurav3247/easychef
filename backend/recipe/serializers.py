@@ -113,12 +113,13 @@ class RecipeSerializers(serializers.ModelSerializer):
     steps = serializers.CharField(required=False, allow_blank=True)
     prep_time = serializers.CharField(required=False, allow_blank=True)
     cooking_time = serializers.CharField(required=False, allow_blank=True)
+    user_full_name = UserSerializer(source='user', read_only=True)
 
     class Meta:
         model = Recipe
         fields = ('id', 'steps', 'name', 'prep_time', 'cooking_time',
                   'serving', 'preview_picture', 'user', 'diets',
-                  'ingredients', 'cuisine', 'base_recipe')
+                  'ingredients', 'cuisine', 'base_recipe', 'user_full_name')
         extra_kwargs = {
             'cuisine': {'required': False},
             'base_recipe': {'required': False},
