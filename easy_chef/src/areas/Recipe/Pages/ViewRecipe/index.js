@@ -130,17 +130,12 @@ const ViewRecipe = () => {
     }
 
     function FavoriteButtonClick() {
-        setFavorite(!isFavorite);
         if (isFavorite) {
-            api.post(`/recipe/add-to-favorite/${id}/`)
-                .then((response) => {
-                    setFavorite(response.data);
-                });
-        } else {
             api.delete(`/recipe/remove-from-favorite/${id}/`)
-                .then((response) => {
-                    setFavorite(response.data);
-                });
+                .then(() => setFavorite(false))
+        } else {
+            api.post(`/recipe/add-to-favorite/${id}/`)
+                .then(() => setFavorite(true));
         }
     }
 
@@ -165,7 +160,7 @@ const ViewRecipe = () => {
                                     <small>{rating}</small>
                                     <button type="button" className="btn waves-effect p-0"
                                             onClick={FavoriteButtonClick}>
-                                        <span className="ti ti-bookmarks"></span>
+                                        <span className={`ti ${isFavorite ? 'ti-bookmark' : 'ti-bookmark-off'}`}></span>
                                     </button>
                                     <small>{numcomments}</small>
                                 </div>
@@ -284,7 +279,7 @@ const ViewRecipe = () => {
                                 </div>
                                 <div className="col-lg-4">
                                     <div>
-                                        <h6 className="d-inline-block me-1">Diets:
+                                        <h6 className="d-inline-block me-1">Diets:</h6>
                                             {diet.length > 0 ? diet.map((diet) => diet.name).join(", ") : "No diets selected"}
                                             {/*{diet.map((item, index) => (*/}
                                             {/*    <React.Fragment key={index}>*/}
@@ -292,7 +287,6 @@ const ViewRecipe = () => {
                                             {/*        {index !== diet.length - 1 && ', '}*/}
                                             {/*    </React.Fragment>*/}
                                             {/*))}*/}
-                                        </h6>
                                     </div>
                                 </div>
                                 <div className="col-lg-4">
