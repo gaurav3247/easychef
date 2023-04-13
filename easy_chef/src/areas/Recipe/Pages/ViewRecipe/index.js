@@ -5,6 +5,7 @@ import Ingredients from './Ingredients';
 import {useParams} from 'react-router-dom';
 import {Link} from "react-router-dom"
 import parse from 'html-react-parser'
+import { Offcanvas, OffcanvasBody, OffcanvasHeader } from 'reactstrap';
 
 const ViewRecipe = () => {
     const [recipeName, setRecipe] = useState("");
@@ -22,6 +23,14 @@ const ViewRecipe = () => {
     const rec_id = id;
     const [currentuserid, setcurrentuserid] = useState('');
     const [recipeuserid, setrecipeuserid] = useState('');
+    const [rating, setRating] = useState(0);
+    const [numcomments, setnumcomments] = useState(0);
+    
+
+    const [canvasOpen, setCanvasOpen] = useState(false)
+    const toggleCanvas = () => {
+        setCanvasOpen(!canvasOpen)
+    }
 
     useEffect(() => {
         api.get(`/accounts/edit-profile/`)
@@ -40,6 +49,7 @@ const ViewRecipe = () => {
                 setStep(response.data.steps);
                 setIngredientList(response.data.ingredients);
                 setrecipeuserid(response.data.user);
+                setRating(response.data.rating);
             });
         api.get(`/recipe/all-comments/${id}/`)
             .then((response) => {
@@ -149,94 +159,95 @@ const ViewRecipe = () => {
                                 <h5 className="px-4">{recipeName}</h5>
                                 <div className="ms-auto mt-1 me-3">
                                     <button type="button" className="btn waves-effect p-0" data-bs-toggle="offcanvas"
-                                            data-bs-target="#offcanvasEnd" aria-controls="offcanvasEnd">
+                                            data-bs-target="#offcanvasEnd" aria-controls="offcanvasEnd" onClick={toggleCanvas}>
                                         <span className="ti ti-star"></span>
                                     </button>
-                                    <div className="offcanvas offcanvas-end" tabIndex="-1" id="offcanvasEnd"
-                                         aria-labelledby="offcanvasEndLabel">
-                                        <div className="offcanvas-header">
-                                            <h5 id="offcanvasEndLabel" className="offcanvas-title">Rating</h5>
-                                            <button type="button" className="btn-close text-reset"
-                                                    data-bs-dismiss="offcanvas" aria-label="Close"></button>
-                                        </div>
-                                        <hr className="m-0"></hr>
-                                        <div className="offcanvas-body mx-0 flex-grow-0 h-100">
-                                            <div
-                                                className="align-items-center justify-content-center d-flex flex-column h-100">
+                                    <small>{rating}</small>
+                                    <button type="button" className="btn waves-effect p-0"
+                                            onClick={FavoriteButtonClick}>
+                                        <span className="ti ti-bookmarks"></span>
+                                    </button>
+                                    <small>{numcomments}</small>
+                                </div>
+                                <Offcanvas direction="end" isOpen={canvasOpen} toggle={toggleCanvas}>
+                                    <OffcanvasHeader toggle={toggleCanvas}>Rating</OffcanvasHeader>
+                                    <OffcanvasBody>
+                                        <div className="mx-0 flex-grow-0 h-100">
+                                            <div className="align-items-center justify-content-center d-flex flex-column h-100">
                                                 <h4>Add a Rating</h4>
                                                 <div className="mb-4">
                                                     <div className="basic-ratings jq-ry-container w-192">
                                                         <div className="jq-ry-group-wrapper">
                                                             <div className="jq-ry-normal-group jq-ry-group">
                                                                 <svg version="1.1" xmlns="http://www.w3.org/2000/svg"
-                                                                     viewBox="0 12.705 512 486.59" x="0px" y="0px"
-                                                                     xmlSpace="preserve" width="32px" height="32px"
-                                                                     fill="gray">
+                                                                    viewBox="0 12.705 512 486.59" x="0px" y="0px"
+                                                                    xmlSpace="preserve" width="32px" height="32px"
+                                                                    fill="gray">
                                                                     <polygon
                                                                         points="256.814,12.705 317.205,198.566 512.631,198.566 354.529,313.435 414.918,499.295 256.814,384.427 98.713,499.295 159.102,313.435 1,198.566 196.426,198.566 "></polygon>
                                                                 </svg>
                                                                 <svg version="1.1" xmlns="http://www.w3.org/2000/svg"
-                                                                     viewBox="0 12.705 512 486.59" x="0px" y="0px"
-                                                                     xmlSpace="preserve" width="32px" height="32px"
-                                                                     fill="gray" className="ml8">
+                                                                    viewBox="0 12.705 512 486.59" x="0px" y="0px"
+                                                                    xmlSpace="preserve" width="32px" height="32px"
+                                                                    fill="gray" className="ml8">
                                                                     <polygon
                                                                         points="256.814,12.705 317.205,198.566 512.631,198.566 354.529,313.435 414.918,499.295 256.814,384.427 98.713,499.295 159.102,313.435 1,198.566 196.426,198.566 "></polygon>
                                                                 </svg>
                                                                 <svg version="1.1" xmlns="http://www.w3.org/2000/svg"
-                                                                     viewBox="0 12.705 512 486.59" x="0px" y="0px"
-                                                                     xmlSpace="preserve" width="32px" height="32px"
-                                                                     fill="gray" className="ml8">
+                                                                    viewBox="0 12.705 512 486.59" x="0px" y="0px"
+                                                                    xmlSpace="preserve" width="32px" height="32px"
+                                                                    fill="gray" className="ml8">
                                                                     <polygon
                                                                         points="256.814,12.705 317.205,198.566 512.631,198.566 354.529,313.435 414.918,499.295 256.814,384.427 98.713,499.295 159.102,313.435 1,198.566 196.426,198.566 "></polygon>
                                                                 </svg>
                                                                 <svg version="1.1" xmlns="http://www.w3.org/2000/svg"
-                                                                     viewBox="0 12.705 512 486.59" x="0px" y="0px"
-                                                                     xmlSpace="preserve" width="32px" height="32px"
-                                                                     fill="gray" className="ml8">
+                                                                    viewBox="0 12.705 512 486.59" x="0px" y="0px"
+                                                                    xmlSpace="preserve" width="32px" height="32px"
+                                                                    fill="gray" className="ml8">
                                                                     <polygon
                                                                         points="256.814,12.705 317.205,198.566 512.631,198.566 354.529,313.435 414.918,499.295 256.814,384.427 98.713,499.295 159.102,313.435 1,198.566 196.426,198.566 "></polygon>
                                                                 </svg>
                                                                 <svg version="1.1" xmlns="http://www.w3.org/2000/svg"
-                                                                     viewBox="0 12.705 512 486.59" x="0px" y="0px"
-                                                                     xmlSpace="preserve" width="32px" height="32px"
-                                                                     fill="gray" className="ml8">
+                                                                    viewBox="0 12.705 512 486.59" x="0px" y="0px"
+                                                                    xmlSpace="preserve" width="32px" height="32px"
+                                                                    fill="gray" className="ml8">
                                                                     <polygon
                                                                         points="256.814,12.705 317.205,198.566 512.631,198.566 354.529,313.435 414.918,499.295 256.814,384.427 98.713,499.295 159.102,313.435 1,198.566 196.426,198.566 "></polygon>
                                                                 </svg>
                                                             </div>
                                                             <div className="jq-ry-rated-group jq-ry-group w-90">
                                                                 <svg version="1.1" xmlns="http://www.w3.org/2000/svg"
-                                                                     viewBox="0 12.705 512 486.59" x="0px" y="0px"
-                                                                     xmlSpace="preserve" width="32px" height="32px"
-                                                                     fill="#f39c12">
+                                                                    viewBox="0 12.705 512 486.59" x="0px" y="0px"
+                                                                    xmlSpace="preserve" width="32px" height="32px"
+                                                                    fill="#f39c12">
                                                                     <polygon
                                                                         points="256.814,12.705 317.205,198.566 512.631,198.566 354.529,313.435 414.918,499.295 256.814,384.427 98.713,499.295 159.102,313.435 1,198.566 196.426,198.566 "></polygon>
                                                                 </svg>
                                                                 <svg version="1.1" xmlns="http://www.w3.org/2000/svg"
-                                                                     viewBox="0 12.705 512 486.59" x="0px" y="0px"
-                                                                     xmlSpace="preserve" width="32px" height="32px"
-                                                                     fill="#f39c12" className="ml8">
+                                                                    viewBox="0 12.705 512 486.59" x="0px" y="0px"
+                                                                    xmlSpace="preserve" width="32px" height="32px"
+                                                                    fill="#f39c12" className="ml8">
                                                                     <polygon
                                                                         points="256.814,12.705 317.205,198.566 512.631,198.566 354.529,313.435 414.918,499.295 256.814,384.427 98.713,499.295 159.102,313.435 1,198.566 196.426,198.566 "></polygon>
                                                                 </svg>
                                                                 <svg version="1.1" xmlns="http://www.w3.org/2000/svg"
-                                                                     viewBox="0 12.705 512 486.59" x="0px" y="0px"
-                                                                     xmlSpace="preserve" width="32px" height="32px"
-                                                                     fill="#f39c12" className="ml8">
+                                                                    viewBox="0 12.705 512 486.59" x="0px" y="0px"
+                                                                    xmlSpace="preserve" width="32px" height="32px"
+                                                                    fill="#f39c12" className="ml8">
                                                                     <polygon
                                                                         points="256.814,12.705 317.205,198.566 512.631,198.566 354.529,313.435 414.918,499.295 256.814,384.427 98.713,499.295 159.102,313.435 1,198.566 196.426,198.566 "></polygon>
                                                                 </svg>
                                                                 <svg version="1.1" xmlns="http://www.w3.org/2000/svg"
-                                                                     viewBox="0 12.705 512 486.59" x="0px" y="0px"
-                                                                     xmlSpace="preserve" width="32px" height="32px"
-                                                                     fill="#f39c12" className="ml8">
+                                                                    viewBox="0 12.705 512 486.59" x="0px" y="0px"
+                                                                    xmlSpace="preserve" width="32px" height="32px"
+                                                                    fill="#f39c12" className="ml8">
                                                                     <polygon
                                                                         points="256.814,12.705 317.205,198.566 512.631,198.566 354.529,313.435 414.918,499.295 256.814,384.427 98.713,499.295 159.102,313.435 1,198.566 196.426,198.566 "></polygon>
                                                                 </svg>
                                                                 <svg version="1.1" xmlns="http://www.w3.org/2000/svg"
-                                                                     viewBox="0 12.705 512 486.59" x="0px" y="0px"
-                                                                     xmlSpace="preserve" width="32px" height="32px"
-                                                                     fill="#f39c12" className="ml8">
+                                                                    viewBox="0 12.705 512 486.59" x="0px" y="0px"
+                                                                    xmlSpace="preserve" width="32px" height="32px"
+                                                                    fill="#f39c12" className="ml8">
                                                                     <polygon
                                                                         points="256.814,12.705 317.205,198.566 512.631,198.566 354.529,313.435 414.918,499.295 256.814,384.427 98.713,499.295 159.102,313.435 1,198.566 196.426,198.566 "></polygon>
                                                                 </svg>
@@ -256,13 +267,8 @@ const ViewRecipe = () => {
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <small>4.8</small>
-                                    <button type="button" className="btn waves-effect p-0"
-                                            onClick={FavoriteButtonClick}>
-                                        <span className="ti ti-bookmarks"></span>
-                                    </button>
-                                </div>
+                                </OffcanvasBody>
+                                </Offcanvas>
                             </div>
                         </div>
                         <div className="px-4">

@@ -114,12 +114,23 @@ class RecipeSerializers(serializers.ModelSerializer):
     prep_time = serializers.CharField(required=False, allow_blank=True)
     cooking_time = serializers.CharField(required=False, allow_blank=True)
     user_full_name = UserSerializer(source='user', read_only=True)
+    rating = serializers.SerializerMethodField('get_average_rating')
+    number_of_comments = serializers.SerializerMethodField('get_number_of_comments')
+
+    @staticmethod
+    def get_average_rating(foo):
+        rating = Rating.objects.filter(recipeID=foo.id).aggregate(Avg('rating'))
+        return rating['rating__avg'] if rating['rating__avg'] else 0
+    
+    @staticmethod
+    def get_number_of_comments(foo):
+        return Comment.objects.filter(recipe=foo.id).count()
 
     class Meta:
         model = Recipe
         fields = ('id', 'steps', 'name', 'prep_time', 'cooking_time',
                   'serving', 'preview_picture', 'user', 'diets',
-                  'ingredients', 'cuisine', 'base_recipe', 'user_full_name')
+                  'ingredients', 'cuisine', 'base_recipe', 'user_full_name', 'rating', 'number_of_comments')
         extra_kwargs = {
             'cuisine': {'required': False},
             'base_recipe': {'required': False},
