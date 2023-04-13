@@ -3,16 +3,40 @@ import { useState, useEffect } from "react";
 
 function Comments(props) {
     const[profileAvatar, setProfileAvatar] = useState("");
+    const attachmentArray = props.attachments;
+
+    function isImage(filename) {
+        const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif'];
+        const extension = filename.substring(filename.lastIndexOf('.')).toLowerCase();
+        return imageExtensions.includes(extension);
+    }
+
+    function isVideo(filename) {
+        const videoExtensions = ['.mp4', '.mov', '.avi', '.wmv'];
+        const extension = filename.substring(filename.lastIndexOf('.')).toLowerCase();
+        return videoExtensions.includes(extension);
+    }
+
+    function renderItem(item) {
+        if (isImage(item)) {
+            return <img src={item.includes('http') ? item : `http://127.0.0.1:8000${item}`} alt={item} />;
+        } else if (isVideo(item)) {
+            return <video src={item.includes('http') ? item : `http://127.0.0.1:8000${item}`} controls />;
+        } else {
+            return <small>Unsupported file type: {item}</small>;
+        }
+    }
 
     useEffect(() => {
         setProfileAvatar(props.avatar);
     }, [props.avatar]);
+
     return (
         <li className="chat-message">
-        <div className="d-flex overflow-hidden">
+         <div className="d-flex overflow-hidden">
             <div className="user-avatar flex-shrink-0 me-3">
                 <div className="avatar avatar-sm">
-                <img style={{"object-fit": "cover"}} width="42" height="42" src={profileAvatar ? profileAvatar : require('../../../../assets/img/default-avatar.png')}
+                <img style={{"object-fit": "cover"}} width="42" height="42" src={profileAvatar ? profileAvatar.includes('http') ? profileAvatar : `http://127.0.0.1:8000${profileAvatar}` : require('../../../../assets/img/default-avatar.png')}
                                  alt="Avatar" className="rounded-circle"/>
                 </div>
             </div>
@@ -22,7 +46,12 @@ function Comments(props) {
                     <p className="mb-0">{props.text}</p>
                     <div id="carouselExample" className="carousel slide">
                         <div className="carousel-inner">
-                            
+                            {attachmentArray.map((a, index) => (
+                                <div className={`carousel-item ${index === 0 ? 'active' : ''}`}>
+                                    {renderItem(a.attachment)}
+                                    <div className="carousel-caption d-none d-md-block"></div>
+                                </div>
+                            ))}
                         </div>
                         <a className="carousel-control-prev" href="#carouselExample" role="button" data-bs-slide="prev">
                         <span className="carousel-control-prev-icon" aria-hidden="true"></span>

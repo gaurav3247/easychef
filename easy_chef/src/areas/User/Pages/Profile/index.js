@@ -150,7 +150,7 @@ const UserProfile = ({onReRender}) => {
                             <div className="d-flex justify-content-center">
                                 <img height="100" style={{"object-fit": "cover"}}
                                      width="100"
-                                     src={profileAvatar ? profileAvatar.includes('http') ? profileAvatar : `http://127.0.0.1:8000/${profileAvatar}` : require('../../../../assets/img/default-avatar.png')}
+                                     src={profileAvatar ? profileAvatar.includes('http') ? profileAvatar : `http://127.0.0.1:8000${profileAvatar}` : require('../../../../assets/img/default-avatar.png')}
                                      alt=""
                                      className="d-block rounded user-profile-img"/>
                             </div>
