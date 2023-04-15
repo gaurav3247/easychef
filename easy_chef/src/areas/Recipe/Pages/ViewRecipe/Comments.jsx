@@ -1,6 +1,7 @@
 import React from "react";
 import { useState, useEffect } from "react";
 import './Comments.css';
+import Carousel from 'react-bootstrap/Carousel';
 
 function Comments(props) {
     const[profileAvatar, setProfileAvatar] = useState("");
@@ -45,24 +46,13 @@ function Comments(props) {
                 <h6 className="chat-contact-name text-truncate m-0">{props.full_name}</h6>
                 <div className="chat-message-text">
                     <p className="mb-0">{props.text}</p>
-                    <div id="carouselExample" className="carousel slide">
-                        <div className="carousel-inner">
-                            {attachmentArray.map((a, index) => (
-                                <div className={`carousel-item ${index === 0 ? 'active' : ''}`}>
-                                    {renderItem(a.attachment)}
-                                    <div className="carousel-caption d-none d-md-block"></div>
-                                </div>
-                            ))}
-                        </div>
-                        <a className="carousel-control-prev" href="#carouselExample" role="button" data-bs-slide="prev">
-                        <span className="carousel-control-prev-icon" aria-hidden="true"></span>
-                        <span className="visually-hidden">Previous</span>
-                        </a>
-                        <a className="carousel-control-next" href="#carouselExample" role="button" data-bs-slide="next">
-                        <span className="carousel-control-next-icon" aria-hidden="true"></span>
-                        <span className="visually-hidden">Next</span>
-                        </a>
-                    </div>
+                    <Carousel indicators={false} interval={null}>
+                        {attachmentArray.map((a, index) => (
+                            <Carousel.Item>
+                                {renderItem(a.attachment)}
+                            </Carousel.Item>
+                        ))}
+                    </Carousel>
                 </div>
                 <div className="text-muted mt-1 mb-1">
                     <small>{props.date_created}</small>
