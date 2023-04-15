@@ -126,22 +126,29 @@ class RecipeSerializers(serializers.ModelSerializer):
     rating = serializers.SerializerMethodField('get_average_rating')
     number_of_comments = serializers.SerializerMethodField('get_number_of_comments')
     attachments = AttachmentSerializer(many=True, read_only=True)
+    number_of_saves = serializers.SerializerMethodField('get_number_of_saves')
+    cuisine_name = serializers.CharField(source='cuisine.name', read_only=True)
 
+    @staticmethod
+    def get_number_of_comments(foo):
+        return Comment.objects.filter(recipe=foo.id).count()
+    
     @staticmethod
     def get_average_rating(foo):
         rating = Rating.objects.filter(recipeID=foo.id).aggregate(Avg('rating'))
         return rating['rating__avg'] if rating['rating__avg'] else 0
 
     @staticmethod
-    def get_number_of_comments(foo):
-        return Comment.objects.filter(recipe=foo.id).count()
+    def get_number_of_saves(foo):
+        return Favorite.objects.filter(recipe=foo.id).count ()
 
     class Meta:
         model = Recipe
         fields = ('id', 'steps', 'name', 'prep_time', 'cooking_time',
                   'serving', 'preview_picture', 'user', 'diets',
                   'ingredients', 'cuisine', 'base_recipe', 'user_full_name',
-                  'rating', 'number_of_comments', 'attachments')
+                  'rating', 'number_of_comments', 'attachments', 'cuisine_name', 'number_of_saves')
+
         extra_kwargs = {
             'cuisine': {'required': False},
             'base_recipe': {'required': False},
@@ -247,10 +254,11 @@ class RatingSerializer(serializers.ModelSerializer):
 class AddCommentSerializer(serializers.ModelSerializer):
     user_name = serializers.CharField(source='user.username', read_only=True)
     attachments = AttachmentSerializer(many=True, required=False)
+    user_full_name = UserSerializer(source='user', read_only=True)
 
     class Meta:
         model = Comment
-        fields = ('id', 'recipe', 'date_created', 'user', 'user_name', 'text', 'attachments')
+        fields = ('id', 'recipe', 'date_created', 'user', 'user_name', 'text', 'attachments', 'user_full_name')
 
     def create(self, validated_data):
         validated_data_copy = validated_data.copy()

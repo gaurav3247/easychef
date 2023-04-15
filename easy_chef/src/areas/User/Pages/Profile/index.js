@@ -154,7 +154,7 @@ const UserProfile = ({onReRender}) => {
                                      alt=""
                                      className="d-block rounded user-profile-img"/>
                             </div>
-                            <div className="text-center m-3 mb-0"><h4>{profileName}</h4></div>
+                            <div className="text-center m-3 mb-2"><h4>{profileName}</h4></div>
                             <div className="row">
                                 <div className="col-lg-12">
                                     <p>

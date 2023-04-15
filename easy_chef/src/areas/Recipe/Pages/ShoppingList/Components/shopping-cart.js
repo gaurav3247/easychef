@@ -11,11 +11,16 @@ const Ingredients_List = ({ingredients}) => {
         setTotal(total_)
     }, [ingredients])
 
+const ingredientsScroll = {
+    maxHeight: '450px',
+    overflowY: 'scroll'
+    };
+
     return (
         <>
             <h5>Ingredients</h5>
             <hr></hr>
-            <div className="chat-history-body bg-body ps ps--active-y">
+            <div className="chat-history-body bg-body ps ps--active-y" style={ingredientsScroll}>
                 <ul className="list-unstyled chat-history m-3">
                     {ingredients.map(item => (
                         <li>

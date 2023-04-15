@@ -13,7 +13,7 @@ urlpatterns = [
   path('upload-preview-pricture/<int:id>/', RecipePreviewPictureUploadView.as_view()),
   path('upload-attachment-pricture/<int:id>/', AttachmentUploadView.as_view()),
   path('details/<int:id>/', RecipeDetailsView.as_view()),
-  path('rate/<int:id>', AddRatingView.as_view()),
+  path('rate/<int:id>/', AddRatingView.as_view()),
   path('duplicate/<int:id>/', DuplicateRecipeView.as_view()),
   path('ingredients/atocompleteBy/<str:name>/', IngredientsAutocomplete.as_view()),
   path('list/', RecipeListView.as_view()),
