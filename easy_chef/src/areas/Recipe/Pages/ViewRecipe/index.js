@@ -26,13 +26,15 @@ const ViewRecipe = () => {
     const [currentuserid, setcurrentuserid] = useState('');
     const [recipeuserid, setrecipeuserid] = useState('');
     const [rating, setRating] = useState(0);
-    const [numcomments, setnumcomments] = useState(0);
-    const [rate, setRate] = useState(0);
+    const [numfavs, setnumfavs] = useState(0);
     
     const [canvasOpen, setCanvasOpen] = useState(false)
     const toggleCanvas = () => {
         setCanvasOpen(!canvasOpen)
     }
+
+    const [rate, setRate] = useState(0);
+
 
     useEffect(() => {
         api.get(`/accounts/edit-profile/`)
@@ -52,6 +54,7 @@ const ViewRecipe = () => {
                 setIngredientList(response.data.ingredients);
                 setrecipeuserid(response.data.user);
                 setRating(response.data.rating);
+                setnumfavs(response.data.number_of_saves);
             });
         api.get(`/recipe/all-comments/${id}/`)
             .then((response) => {
@@ -178,7 +181,7 @@ const ViewRecipe = () => {
                                             onClick={FavoriteButtonClick}>
                                         <span className={`ti ${isFavorite ? 'ti-bookmark' : 'ti-bookmark-off'}`}></span>
                                     </button>
-                                    <small>{numcomments}</small>
+                                    <small>{numfavs}</small>
                                 </div>
                                 <Offcanvas direction="end" isOpen={canvasOpen} toggle={toggleCanvas}>
                                     <OffcanvasHeader toggle={toggleCanvas}>Rating</OffcanvasHeader>
@@ -298,7 +301,7 @@ const ViewRecipe = () => {
                                 <ul className="list-unstyled chat-history m-3">
                                     {allcomment.map(c => (
                                         <Comments date_created={c.date_created} avatar={c.avatar} text={c.text}
-                                                  full_name={c.full_name}/>
+                                                  full_name={c.full_name} attachments = {c.attachments}/>
                                     ))}
                                 </ul>
                                 <div className="ps__rail-x lb0">
