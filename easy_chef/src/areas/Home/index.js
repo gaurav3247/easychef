@@ -37,13 +37,16 @@ const Home = () => {
     }, []);
 
     useEffect(() => {
-        api.get(`/recipe/interactions?take=3`)
+        const token = localStorage.getItem("user_tokens");
+        if (token) {
+            api.get(`/recipe/interactions?take=3`)
             .then((response) => {
                 setRecentRecipe(response.data);
             })
             .catch(error => {
                 console.error(error);
             });
+        }
     }, []);
 
     function onSearchByName() {
