@@ -12,7 +12,7 @@ const RecipePreview = ({recipe}) => {
                 <span
                     className="badge bg-label-primary">Cooking Time: {recipe.cooking_time ? recipe.cooking_time : "Not Set"}</span>
                 <div className="card-body">
-                    <h5 className="card-title">{recipe.name}</h5>
+                    <h5 className="card-title text-truncate">{recipe.name}</h5>
                     <h6 className="card-subtitle text-muted">Creator: <a
                         href="javascript:void(0)">{recipe.user_full_name.full_name}</a></h6>
                     <p className="card-text mt-2 mb-1">

@@ -1,4 +1,4 @@
-import {NavLink} from "react-router-dom";
+import {NavLink, useNavigate} from "react-router-dom";
 import {useForm, Controller} from 'react-hook-form'
 import * as yup from 'yup'
 import {yupResolver} from '@hookform/resolvers/yup'
@@ -19,6 +19,7 @@ import {useState} from "react";
 
 const UserLoginModal = ({show, onClose, onOpenRegister}) => {
     const [apiError, setApiError] = useState('')
+    const navigate = useNavigate();
     const LoginSchema = yup.object().shape({
         email: yup.string().email().required(),
         password: yup.string().required(),
@@ -45,12 +46,14 @@ const UserLoginModal = ({show, onClose, onOpenRegister}) => {
     function Close(){
         setApiError("");
         onClose();
+        reset()
     }
 
     const {
         control,
         handleSubmit,
-        formState: {errors}
+        formState: {errors},
+        reset
     } = useForm({mode: 'onChange', resolver: yupResolver(LoginSchema)})
 
     const onSubmit = data => {
@@ -58,6 +61,7 @@ const UserLoginModal = ({show, onClose, onOpenRegister}) => {
             .then((token_data) => {
                 if (token_data.status === 200) {
                     Close()
+                    navigate("/");
                 }
             })
             .catch((error) => {

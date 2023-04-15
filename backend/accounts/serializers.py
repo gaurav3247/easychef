@@ -50,11 +50,12 @@ class UpdateUserSerializer(serializers.ModelSerializer):
     full_name = serializers.CharField(required=False, allow_blank=True)
     first_name = serializers.CharField(required=False, allow_blank=True)
     last_name = serializers.CharField(required=False, allow_blank=True)
-    avatar = serializers.ImageField(required=False)
+    avatar = serializers.ImageField(required=False, allow_null=True)
     phone_number = serializers.CharField(required=False, allow_blank=True)
     number_of_recipes_saved = serializers.SerializerMethodField('get_number_of_recipes_saved')
     average_rating = serializers.SerializerMethodField('get_average_rating')
-    number_of_recipes_created = serializers.SerializerMethodField('get_number_of_recipes_created')
+    number_of_recipes_created = serializers.SerializerMethodField('get_number_of_recipes_created') \
+
 
     @staticmethod
     def get_number_of_recipes_created(foo):

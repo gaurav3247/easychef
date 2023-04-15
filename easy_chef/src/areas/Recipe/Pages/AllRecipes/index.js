@@ -7,7 +7,7 @@ import RecipePreview from "../../Components/RecipePreview";
 import ReactPaginate from 'react-paginate'
 import NoData from '../../../../assets/img/no-data.jpg'
 
-const AllRecipes = () => {
+const AllRecipes = ({isComponent}) => {
     const [recipes, setRecipes] = useState([])
     const [totalItems, setTotalItems] = useState(0)
     const [totalPages, setTotalPages] = useState(0)
@@ -127,10 +127,16 @@ const AllRecipes = () => {
         }
     }
 
+    function breatCrumbs(){
+        if(!isComponent){
+            return (<BreadCrumbs basePage="Home" currentPage="All Recipes"></BreadCrumbs>)
+        }
+    }
+
     return (
         <>
             <div>
-                <BreadCrumbs basePage="Home" currentPage="All Recipes"></BreadCrumbs>
+                {breatCrumbs()}
                 <RecipeFilters applyFilters={onApplyFilters}></RecipeFilters>
             </div>
             <div className="row mb-1">

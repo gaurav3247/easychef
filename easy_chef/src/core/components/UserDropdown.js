@@ -1,7 +1,7 @@
 // ** React Imports
 import {Link} from "react-router-dom";
-import React, {useEffect, useState} from 'react';
-import { useNavigate } from "react-router-dom";
+import React, {forwardRef, useEffect, useImperativeHandle, useState} from 'react';
+import {useNavigate} from "react-router-dom";
 
 // ** Custom Components
 import Avatar from "../components/avatar";
@@ -15,9 +15,16 @@ import {
 } from "reactstrap";
 import api from "../baseAPI";
 
-const UserDropdown = ({OnRefresh}) => {
+const UserDropdown = forwardRef(({OnRefresh}, ref) => {
     const [userFullName, setuserFullName] = useState('')
+    const [userAvatar, setUserAvatar] = useState('')
     const navigate = useNavigate();
+
+    useImperativeHandle(ref, () => ({
+        ReRender(){
+            getData();
+        }
+    }));
 
     function logoutUser() {
         localStorage.removeItem("user_tokens");
@@ -28,16 +35,21 @@ const UserDropdown = ({OnRefresh}) => {
     }
 
     useEffect(() => {
+        getData();
+    }, [])
+
+    function getData(){
         const requestOptions = {
             method: "GET",
         };
 
         api.get('/accounts/edit-profile/', requestOptions)
-        .then((response) => {
-            let data = response.data;
-            setuserFullName(data.full_name);
-        })
-    }, [])
+            .then((response) => {
+                let data = response.data;
+                setuserFullName(data.full_name);
+                setUserAvatar(data.avatar);
+            })
+    }
 
     return (
         <UncontrolledDropdown tag="li" className="dropdown-user nav-item">
@@ -46,16 +58,15 @@ const UserDropdown = ({OnRefresh}) => {
                 tag="a"
                 className="nav-link dropdown-user-link"
                 onClick={(e) => e.preventDefault()}
-            >
-                <Avatar/>
+                >
+                <Avatar img={userAvatar}/>
             </DropdownToggle>
             <DropdownMenu end>
                 <DropdownItem tag={Link} to="/user-profile">
                     <div className="d-flex">
                         <div className="flex-shrink-0 me-3">
                             <div className="avatar avatar-online">
-                                <img src={require('../../assets/img/default-avatar.png')} alt=""
-                                     className="h-auto rounded-circle"/>
+                                <Avatar img={userAvatar}/>
                             </div>
                         </div>
                         <div className="flex-grow-1">
@@ -74,7 +85,7 @@ const UserDropdown = ({OnRefresh}) => {
                 </DropdownItem>
             </DropdownMenu>
         </UncontrolledDropdown>
-    );
-};
+        );
+});
 
 export default UserDropdown;

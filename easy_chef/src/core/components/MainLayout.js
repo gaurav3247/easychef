@@ -1,20 +1,29 @@
 import Menu from './Menu'
 import NavBar from './NavBar'
 import Footer from './Footer'
-import {useState} from "react";
+import {forwardRef, useImperativeHandle, useRef, useState} from "react";
 import {Toaster} from "react-hot-toast";
 
-const MainLayout = ({children}) => {
+const MainLayout = forwardRef(({children, onRefreshRoutes}, ref) => {
     const [refresh, setRefresh] = useState(false);
+    const nabBarRef = useRef();
 
     function Refresh() {
+        onRefreshRoutes();
         setRefresh(!refresh);
+        nabBarRef.current.ReRender();
     }
+
+    useImperativeHandle(ref, () => ({
+        ReRender() {
+            Refresh();
+        }
+    }));
 
     return (
         <div className="layout-wrapper layout-navbar-full layout-horizontal layout-without-menu">
             <div className="layout-container">
-                <NavBar OnLoggedIn={Refresh}/>
+                <NavBar ref={nabBarRef} OnLoggedIn={Refresh}/>
                 <div className="layout-page">
                     <div className="content-wrapper">
                         <Menu/>
@@ -33,6 +42,6 @@ const MainLayout = ({children}) => {
             </div>
         </div>
     )
-}
+});
 
 export default MainLayout

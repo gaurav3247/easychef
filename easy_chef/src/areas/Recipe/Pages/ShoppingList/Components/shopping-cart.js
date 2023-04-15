@@ -5,17 +5,22 @@ const Ingredients_List = ({ingredients}) => {
     const [total, setTotal] = useState(0)
     useEffect(() => {
         let total_ = 0
-        for (var i = 0; i < ingredients.length; i++) {
+        for (let i = 0; i < ingredients.length; i++) {
             total_ += ingredients[i].Quantity
         }
         setTotal(total_)
     }, [ingredients])
 
+const ingredientsScroll = {
+    maxHeight: '300px',
+    overflowY: 'scroll'
+    };
+
     return (
         <>
             <h5>Ingredients</h5>
             <hr></hr>
-            <div className="chat-history-body bg-body ps ps--active-y">
+            <div className="chat-history-body bg-body ps ps--active-y" style={ingredientsScroll}>
                 <ul className="list-unstyled chat-history m-3">
                     {ingredients.map(item => (
                         <li>

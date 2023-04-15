@@ -1,3 +1,8 @@
+import random
+
+from django.core.files.base import ContentFile
+import base64
+from django.core.files.base import ContentFile
 from rest_framework import status
 from accounts.models import UserProfile
 from rest_framework.views import APIView
@@ -40,6 +45,25 @@ class EditProfileView(UpdateAPIView):
         user = UserProfile.objects.get(id=self.request.user.id)
 
         serializer = self.serializer_class(user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def patch(self, request, *args, **kwargs):
+        user = UserProfile.objects.get(id=self.request.user.id)
+
+        image_data = request.data.get('avatar', None)
+        if(image_data):
+            format, imgstr = image_data.split(';base64,')
+            print("format", format)
+            ext = format.split('/')[-1]
+
+            data = ContentFile(base64.b64decode(imgstr))
+            data.name = f"{user.id}_{random.randint(0,100000)}_avatar_picture.png"
+            request.data["avatar"] = data
+
+        serializer = self.serializer_class(user, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 

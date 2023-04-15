@@ -1,5 +1,6 @@
 import api from '../../../../../core/baseAPI';
 import React, { useState, useEffect } from 'react';
+import no_image from '../../../../../assets/img/no-image.jpg'
 
 const Recipe_List = ({ updateIngredientsList }) => {
     const [recipes, setRecipes] = useState([])
@@ -17,7 +18,6 @@ const Recipe_List = ({ updateIngredientsList }) => {
             headers: {"Content-Type": "application/json"},
             recipeID: recipeID
         };
-        console.log(requestOptions)
         api.delete('/shopping-list/remove-recipe/', {data: requestOptions})
             .then(response => {
                 console.log(response)
@@ -57,20 +57,20 @@ const Recipe_List = ({ updateIngredientsList }) => {
     return (
         <>
             {recipes.map(recipe => (
-                <div className="col-lg-4 mb-2">
-                    <div className="card h-80 clickable">
+                <div className="col-md-4 col-xl-4 col-lg-4 mb-3">
+                    <div className="card h-100 clickable">
                     <button type="button" onClick={() => {delete_recipe(recipe.recipeID)}} className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        <img className="card-img-top object-fit-fill mb-n2" src={recipe.recipe_img} alt="Card image cap"style={{height: '164px'}}></img>
+                        <img className="card-img-top object-fit-fill mb-n2" src={no_image} alt={no_image}></img>
                         <div className="card-body" style={{textAlign: 'center'}}>
                             <h5 className="card-title">{recipe.recipe_name}</h5>
                             <div className='btn-group gap-2 align-items-center'>
-                                <button onClick={() => {change_serving(recipe.recipeID, recipe.servingSize-1)}} type="button" className="btn btn-sm btn-label-danger waves-effect">-</button>
+                                <button disabled={recipe.servingSize === 1} onClick={() => {change_serving(recipe.recipeID, recipe.servingSize-1)}} type="button" className="btn btn-primary active waves-effect waves-light">-</button>
                                 <div>
-                                    <span className="badge bg-label-primary mb-n5">
+                                    <span className="badge bg-primary">
                                         Serving Size: {recipe.servingSize}
                                     </span>
                                 </div>
-                                <button onClick={() => {change_serving(recipe.recipeID, recipe.servingSize+1)}} type="button" className="btn btn-sm btn-label-success waves-effect">+</button>
+                                <button disabled={recipe.servingSize === 100} onClick={() => {change_serving(recipe.recipeID, recipe.servingSize+1)}} type="button" className="btn btn-primary active waves-effect waves-light">+</button>
                             </div>
                         </div>
                     </div>

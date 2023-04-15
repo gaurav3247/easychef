@@ -11,9 +11,10 @@ import EditRecipeIngredients from "../../Components/EditRecipeIngredients";
 import AddIngredient from "../../Modals/AddIngredient";
 import toast from 'react-hot-toast'
 import {useNavigate, useParams} from "react-router-dom";
+import Preview from "../../Components/AttachmentUploader";
 
 const EditRecipe = () => {
-    const {id} = useParams();
+    const {id, baseId} = useParams();
     const [recipeName, setRecipeName] = useState('')
     const [recipeNameError, setRecipeNameError] = useState('')
     const [recipeServing, setRecipeServing] = useState('')
@@ -32,6 +33,7 @@ const EditRecipe = () => {
     const [previewPictureFile, setPriviewPictureFile] = useState('')
     const editRecipeIngredientsRef = useRef();
     const editRecipeStepsRef = useRef();
+    let attachmentRef = useRef();
     const fileInputRef = useRef(null);
     const addIngredientRef = useRef();
     const navigate = useNavigate();
@@ -101,9 +103,20 @@ const EditRecipe = () => {
                 method: "GET",
             };
             const fetchData = async () => {
-                if (id) {
-                    api.get(`/recipe/details/${id}/`, requestOptions)
+                if (id || baseId) {
+                    let recipeid = id;
+                    if (baseId)
+                        recipeid = baseId;
+                    api.get(`/recipe/details/${recipeid}/`, requestOptions)
                         .then((response) => {
+                                if (!baseId) {
+                                    api.get('/accounts/edit-profile/', requestOptions)
+                                        .then((response_user) => {
+                                            if (response_user.data.id !== response.data.user) {
+                                                navigate('/*')
+                                            }
+                                        })
+                                }
                                 let recipe = response.data;
                                 setRecipeName(recipe.name);
                                 setRecipeServing(recipe.serving)
@@ -274,13 +287,14 @@ const EditRecipe = () => {
     }
 
     function createRecipe(steps, ingredients) {
+        console.log(ingredients)
         const requestOptions = {
             method: "POST",
             headers: {"Content-Type": "application/json"},
             name: recipeName,
             serving: Number(recipeServing),
             steps: steps,
-            ingredients: ingredients
+            ingredients: ingredients.map(({name, quantity}) => ({name, quantity}))
         };
 
         if (recipeCuisine) {
@@ -294,6 +308,9 @@ const EditRecipe = () => {
         }
         if (recipeDiets) {
             requestOptions['diets'] = recipeDiets.map(obj => ({"id": obj.id}));
+        }
+        if (baseId) {
+            requestOptions['base_recipe'] = baseId;
         }
 
         return api.post(`/recipe/save/`, requestOptions)
@@ -312,7 +329,7 @@ const EditRecipe = () => {
                         api.put(`/recipe/upload-preview-pricture/${response.data.id}/`, pictureRequestOptions)
                             .then((response) => {
                                 if (response.status !== 200) {
-                                    toast.success('Some error occured')
+                                    toast.error('Some error occured')
                                 }
                             });
                     }
@@ -339,29 +356,25 @@ const EditRecipe = () => {
 
         if (recipeCuisine) {
             requestOptions['cuisine'] = recipeCuisine.id;
-        }
-        else{
+        } else {
             requestOptions['cuisine'] = null;
         }
         if (recipePrepTime) {
             requestOptions['prep_time'] = recipePrepTime.name;
-        }
-        else{
+        } else {
             requestOptions['prep_time'] = "";
         }
         if (recipeCookingTime) {
             requestOptions['cooking_time'] = recipeCookingTime.name;
-        }
-        else{
+        } else {
             requestOptions['cooking_time'] = "";
         }
         if (recipeDiets) {
             requestOptions['diets'] = recipeDiets.map(obj => ({"id": obj.id}));
-        }
-        else{
+        } else {
             requestOptions['diets'] = []
         }
-        if(!previewPicture){
+        if (!previewPicture) {
             requestOptions['preview_picture'] = null;
         }
 
@@ -385,6 +398,25 @@ const EditRecipe = () => {
                                 }
                             });
                     }
+
+                    if (attachmentRef.files) {
+                        const attachmentRequestOptions = {
+                            method: "PUT",
+                            attachments: attachmentRef.files,
+                            mode: 'same-origin',
+                            headers: {
+                                'Accept': 'application/json',
+                                'X-Requested-With': 'XMLHttpRequest',
+                            },
+                        };
+                        api.post(`/recipe/upload-attachment-pricture/${response.data.id}/`, attachmentRequestOptions)
+                            .then((response) => {
+                                if (response.status !== 200) {
+                                    toast.success('Some error occured')
+                                }
+                            });
+                    }
+
                     toast.success('Recipe Saved!')
                     navigate(`/view-recipe/${response.data.id}`);
 
@@ -562,10 +594,10 @@ const EditRecipe = () => {
                         </div>
                         <div className="col-4">
                             <div className="card">
-                                <img style={{"objectFit": "cover", "maxHeight": "250px"}}
+                                <img style={{"objectFit": "cover", "maxHeight": "197px"}}
                                      className="card-img-top h-50 object-fit-fill"
-                                    src={ previewPicture && !previewPictureFile ? `http://127.0.0.1:8000/${previewPicture}` :
-                                    previewPicture && previewPictureFile ? previewPicture : require('../../../../assets/img/no-image.jpg')}
+                                     src={previewPicture && !previewPictureFile ? `http://127.0.0.1:8000/${previewPicture}` :
+                                         previewPicture && previewPictureFile ? previewPicture : require('../../../../assets/img/no-image.jpg')}
                                      alt="Card image cap"/>
                                 <span
                                     className="badge bg-label-primary">Cooking Time:{recipeCookingTime ? recipeCookingTime.name : "Not Set"}</span>
@@ -614,6 +646,20 @@ const EditRecipe = () => {
                                             Reset
                                         </Button>
                                     </div>
+                                </div>
+                            </div>
+                            <div className="card mt-3">
+                                <div className="card-header border-bottom my-n1">
+                                    <div
+                                        style={{
+                                            "fontWeight": "500",
+                                            "fontSize": "1.285rem",
+                                        }}>
+                                        Attachments
+                                    </div>
+                                </div>
+                                <div id="sample" className="card-body mt-4 ">
+                                    <Preview id={id ? id : baseId} ref={el => attachmentRef = el}></Preview>
                                 </div>
                             </div>
                         </div>

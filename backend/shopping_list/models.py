@@ -10,7 +10,7 @@ from recipe.models import Recipe
 class ShoppingListItem(EntityBase, EntityOwner):
     servingSize = models.PositiveIntegerField(validators=[MinValueValidator(1),
                                                           MaxValueValidator(100)])
-    recipeID = models.ForeignKey(to=Recipe, on_delete=SET_NULL, null=True)
+    recipeID = models.ForeignKey(to=Recipe, on_delete=models.CASCADE, null=True)
 
     def __str__(self):
         recipe_name = self.recipeID.name

@@ -9,11 +9,11 @@ from core.utils import apply_recipe_filters, get_item, get_user_profile
 from accounts.serializers import UpdateUserSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.exceptions import NotFound, AuthenticationFailed
-from recipe.models import Rating, Recipe, Ingredient, Favorite, Cuisine, Diet, Comment
+from recipe.models import Rating, Recipe, Ingredient, Favorite, Cuisine, Diet, Comment, RecipeAttachment
 from rest_framework.generics import CreateAPIView, DestroyAPIView, ListAPIView, RetrieveAPIView
 from recipe.serializers import RatingSerializer, RecipeSerializers, IngredientAutocompleteSerializer, \
     RecipeListSerializer, CreatorSerializer, CuisineSerializer, DietSerializer, CookingTimeSerializer, \
-    FavoriteSerializer, AddCommentSerializer, RecipePreviewPictureUploadSerializers
+    FavoriteSerializer, AddCommentSerializer, RecipePreviewPictureUploadSerializers, AttachmentSerializer
 import base64
 from django.core.files.base import ContentFile
 
@@ -48,6 +48,27 @@ class RecipeView(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class AttachmentUploadView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        recipe_id = kwargs['id']
+        if not Recipe.objects.filter(id=recipe_id).exists():
+            return Response({"error": "Recipe not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        recipe = Recipe.objects.get(id=recipe_id)
+        if recipe.user.id != request.user.id:
+            return Response({"error": "You can't edit this recipe."}, status=status.HTTP_403_FORBIDDEN)
+
+        RecipeAttachment.objects.filter(recipe=recipe).delete()
+
+        attachments = request.data["attachments"]
+        for attachment in attachments:
+            RecipeAttachment.objects.create(recipe=recipe, attachment=attachment)
+
+        return Response("Files Uploaded", status=status.HTTP_200_OK)
 
 
 class RecipePreviewPictureUploadView(APIView):
@@ -146,6 +167,20 @@ class RecipeListCountView(ListAPIView):
         return Response({"count": count}, status=status.HTTP_200_OK)
 
 
+class RecipeFavoriteCountListView(ListAPIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        favorite_recipes = Favorite.objects \
+            .filter(user=self.request.user).select_related('recipe') \
+            .values_list('recipe', flat=True).distinct()
+
+        query = Recipe.objects.filter(id__in=favorite_recipes)
+        data = apply_recipe_filters(query, self.request.query_params)
+        count = data[1]
+        return Response({"count": count}, status=status.HTTP_200_OK)
+
+
 class RecipeFavoriteListView(ListAPIView):
     serializer_class = RecipeListSerializer
     permission_classes = [IsAuthenticated]
@@ -195,6 +230,35 @@ class RemoveFavouriteView(DestroyAPIView):
         item = self.get_object()
         self.perform_destroy(item)
         return Response({"success": f"Removed {item} from favourites"}, status=status.HTTP_200_OK)
+
+
+class InteractionsCountView(ListAPIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        favorite_recipes = Favorite.objects \
+            .filter(user=self.request.user).select_related('recipe') \
+            .values_list('recipe', flat=True).distinct()
+
+        rated_recipes = Rating.objects \
+            .filter(user=self.request.user).select_related('recipeID') \
+            .values_list('recipeID', flat=True).distinct()
+
+        commented = Comment.objects \
+            .filter(user=self.request.user).select_related('recipe') \
+            .values_list('recipe', flat=True).distinct()
+
+        created = Recipe.objects \
+            .filter(user=self.request.user).select_related('recipe') \
+            .values_list('id', flat=True).distinct()
+
+        recipe_ids = list(favorite_recipes) + list(rated_recipes) + list(commented) + list(created)
+        recipe_ids = list(set(recipe_ids))
+
+        query = Recipe.objects.filter(id__in=recipe_ids)
+        data = apply_recipe_filters(query, self.request.query_params)
+        count = data[1]
+        return Response({"count": count}, status=status.HTTP_200_OK)
 
 
 class InteractionsView(ListAPIView):
@@ -307,12 +371,12 @@ class AddCommentView(CreateAPIView):
 
     def post(self, request, *args, **kwargs):
         new_comment = request.data.copy()
-        new_comment['user'] = request.user.id
+        new_comment['user'] = UserProfile.objects.get(id=request.user.id)
         new_comment['recipe'] = self.kwargs['id']
         serializer = self.serializer_class(data=new_comment)
 
         if serializer.is_valid():
-            serializer.create(serializer.validated_data)
+            serializer.create(serializer.data)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

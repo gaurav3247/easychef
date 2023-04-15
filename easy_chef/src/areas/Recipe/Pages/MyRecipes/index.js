@@ -6,7 +6,7 @@ import BreadCrumbs from "../../../../core/components/breadcrumbs";
 import RecipeFilters from "../../Components/RecipeFilters";
 import RecipePreview from "../../Components/RecipePreview";
 
-const MyRecipes = () => {
+const MyRecipes = ({isComponent, userID}) => {
     const [recipes, setRecipes] = useState([])
     const [totalItems, setTotalItems] = useState(0)
     const [totalPages, setTotalPages] = useState(0)
@@ -16,12 +16,14 @@ const MyRecipes = () => {
     const [query, setQuery] = useState('')
 
     useEffect(() => {
-        if (userId) {
-            getMyDetails(userId)
+        if (userID){
+            setUserId(userID);
+            getMyDetails(userID)
         }
     }, [skip])
 
     useEffect(() => {
+        if(userID) return;
         api.get('/accounts/edit-profile/')
             .then((response) => {
                 setUserId(response.data.id);
@@ -30,7 +32,7 @@ const MyRecipes = () => {
     }, [])
 
     function getMyDetails(userId) {
-        api.get(`/recipe/list?skip=${skip}&take=${take}&${query}&creator=${userId}`)
+        api.get(`/recipe/list?skip=${skip}&take=${take}&creator=${userId}&${query}`)
             .then((response) => {
                 setRecipes(response.data);
             })
@@ -97,7 +99,7 @@ const MyRecipes = () => {
             return (
                 <>
                     <div>
-                        <div className="card">
+                        <div className={isComponent ? "card me-4" : "card"}>
                             <div className="row">
                                 <div className="col-6">
                                     <div className="ms-3 mb-n2" style={{"marginTop": "0.6rem"}}>
@@ -138,11 +140,22 @@ const MyRecipes = () => {
         }
     }
 
+    function breadCrumbs() {
+        if (!isComponent) {
+            return (
+                <>
+                    <BreadCrumbs basePage="Home" currentPage="My Recipes"></BreadCrumbs>
+                    <RecipeFilters isComponent={isComponent} applyFilters={onApplyFilters}
+                                   filterByCreatorHidden={true}></RecipeFilters>
+                </>
+            )
+        }
+    }
+
     return (
         <>
             <div>
-                <BreadCrumbs basePage="Home" currentPage="My Recipes"></BreadCrumbs>
-                <RecipeFilters applyFilters={onApplyFilters} filterByCreatorHidden={true}></RecipeFilters>
+                {breadCrumbs()}
             </div>
             <div className="row mb-1">
                 {recipes.map(recipe => (
