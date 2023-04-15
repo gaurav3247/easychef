@@ -41,17 +41,17 @@ const ShoppingList = () => {
     else if (received) {
         return (
         <div className="row">
-            <div className="col-sm-12 col-lg-8">
+            <div className="col-md-12 col-lg-8">
                 <div className="row">
                     <Recipe_List updateIngredientsList={updateItems}/>
                 </div>
             </div>
-            <div className="col-md-2 col-lg-4 mb-3">
+            <div className="col-md-12 col-lg-4 mb-3">
                     <div className="border rounded p-4 mb-3 pb-3">
                         <Ingredients_List ingredients={ingredients}/>
                     </div>
                     <div className="col-sm-12 align-items-center">
-                        <button onClick={() => saveList(ingredients)} type="button" className="btn btn-primary btn-lg waves-effect waves-light">Save Shopping List</button>
+                        <button onClick={() => saveList(ingredients)} type="button" className="btn btn-primary btn-lg waves-effect waves-light" style={{display: "block", width: "100%"}}>Save Shopping List</button>
                     </div>
             </div>
         </div>
