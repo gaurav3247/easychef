@@ -12,7 +12,7 @@ const Ingredients_List = ({ingredients}) => {
     }, [ingredients])
 
 const ingredientsScroll = {
-    maxHeight: '450px',
+    maxHeight: '300px',
     overflowY: 'scroll'
     };
 

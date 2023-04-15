@@ -46,12 +46,14 @@ const UserLoginModal = ({show, onClose, onOpenRegister}) => {
     function Close(){
         setApiError("");
         onClose();
+        reset()
     }
 
     const {
         control,
         handleSubmit,
-        formState: {errors}
+        formState: {errors},
+        reset
     } = useForm({mode: 'onChange', resolver: yupResolver(LoginSchema)})
 
     const onSubmit = data => {
