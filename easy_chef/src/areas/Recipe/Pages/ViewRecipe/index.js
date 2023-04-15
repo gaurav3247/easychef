@@ -318,7 +318,7 @@ const ViewRecipe = () => {
                                     <div className="message-actions d-flex align-items-center">
                                         <label htmlFor="attach-doc" className="form-label mb-0">
                                             <i className="ti ti-paperclip ti-sm cursor-pointer mx-1"></i>
-                                            <input type="file" id="attach-doc" hidden=""></input>
+                                            <input type="file" id="attach-doc" hidden></input>
                                         </label>
                                         <button className="btn btn-primary d-flex send-msg-btn">
                                             <i className="ti ti-send me-md-1 me-0"></i>
