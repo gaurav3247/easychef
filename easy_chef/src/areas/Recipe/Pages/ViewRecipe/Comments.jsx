@@ -1,5 +1,6 @@
 import React from "react";
 import { useState, useEffect } from "react";
+import './Comments.css';
 
 function Comments(props) {
     const[profileAvatar, setProfileAvatar] = useState("");
@@ -19,9 +20,9 @@ function Comments(props) {
 
     function renderItem(item) {
         if (isImage(item)) {
-            return <img src={item.includes('http') ? item : `http://127.0.0.1:8000${item}`} alt={item} />;
+            return <img className="attachsize" src={item.includes('http') ? item : `http://127.0.0.1:8000${item}`} alt={item} />;
         } else if (isVideo(item)) {
-            return <video src={item.includes('http') ? item : `http://127.0.0.1:8000${item}`} controls />;
+            return <video className="attachsize" src={item.includes('http') ? item : `http://127.0.0.1:8000${item}`} controls />;
         } else {
             return <small>Unsupported file type: {item}</small>;
         }
