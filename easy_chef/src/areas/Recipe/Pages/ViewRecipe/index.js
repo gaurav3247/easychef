@@ -27,6 +27,18 @@ const ViewRecipe = () => {
     const [recipeuserid, setrecipeuserid] = useState('');
     const [rating, setRating] = useState(0);
     const [numfavs, setnumfavs] = useState(0);
+    const [selectedFiles, setSelectedFiles] = useState([]);
+    const [comment, setComment] = useState('');
+
+    const handleCommentChange = event => {
+        setComment(event.target.value);
+    };
+
+    const handleFileSelect = (event) => {
+        const files = event.target.files;
+        const selectedFilesArray = Array.from(files);
+        setSelectedFiles(selectedFilesArray);
+    };
     
     const [canvasOpen, setCanvasOpen] = useState(false)
     const toggleCanvas = () => {
@@ -158,9 +170,16 @@ const ViewRecipe = () => {
             });
     }
 
-    function ClearRating() {
-
-    }
+    const handleSubmit = event => {
+        event.preventDefault();
+        api.post(`/recipe/comment/${id}/`, {
+                text: comment, 
+                attachments: selectedFiles,
+            headers: {
+            'Content-Type': "application/json"
+            }
+        })
+      };
 
     return (
         <div>
@@ -312,15 +331,22 @@ const ViewRecipe = () => {
                                 </div>
                             </div>
                             <div className="chat-history-footer shadow-sm p-2">
-                                <form className="form-send-message d-flex justify-content-between align-items-center">
-                                    <input className="form-control message-input border-0 me-1 shadow-none"
-                                           placeholder="Type comment here"></input>
+                                <form className="form-send-message d-flex justify-content-between align-items-center" onSubmit={handleSubmit}>
+                                    <input className="form-control message-input border-0 me-1 shadow-none" 
+                                            value={comment} onChange={handleCommentChange}
+                                            placeholder="Type comment here"></input>
                                     <div className="message-actions d-flex align-items-center">
                                         <label htmlFor="attach-doc" className="form-label mb-0">
                                             <i className="ti ti-paperclip ti-sm cursor-pointer mx-1"></i>
-                                            <input type="file" id="attach-doc" hidden></input>
+                                            <input
+                                                id="attach-doc"
+                                                hidden
+                                                type="file"
+                                                multiple
+                                                onChange={handleFileSelect}
+                                            />
                                         </label>
-                                        <button className="btn btn-primary d-flex send-msg-btn">
+                                        <button className="btn btn-primary d-flex send-msg-btn" type="submit">
                                             <i className="ti ti-send me-md-1 me-0"></i>
                                             <span className="align-middle d-md-inline-block d-none"></span>
                                         </button>
