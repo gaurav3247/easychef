@@ -218,7 +218,7 @@ const ViewRecipe = () => {
                 <Carousel.Item>
                     <img
                         className="d-block img-fluid"
-                        src={img.includes('/recipe/preview_picture') ? `http://127.0.0.1:8000/${img}` : img}
+                        src={img.includes('/recipe/preview_picture') ? `http://127.0.0.1:8000${img}` : img}
                         style={{"height": "220px"}}
                         alt={index}
                     />
@@ -387,7 +387,7 @@ const ViewRecipe = () => {
                     </div>
                     <div className="col-lg-3">
                         {getloggedindiv()}
-                        <div className="col app-chat-history card overflow-hidden mt-4">
+                        <div className="col app-chat-history card overflow-hidden">
                             <div className="chat-history-wrapper mt-3 ms-3"><h4>Comments</h4></div>
                             <div className="chat-history-header border-bottom"></div>
                             <div className="chat-history-body bg-body ps ps--active-y h-400 chatHeight"
