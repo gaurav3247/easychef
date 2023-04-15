@@ -101,6 +101,15 @@ const ViewRecipe = () => {
             .then((response) => {
                 setallcomment(response.data);
             });
+        api.get('/recipe/favorites/')
+            .then((response) => {
+                response.data.map((m) => {
+                    if (String(m.id) === String(id)) {
+                        setFavorite(true);
+                    }
+                    return null;
+                })
+            });
     }, [id]);
 
     function getPersonalButtons() {
