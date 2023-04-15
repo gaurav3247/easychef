@@ -39,10 +39,31 @@ const ViewRecipe = () => {
         setComment(event.target.value);
     };
 
+    function toBase64(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = error => reject(error);
+        });
+    };
+
+    const  tobase64Handler = async(files) => {
+        const filePathsPromises = [];
+        const arr = Array.from(files);
+        arr.forEach(file => {
+            filePathsPromises.push(toBase64(file));
+        });
+        const filePaths = await Promise.all(filePathsPromises);
+        const fl = filePaths.map((base64File) => ({ selectedFile: base64File }));
+        return fl;
+    }
+
     const handleFileSelect = (event) => {
         const files = event.target.files;
-        const selectedFilesArray = Array.from(files);
-        setSelectedFiles(selectedFilesArray);
+        const base64Files = tobase64Handler(files);
+
+        base64Files.then(i => setSelectedFiles(i.map(fl => fl.selectedFile)));
     };
 
     const [canvasOpen, setCanvasOpen] = useState(false)
@@ -181,40 +202,15 @@ const ViewRecipe = () => {
 
     const handleSubmit = event => {
         event.preventDefault();
+        console.log(selectedFiles);
         api.post(`/recipe/comment/${id}/`, {
             text: comment,
-            attachments: selectedFiles,
+            attachments: selectedFiles.map(attachment => ({attachment: attachment})),
             headers: {
                 'Content-Type': "application/json"
             }
         })
     };
-
-    function previousButtonTemplate(props) {
-        return (<ButtonComponent className="e-btn" cssClass="e-flat e-round nav-btn" title={props.type}>
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" width="40" height="40">
-                <path d="m13.5 7.01 13 13m-13 13 13-13"></path>
-            </svg>
-        </ButtonComponent>);
-    }
-
-    function nextButtonTemplate(props) {
-        return (<ButtonComponent className="e-btn" cssClass="e-flat e-round nav-btn" title={props.type}>
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" width="40" height="40">
-                <path d="m13.5 7.01 13 13m-13 13 13-13"></path>
-            </svg>
-        </ButtonComponent>);
-    }
-
-    function template(img) {
-        console.log(img)
-        return (
-            <figure className="img-container">
-                <img src={img} alt="hunei"
-                     style={{height: "100%", width: "100%"}}/>
-            </figure>
-        );
-    }
 
     function buildCarusel() {
         return (
@@ -232,7 +228,6 @@ const ViewRecipe = () => {
     }
 
     function getAttachments() {
-        console.log(attachments);
         if (attachments && attachments.length > 0) {
             return (
                 <div className="card mt-3">

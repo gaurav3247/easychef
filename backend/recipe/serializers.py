@@ -1,3 +1,8 @@
+import base64
+import math
+import random
+
+from django.core.files.base import ContentFile
 from django.db.models import Avg
 from rest_framework import serializers
 from django.contrib.auth.models import User
@@ -262,14 +267,22 @@ class AddCommentSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         validated_data_copy = validated_data.copy()
-        attachments = self.initial_data.getlist('attachments')
+        attachments = self.data.get('attachments', [])
 
-        comment = Comment.objects.create(**validated_data_copy)
+        comment = Comment.objects.create(recipe_id=validated_data_copy['recipe'], user_id=validated_data_copy['user'], text=validated_data_copy['text'])
 
-        validated_data['id'] = comment.id
+        # validated_data.update({'id', comment.id})
         comment_attachments = []
         for attachment in attachments:
-            comment_attachment = CommentAttachment.objects.create(attachment=attachment, comment=comment)
+            format, imgstr = attachment["attachment"].split(';base64,')
+            print("format", format)
+            ext = format.split('/')[-1]
+
+            data = ContentFile(base64.b64decode(imgstr))
+            data.name = f"{comment.id}_{random.randint(0,100000)}_preview_picture.png"
+            file = data
+
+            comment_attachment = CommentAttachment.objects.create(attachment=file, comment=comment)
             comment_attachments.append(comment_attachment)
 
         validated_data.update({'attachments': comment_attachments})

@@ -371,12 +371,12 @@ class AddCommentView(CreateAPIView):
 
     def post(self, request, *args, **kwargs):
         new_comment = request.data.copy()
-        new_comment['user'] = request.user.id
+        new_comment['user'] = UserProfile.objects.get(id=request.user.id)
         new_comment['recipe'] = self.kwargs['id']
         serializer = self.serializer_class(data=new_comment)
 
         if serializer.is_valid():
-            serializer.create(serializer.validated_data)
+            serializer.create(serializer.data)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
