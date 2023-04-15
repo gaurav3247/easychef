@@ -79,10 +79,11 @@ const ViewRecipe = () => {
                     <Link to={`../edit-recipe/${id}`}
                           className="btn btn-primary btn-md waves-effect waves-light btn_space m-1"
                           type="button">Edit</Link>
-                    <button onClick={deleteClick}
+                    <Link to={`../all-recipes`}
+                            onClick={deleteClick}
                             className="btn btn-outline-primary btn-md waves-effect waves-light btn_space m-1"
                             type="button">Delete
-                    </button>
+                    </Link>
                 </>
             )
         }

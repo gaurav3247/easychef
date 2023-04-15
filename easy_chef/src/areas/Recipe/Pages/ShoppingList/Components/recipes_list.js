@@ -17,7 +17,6 @@ const Recipe_List = ({ updateIngredientsList }) => {
             headers: {"Content-Type": "application/json"},
             recipeID: recipeID
         };
-        console.log(requestOptions)
         api.delete('/shopping-list/remove-recipe/', {data: requestOptions})
             .then(response => {
                 console.log(response)
