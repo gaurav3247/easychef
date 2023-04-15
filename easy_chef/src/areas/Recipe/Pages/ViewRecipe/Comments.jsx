@@ -55,7 +55,7 @@ function Comments(props) {
                     </Carousel>
                 </div>
                 <div className="text-muted mt-1 mb-1">
-                    <small>{props.date_created}</small>
+                    <small>{new Date(props.date_created).toLocaleDateString()}</small>
                 </div>
             </div>
         </div>
