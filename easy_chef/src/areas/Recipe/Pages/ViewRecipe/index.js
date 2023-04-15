@@ -29,6 +29,7 @@ const ViewRecipe = () => {
     const [numfavs, setnumfavs] = useState(0);
     const [selectedFiles, setSelectedFiles] = useState([]);
     const [comment, setComment] = useState('');
+    const [rate, setRate] = useState(0);
 
     const handleCommentChange = event => {
         setComment(event.target.value);
@@ -44,9 +45,6 @@ const ViewRecipe = () => {
     const toggleCanvas = () => {
         setCanvasOpen(!canvasOpen)
     }
-
-    const [rate, setRate] = useState(0);
-
 
     useEffect(() => {
         api.get(`/accounts/edit-profile/`)
@@ -316,19 +314,13 @@ const ViewRecipe = () => {
                         <div className="col app-chat-history card overflow-hidden">
                             <div className="chat-history-wrapper mt-3 ms-3"><h4>Comments</h4></div>
                             <div className="chat-history-header border-bottom"></div>
-                            <div className="chat-history-body bg-body ps ps--active-y h-400">
+                            <div className="chat-history-body bg-body ps ps--active-y h-400 chatHeight" style={{overflowY:"scroll"}}>
                                 <ul className="list-unstyled chat-history m-3">
                                     {allcomment.map(c => (
                                         <Comments date_created={c.date_created} avatar={c.avatar} text={c.text}
-                                                  full_name={c.full_name} attachments = {c.attachments}/>
+                                                  full_name={c.user_full_name.full_name} attachments = {c.attachments}/>
                                     ))}
                                 </ul>
-                                <div className="ps__rail-x lb0">
-                                    <div className="ps__thumb-x lw0" tabIndex="0"></div>
-                                </div>
-                                <div className="ps__rail-y thr0">
-                                    <div className="ps__thumb-y th0" tabIndex="0"></div>
-                                </div>
                             </div>
                             <div className="chat-history-footer shadow-sm p-2">
                                 <form className="form-send-message d-flex justify-content-between align-items-center" onSubmit={handleSubmit}>

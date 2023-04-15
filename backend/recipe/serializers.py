@@ -237,10 +237,11 @@ class RatingSerializer(serializers.ModelSerializer):
 class AddCommentSerializer(serializers.ModelSerializer):
     user_name = serializers.CharField(source='user.username', read_only=True)
     attachments = AttachmentSerializer(many=True, required=False)
+    user_full_name = UserSerializer(source='user', read_only=True)
 
     class Meta:
         model = Comment
-        fields = ('id', 'recipe', 'date_created', 'user', 'user_name', 'text', 'attachments')
+        fields = ('id', 'recipe', 'date_created', 'user', 'user_name', 'text', 'attachments', 'user_full_name')
 
     def create(self, validated_data):
         validated_data_copy = validated_data.copy()

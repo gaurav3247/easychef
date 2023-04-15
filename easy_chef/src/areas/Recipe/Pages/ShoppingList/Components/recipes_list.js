@@ -64,13 +64,13 @@ const Recipe_List = ({ updateIngredientsList }) => {
                         <div className="card-body" style={{textAlign: 'center'}}>
                             <h5 className="card-title">{recipe.recipe_name}</h5>
                             <div className='btn-group gap-2 align-items-center'>
-                                <button onClick={() => {change_serving(recipe.recipeID, recipe.servingSize-1)}} type="button" className="btn btn-sm btn-label-danger waves-effect">-</button>
+                                <button onClick={() => {change_serving(recipe.recipeID, recipe.servingSize-1)}} type="button" className="btn btn-sm bg-light waves-effect">-</button>
                                 <div>
-                                    <span className="badge bg-label-primary mb-n5">
+                                    <span className="badge bg-primary mb-n5">
                                         Serving Size: {recipe.servingSize}
                                     </span>
                                 </div>
-                                <button onClick={() => {change_serving(recipe.recipeID, recipe.servingSize+1)}} type="button" className="btn btn-sm btn-label-success waves-effect">+</button>
+                                <button onClick={() => {change_serving(recipe.recipeID, recipe.servingSize+1)}} type="button" className="btn btn-sm bg-light waves-effect">+</button>
                             </div>
                         </div>
                     </div>
