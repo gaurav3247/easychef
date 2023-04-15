@@ -5,9 +5,12 @@ import Ingredients from './Ingredients';
 import {useParams} from 'react-router-dom';
 import {Link} from "react-router-dom"
 import parse from 'html-react-parser'
-import { Offcanvas, OffcanvasBody, OffcanvasHeader } from 'reactstrap';
-import { FaStar } from "react-icons/fa";
-import { Container, Radio, Rating } from "./RatingStyles.js";
+import {Offcanvas, OffcanvasBody, OffcanvasHeader} from 'reactstrap';
+import {FaStar} from "react-icons/fa";
+import {CarouselComponent, CarouselItemsDirective, CarouselItemDirective} from '@syncfusion/ej2-react-navigations';
+import {ButtonComponent} from '@syncfusion/ej2-react-buttons';
+import {Container, Radio, Rating} from "./RatingStyles.js";
+import Carousel from "react-bootstrap/Carousel";
 
 const ViewRecipe = () => {
     const [recipeName, setRecipe] = useState("");
@@ -18,6 +21,7 @@ const ViewRecipe = () => {
     const [serving, setServing] = useState(1);
     const [cookingTime, setCookingTime] = useState("");
     const [allcomment, setallcomment] = useState([]);
+    const [attachments, setAttachments] = useState([]);
     const [step, setStep] = useState("");
     const [ingredientList, setIngredientList] = useState([]);
     const [isFavorite, setFavorite] = useState(false);
@@ -40,7 +44,7 @@ const ViewRecipe = () => {
         const selectedFilesArray = Array.from(files);
         setSelectedFiles(selectedFilesArray);
     };
-    
+
     const [canvasOpen, setCanvasOpen] = useState(false)
     const toggleCanvas = () => {
         setCanvasOpen(!canvasOpen)
@@ -65,6 +69,12 @@ const ViewRecipe = () => {
                 setrecipeuserid(response.data.user);
                 setRating(response.data.rating);
                 setnumfavs(response.data.number_of_saves);
+
+                let perv_picture = [];
+                if (response.data.preview_picture)
+                    perv_picture.push(response.data.preview_picture);
+                const attch = perv_picture.concat(response.data.attachments.map(i => i.attachment));
+                setAttachments(attch)
             });
         api.get(`/recipe/all-comments/${id}/`)
             .then((response) => {
@@ -80,9 +90,9 @@ const ViewRecipe = () => {
                           className="btn btn-primary btn-md waves-effect waves-light btn_space m-1"
                           type="button">Edit</Link>
                     <Link to={`../all-recipes`}
-                            onClick={deleteClick}
-                            className="btn btn-outline-primary btn-md waves-effect waves-light btn_space m-1"
-                            type="button">Delete
+                          onClick={deleteClick}
+                          className="btn btn-outline-primary btn-md waves-effect waves-light btn_space m-1"
+                          type="button">Delete
                     </Link>
                 </>
             )
@@ -172,13 +182,83 @@ const ViewRecipe = () => {
     const handleSubmit = event => {
         event.preventDefault();
         api.post(`/recipe/comment/${id}/`, {
-                text: comment, 
-                attachments: selectedFiles,
+            text: comment,
+            attachments: selectedFiles,
             headers: {
-            'Content-Type': "application/json"
+                'Content-Type': "application/json"
             }
         })
-      };
+    };
+
+    function previousButtonTemplate(props) {
+        return (<ButtonComponent className="e-btn" cssClass="e-flat e-round nav-btn" title={props.type}>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" width="40" height="40">
+                <path d="m13.5 7.01 13 13m-13 13 13-13"></path>
+            </svg>
+        </ButtonComponent>);
+    }
+
+    function nextButtonTemplate(props) {
+        return (<ButtonComponent className="e-btn" cssClass="e-flat e-round nav-btn" title={props.type}>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" width="40" height="40">
+                <path d="m13.5 7.01 13 13m-13 13 13-13"></path>
+            </svg>
+        </ButtonComponent>);
+    }
+
+    function template(img) {
+        console.log(img)
+        return (
+            <figure className="img-container">
+                <img src={img} alt="hunei"
+                     style={{height: "100%", width: "100%"}}/>
+            </figure>
+        );
+    }
+
+    function buildCarusel() {
+        return (
+            attachments.map((img, index) => (
+                <Carousel.Item>
+                    <img
+                        className="d-block img-fluid"
+                        src={img.includes('/recipe/preview_picture') ? `http://127.0.0.1:8000/${img}` : img}
+                        style={{"height": "220px"}}
+                        alt={index}
+                    />
+                </Carousel.Item>
+            ))
+        )
+    }
+
+    function getAttachments() {
+        console.log(attachments);
+        if (attachments && attachments.length > 0) {
+            return (
+                <div className="card mt-3">
+                    <div className="card-header border-bottom my-n1">
+                        <h4
+                            style={{
+                                "margin-top": "-5px",
+                                "margin-bottom": "-6px",
+                                "margin-left": "-7px",
+                            }}>
+                            Attachments
+                        </h4>
+                    </div>
+
+                    <Carousel controls={false}>
+                        {buildCarusel()}
+                    </Carousel>
+
+                </div>
+            );
+        }
+        return (
+            <>
+            </>
+        )
+    }
 
     return (
         <div>
@@ -191,7 +271,8 @@ const ViewRecipe = () => {
                                 <h5 className="px-4">{recipeName}</h5>
                                 <div className="ms-auto mt-1 me-3">
                                     <button type="button" className="btn waves-effect p-0" data-bs-toggle="offcanvas"
-                                            data-bs-target="#offcanvasEnd" aria-controls="offcanvasEnd" onClick={toggleCanvas}>
+                                            data-bs-target="#offcanvasEnd" aria-controls="offcanvasEnd"
+                                            onClick={toggleCanvas}>
                                         <span className="ti ti-star"></span>
                                     </button>
                                     <small>{rating}</small>
@@ -205,38 +286,40 @@ const ViewRecipe = () => {
                                     <OffcanvasHeader toggle={toggleCanvas}>Rating</OffcanvasHeader>
                                     <OffcanvasBody>
                                         <div className="mx-0 flex-grow-0 h-100">
-                                            <div className="align-items-center justify-content-center d-flex flex-column h-100">
+                                            <div
+                                                className="align-items-center justify-content-center d-flex flex-column h-100">
                                                 <h4>Add a Rating</h4>
                                                 <div className="mb-4">
                                                     <Container>
                                                         {[...Array(5)].map((item, index) => {
                                                             const givenRating = index + 1;
                                                             return (
-                                                            <label>
-                                                                <Radio
-                                                                type="radio"
-                                                                value={givenRating}
-                                                                onClick={() => {
-                                                                    setRate(givenRating);
-                                                                }}
-                                                                />
-                                                                <Rating>
-                                                                <FaStar
-                                                                    color={
-                                                                    givenRating < rate || givenRating === rate
-                                                                        ? "rgb(255, 165, 0)"
-                                                                        : "rgb(192,192,192)"
-                                                                    }
-                                                                />
-                                                                </Rating>
-                                                            </label>
+                                                                <label>
+                                                                    <Radio
+                                                                        type="radio"
+                                                                        value={givenRating}
+                                                                        onClick={() => {
+                                                                            setRate(givenRating);
+                                                                        }}
+                                                                    />
+                                                                    <Rating>
+                                                                        <FaStar
+                                                                            color={
+                                                                                givenRating < rate || givenRating === rate
+                                                                                    ? "rgb(255, 165, 0)"
+                                                                                    : "rgb(192,192,192)"
+                                                                            }
+                                                                        />
+                                                                    </Rating>
+                                                                </label>
                                                             );
                                                         })}
-                                                        </Container>
+                                                    </Container>
                                                 </div>
                                                 <div className="w-75 card p-2">
                                                     <button type="button"
-                                                            className="btn btn-primary waves-effect waves-light m-1" onClick={SaveRating}>
+                                                            className="btn btn-primary waves-effect waves-light m-1"
+                                                            onClick={SaveRating}>
                                                         Apply
                                                     </button>
                                                     <button type="button"
@@ -264,13 +347,13 @@ const ViewRecipe = () => {
                                 <div className="col-lg-4">
                                     <div>
                                         <h6 className="d-inline-block me-1">Diets:</h6>
-                                            {diet.length > 0 ? diet.map((diet) => diet.name).join(", ") : "No diets selected"}
-                                            {/*{diet.map((item, index) => (*/}
-                                            {/*    <React.Fragment key={index}>*/}
-                                            {/*        {item}*/}
-                                            {/*        {index !== diet.length - 1 && ', '}*/}
-                                            {/*    </React.Fragment>*/}
-                                            {/*))}*/}
+                                        {diet.length > 0 ? diet.map((diet) => diet.name).join(", ") : "No diets selected"}
+                                        {/*{diet.map((item, index) => (*/}
+                                        {/*    <React.Fragment key={index}>*/}
+                                        {/*        {item}*/}
+                                        {/*        {index !== diet.length - 1 && ', '}*/}
+                                        {/*    </React.Fragment>*/}
+                                        {/*))}*/}
                                     </div>
                                 </div>
                                 <div className="col-lg-4">
@@ -305,29 +388,28 @@ const ViewRecipe = () => {
                             <div className="mb-4 px-4">
                                 {parse(step)}
                             </div>
-                            <div className="px-4">
-                                (//pictures here)
-                            </div>
                         </div>
                     </div>
                     <div className="col-lg-3">
                         {getloggedindiv()}
-                        <div className="col app-chat-history card overflow-hidden">
+                        <div className="col app-chat-history card overflow-hidden mt-4">
                             <div className="chat-history-wrapper mt-3 ms-3"><h4>Comments</h4></div>
                             <div className="chat-history-header border-bottom"></div>
-                            <div className="chat-history-body bg-body ps ps--active-y h-400 chatHeight" style={{overflowY:"scroll"}}>
+                            <div className="chat-history-body bg-body ps ps--active-y h-400 chatHeight"
+                                style={{overflowY: "scroll", "min-height": "312px"}}>
                                 <ul className="list-unstyled chat-history m-3">
                                     {allcomment.map(c => (
                                         <Comments date_created={c.date_created} avatar={c.avatar} text={c.text}
-                                                  full_name={c.user_full_name.full_name} attachments = {c.attachments}/>
+                                                  full_name={c.user_full_name.full_name} attachments={c.attachments}/>
                                     ))}
                                 </ul>
                             </div>
                             <div className="chat-history-footer shadow-sm p-2">
-                                <form className="form-send-message d-flex justify-content-between align-items-center" onSubmit={handleSubmit}>
-                                    <input className="form-control message-input border-0 me-1 shadow-none" 
-                                            value={comment} onChange={handleCommentChange}
-                                            placeholder="Type comment here"></input>
+                                <form className="form-send-message d-flex justify-content-between align-items-center"
+                                      onSubmit={handleSubmit}>
+                                    <input className="form-control message-input border-0 me-1 shadow-none"
+                                           value={comment} onChange={handleCommentChange}
+                                           placeholder="Type comment here"></input>
                                     <div className="message-actions d-flex align-items-center">
                                         <label htmlFor="attach-doc" className="form-label mb-0">
                                             <i className="ti ti-paperclip ti-sm cursor-pointer mx-1"></i>
@@ -347,6 +429,7 @@ const ViewRecipe = () => {
                                 </form>
                             </div>
                         </div>
+                        {getAttachments()}
                     </div>
                 </div>
             </div>

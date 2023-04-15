@@ -132,7 +132,7 @@ class RecipeSerializers(serializers.ModelSerializer):
     @staticmethod
     def get_number_of_comments(foo):
         return Comment.objects.filter(recipe=foo.id).count()
-    
+
     @staticmethod
     def get_average_rating(foo):
         rating = Rating.objects.filter(recipeID=foo.id).aggregate(Avg('rating'))
