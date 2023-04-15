@@ -4,7 +4,8 @@ from django.contrib.auth.models import User
 
 from accounts.models import UserProfile
 from core.utils import get_user_profile
-from recipe.models import Rating, Recipe, Ingredient, Diet, RecipeDiets, Comment, Favorite, Cuisine, CommentAttachment
+from recipe.models import Rating, Recipe, Ingredient, Diet, RecipeDiets, Comment, Favorite, Cuisine, CommentAttachment, \
+    RecipeAttachment
 
 
 class IngredientSerializer(serializers.ModelSerializer):
@@ -27,7 +28,7 @@ class AttachmentSerializer(serializers.ModelSerializer):
 class IngredientAutocompleteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ingredient
-        fields = ('name', )
+        fields = ('name',)
 
 
 class DietSerializer(serializers.ModelSerializer):
@@ -42,13 +43,13 @@ class DietSerializer(serializers.ModelSerializer):
 class FavoriteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Favorite
-        fields = ('recipe', )
+        fields = ('recipe',)
 
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserProfile
-        fields = ('full_name', )
+        fields = ('full_name',)
 
 
 class CreatorSerializer(serializers.ModelSerializer):
@@ -64,6 +65,14 @@ class CuisineSerializer(serializers.ModelSerializer):
     class Meta:
         model = Cuisine
         fields = ('id', 'name')
+
+
+class AttachmentSerializer(serializers.ModelSerializer):
+    attachment = serializers.CharField(required=False)
+
+    class Meta:
+        model = RecipeAttachment
+        fields = ('attachment',)
 
 
 class CookingTimeSerializer(serializers.Serializer):
@@ -82,7 +91,7 @@ class RecipeListSerializer(serializers.ModelSerializer):
 
     @staticmethod
     def get_number_of_saves(foo):
-        return Favorite.objects.filter(recipe=foo.id).count ()
+        return Favorite.objects.filter(recipe=foo.id).count()
 
     @staticmethod
     def get_number_of_comments(foo):
@@ -104,7 +113,7 @@ class RecipeListSerializer(serializers.ModelSerializer):
 class RecipePreviewPictureUploadSerializers(serializers.ModelSerializer):
     class Meta:
         model = Recipe
-        fields = ('preview_picture', )
+        fields = ('preview_picture',)
 
 
 class RecipeSerializers(serializers.ModelSerializer):
@@ -116,12 +125,13 @@ class RecipeSerializers(serializers.ModelSerializer):
     user_full_name = UserSerializer(source='user', read_only=True)
     rating = serializers.SerializerMethodField('get_average_rating')
     number_of_comments = serializers.SerializerMethodField('get_number_of_comments')
+    attachments = AttachmentSerializer(many=True, read_only=True)
 
     @staticmethod
     def get_average_rating(foo):
         rating = Rating.objects.filter(recipeID=foo.id).aggregate(Avg('rating'))
         return rating['rating__avg'] if rating['rating__avg'] else 0
-    
+
     @staticmethod
     def get_number_of_comments(foo):
         return Comment.objects.filter(recipe=foo.id).count()
@@ -130,7 +140,8 @@ class RecipeSerializers(serializers.ModelSerializer):
         model = Recipe
         fields = ('id', 'steps', 'name', 'prep_time', 'cooking_time',
                   'serving', 'preview_picture', 'user', 'diets',
-                  'ingredients', 'cuisine', 'base_recipe', 'user_full_name', 'rating', 'number_of_comments')
+                  'ingredients', 'cuisine', 'base_recipe', 'user_full_name',
+                  'rating', 'number_of_comments', 'attachments')
         extra_kwargs = {
             'cuisine': {'required': False},
             'base_recipe': {'required': False},
@@ -227,7 +238,7 @@ class RatingSerializer(serializers.ModelSerializer):
 
         if rating := Rating.objects.filter(user=user, recipeID=recipe_id):
             rating.delete()
-            
+
         valid_data = validated_data | {'user': user, 'recipeID': recipe}
 
         return super().create(valid_data)

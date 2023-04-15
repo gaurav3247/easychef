@@ -20,6 +20,14 @@ class Recipe(EntityBase, EntityOwner):
         return self.name
 
 
+class RecipeAttachment(EntityBase):
+    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE, related_name='attachments')
+    attachment = models.TextField()
+
+    def __str__(self):
+        return self.recipe.name + " - " + self.attachment.name
+
+
 class Diet(EntityBase):
     name = models.CharField(max_length=200)
 
@@ -80,11 +88,9 @@ class Rating(EntityBase, EntityOwner):
                                              MaxValueValidator(5)])
     recipeID = models.ForeignKey(to=Recipe, on_delete=models.CASCADE)
 
-
 # class Interactions(EntityBase, EntityOwner):
 #     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
 #     interaction_type = models.IntegerField(choices=InteractionType.choices(), default=InteractionType.UNKNOWN)
 #
 #     def __str__(self):
 #         return self.recipe.name + " - " + self.user.username
-

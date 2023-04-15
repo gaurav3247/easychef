@@ -11,6 +11,7 @@ import EditRecipeIngredients from "../../Components/EditRecipeIngredients";
 import AddIngredient from "../../Modals/AddIngredient";
 import toast from 'react-hot-toast'
 import {useNavigate, useParams} from "react-router-dom";
+import Preview from "../../Components/AttachmentUploader";
 
 const EditRecipe = () => {
     const {id, baseId} = useParams();
@@ -32,6 +33,7 @@ const EditRecipe = () => {
     const [previewPictureFile, setPriviewPictureFile] = useState('')
     const editRecipeIngredientsRef = useRef();
     const editRecipeStepsRef = useRef();
+    let attachmentRef = useRef();
     const fileInputRef = useRef(null);
     const addIngredientRef = useRef();
     const navigate = useNavigate();
@@ -396,6 +398,25 @@ const EditRecipe = () => {
                                 }
                             });
                     }
+
+                    if (attachmentRef.files) {
+                        const attachmentRequestOptions = {
+                            method: "PUT",
+                            attachments: attachmentRef.files,
+                            mode: 'same-origin',
+                            headers: {
+                                'Accept': 'application/json',
+                                'X-Requested-With': 'XMLHttpRequest',
+                            },
+                        };
+                        api.post(`/recipe/upload-attachment-pricture/${response.data.id}/`, attachmentRequestOptions)
+                            .then((response) => {
+                                if (response.status !== 200) {
+                                    toast.success('Some error occured')
+                                }
+                            });
+                    }
+
                     toast.success('Recipe Saved!')
                     navigate(`/view-recipe/${response.data.id}`);
 
@@ -573,7 +594,7 @@ const EditRecipe = () => {
                         </div>
                         <div className="col-4">
                             <div className="card">
-                                <img style={{"objectFit": "cover", "maxHeight": "250px"}}
+                                <img style={{"objectFit": "cover", "maxHeight": "197px"}}
                                      className="card-img-top h-50 object-fit-fill"
                                      src={previewPicture && !previewPictureFile ? `http://127.0.0.1:8000/${previewPicture}` :
                                          previewPicture && previewPictureFile ? previewPicture : require('../../../../assets/img/no-image.jpg')}
@@ -625,6 +646,20 @@ const EditRecipe = () => {
                                             Reset
                                         </Button>
                                     </div>
+                                </div>
+                            </div>
+                            <div className="card mt-3">
+                                <div className="card-header border-bottom my-n1">
+                                    <div
+                                        style={{
+                                            "fontWeight": "500",
+                                            "fontSize": "1.285rem",
+                                        }}>
+                                        Attachments
+                                    </div>
+                                </div>
+                                <div id="sample" className="card-body mt-4 ">
+                                    <Preview id={id ? id : baseId} ref={el => attachmentRef = el}></Preview>
                                 </div>
                             </div>
                         </div>

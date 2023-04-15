@@ -9,11 +9,11 @@ from core.utils import apply_recipe_filters, get_item, get_user_profile
 from accounts.serializers import UpdateUserSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.exceptions import NotFound, AuthenticationFailed
-from recipe.models import Rating, Recipe, Ingredient, Favorite, Cuisine, Diet, Comment
+from recipe.models import Rating, Recipe, Ingredient, Favorite, Cuisine, Diet, Comment, RecipeAttachment
 from rest_framework.generics import CreateAPIView, DestroyAPIView, ListAPIView, RetrieveAPIView
 from recipe.serializers import RatingSerializer, RecipeSerializers, IngredientAutocompleteSerializer, \
     RecipeListSerializer, CreatorSerializer, CuisineSerializer, DietSerializer, CookingTimeSerializer, \
-    FavoriteSerializer, AddCommentSerializer, RecipePreviewPictureUploadSerializers
+    FavoriteSerializer, AddCommentSerializer, RecipePreviewPictureUploadSerializers, AttachmentSerializer
 import base64
 from django.core.files.base import ContentFile
 
@@ -48,6 +48,27 @@ class RecipeView(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class AttachmentUploadView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        recipe_id = kwargs['id']
+        if not Recipe.objects.filter(id=recipe_id).exists():
+            return Response({"error": "Recipe not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        recipe = Recipe.objects.get(id=recipe_id)
+        if recipe.user.id != request.user.id:
+            return Response({"error": "You can't edit this recipe."}, status=status.HTTP_403_FORBIDDEN)
+
+        RecipeAttachment.objects.filter(recipe=recipe).delete()
+
+        attachments = request.data["attachments"]
+        for attachment in attachments:
+            RecipeAttachment.objects.create(recipe=recipe, attachment=attachment)
+
+        return Response("Files Uploaded", status=status.HTTP_200_OK)
 
 
 class RecipePreviewPictureUploadView(APIView):

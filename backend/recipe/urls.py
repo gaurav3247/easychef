@@ -6,11 +6,12 @@ from recipe.views import DuplicateRecipeView, RecipeView, RecipeDetailsView, \
   RemoveFavouriteView, InteractionsView, AddFavouriteView, CreatorsListView, \
   IngredientsListView, CuisineListView, DietListView, \
   TopCreatorsView, PopularRecipesView, RecipePreviewPictureUploadView, AddDietView, AddCuisineView, RecipeListCountView, \
-  RecipeFavoriteCountListView, InteractionsCountView
+  RecipeFavoriteCountListView, InteractionsCountView, AttachmentUploadView
 
 urlpatterns = [
   path('save/', RecipeView.as_view()),
   path('upload-preview-pricture/<int:id>/', RecipePreviewPictureUploadView.as_view()),
+  path('upload-attachment-pricture/<int:id>/', AttachmentUploadView.as_view()),
   path('details/<int:id>/', RecipeDetailsView.as_view()),
   path('rate/<int:id>', AddRatingView.as_view()),
   path('duplicate/<int:id>/', DuplicateRecipeView.as_view()),
@@ -35,4 +36,4 @@ urlpatterns = [
   path('add-diet/', AddDietView.as_view()),
   path('add-cuisine/', AddCuisineView.as_view()),
 ] + static('preview_picture/', document_root='recipe/preview_picture') \
-              + static('comment_attachment/', document_root='recipe/comment_attachment')
+              + static('comment_attachment/', document_root='recipe/comment_attachment') \
