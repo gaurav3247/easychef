@@ -45,7 +45,7 @@ const ViewRecipe = () => {
             .then((response) => {
                 setRecipe(response.data.name);
                 setCreatorName(response.data.user_full_name.full_name);
-                setCuisine(response.data.cuisine);
+                setCuisine(response.data.cuisine_name);
                 setPrepTime(response.data.prep_time);
                 setDiet(response.data.diets);
                 setServing(response.data.serving);
@@ -238,7 +238,7 @@ const ViewRecipe = () => {
                                     <div><h6>Creator: {creatorName}</h6></div>
                                 </div>
                                 <div className="col-lg-4">
-                                    <div><h6 className="d-inline-block me-1">Cuisine:</h6></div>
+                                    <div><h6 className="d-inline-block me-1">Cuisine:</h6>{cuisineName}</div>
                                 </div>
                                 <div className="col-lg-4">
                                     <div><h6 className="d-inline-block me-1">Prep Time: </h6>{preptime}</div>
