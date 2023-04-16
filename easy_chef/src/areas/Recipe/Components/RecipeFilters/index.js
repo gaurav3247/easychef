@@ -4,7 +4,7 @@ import Select from "react-select";
 import makeAnimated from "react-select/animated";
 import api from "../../../../core/baseAPI";
 
-const RecipeFilters = forwardRef(({applyFilters, filterByCreatorHidden, isComponent}, ref) => {
+const RecipeFilters = forwardRef(({applyFilters, filterByCreatorHidden, isComponent, nameSearch}, ref) => {
     const [filters, setFilters] = useState([])
     const [canvasOpen, setCanvasOpen] = useState(false)
 
@@ -97,6 +97,12 @@ const RecipeFilters = forwardRef(({applyFilters, filterByCreatorHidden, isCompon
             .then((response) => {
                 setDietsOptions(response.data);
             })
+
+        if (nameSearch) {
+            console.log("Name " + nameSearch)
+            setFilterByName(nameSearch);
+            applyFilters(filterByCreators, filterByIngredients, filterByCuisines, filterByDiets, filterByCookingTime, nameSearch)
+        }
     }, [])
 
     useImperativeHandle(ref, () => ({
@@ -193,7 +199,7 @@ const RecipeFilters = forwardRef(({applyFilters, filterByCreatorHidden, isCompon
 
     return (
         <>
-        <div className={isComponent ? "mt-n3 mb-3 me-4" :"mt-n3 mb-3"}>
+            <div className={isComponent ? "mt-n3 mb-3 me-4" : "mt-n3 mb-3"}>
                 <div className="row text-end">
                     <div className="col-9">
                         <div className="mx-n2">
@@ -207,7 +213,8 @@ const RecipeFilters = forwardRef(({applyFilters, filterByCreatorHidden, isCompon
                         </div>
                     </div>
                     <div className="col-3 d-flex flex-row-reverse bd-highlight">
-                        <input onChange={onFilterNameChange} type="text" className="form-control w-100"
+                        <input value={filterByName} onChange={onFilterNameChange} type="text"
+                               className="form-control w-100"
                                id="defaultFormControlInput"
                                placeholder="Search by Name" aria-describedby="defaultFormControlHelp"/>
                     </div>

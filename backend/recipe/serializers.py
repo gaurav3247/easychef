@@ -145,7 +145,7 @@ class RecipeSerializers(serializers.ModelSerializer):
 
     @staticmethod
     def get_number_of_saves(foo):
-        return Favorite.objects.filter(recipe=foo.id).count ()
+        return Favorite.objects.filter(recipe=foo.id).count()
 
     class Meta:
         model = Recipe

@@ -31,14 +31,16 @@ function App() {
             return (
                 <>
                     <Route index element={<Home/>}/>
-                    <Route path="all-recipes" element={<AllRecipes/>}/>
+                    <Route path="all-recipes" element={<AllRecipes key={Math.random()}/>}/>
+                <Route path="all-recipes/:search" element={<AllRecipes key={Math.random()}/>}/>
                     <Route path="my-recipes" element={<MyRecipes/>}/>
                     <Route path="shopping-list" element={<ShoppingList/>}/>
                     <Route path="edit-recipe/:id" element={<EditRecipe key={Math.random()}/>}/>
                     <Route path="new-recipe" element={<EditRecipe key={Math.random()}/>}/>
                     <Route path="new-recipe/:baseId" element={<EditRecipe key={Math.random()}/>}/>
                     <Route path="user-profile/:id" element={<UserProfile onReRender={Rerender} key={Math.random()}/>}/>
-                    <Route path="user-profile//:isInteractions" element={<UserProfile onReRender={Rerender} key={Math.random()}/>}/>
+                    <Route path="user-profile//:isInteractions"
+                           element={<UserProfile onReRender={Rerender} key={Math.random()}/>}/>
                     <Route path="user-profile" element={<UserProfile onReRender={Rerender} key={Math.random()}/>}/>
                     <Route path="log-out" element={<UserLogout/>}/>
                     <Route path="view-recipe/:id" element={<ViewRecipe/>}/>

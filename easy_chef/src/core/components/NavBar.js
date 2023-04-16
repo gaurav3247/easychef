@@ -55,11 +55,6 @@ const NavBar = forwardRef(({OnLoggedIn}, ref) => {
                         <i className="ti ti-file-plus ti-md"></i>
                     </NavLink>
                 </li>
-                <li className="nav-item navbar-search-wrapper me-2 me-xl-0">
-                    <a className="nav-link search-toggler" href={void (0)}>
-                        <i className="ti ti-search ti-md"></i>
-                    </a>
-                </li>
                 <UserDropdown ref={dropdownRef}  OnRefresh={onRefresh} />
                 </>
                 )
