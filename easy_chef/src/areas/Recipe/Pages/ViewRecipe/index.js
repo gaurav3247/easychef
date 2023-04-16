@@ -25,6 +25,7 @@ const ViewRecipe = () => {
     const [step, setStep] = useState("");
     const [ingredientList, setIngredientList] = useState([]);
     const [isFavorite, setFavorite] = useState(false);
+    const [baseRecipeId, setBaseRecipeId] = useState(false);
     const {id} = useParams();
     const rec_id = id;
     const [currentuserid, setcurrentuserid] = useState('');
@@ -49,14 +50,14 @@ const ViewRecipe = () => {
         });
     };
 
-    const  tobase64Handler = async(files) => {
+    const tobase64Handler = async (files) => {
         const filePathsPromises = [];
         const arr = Array.from(files);
         arr.forEach(file => {
             filePathsPromises.push(toBase64(file));
         });
         const filePaths = await Promise.all(filePathsPromises);
-        const fl = filePaths.map((base64File) => ({ selectedFile: base64File }));
+        const fl = filePaths.map((base64File) => ({selectedFile: base64File}));
         return fl;
     }
 
@@ -89,6 +90,7 @@ const ViewRecipe = () => {
                 setPrepTime(response.data.prep_time);
                 setDiet(response.data.diets);
                 setServing(response.data.serving);
+                setBaseRecipeId(response.data.base_recipe);
                 setCookingTime(response.data.cooking_time);
                 setStep(response.data.steps);
                 setIngredientList(response.data.ingredients);
@@ -108,14 +110,14 @@ const ViewRecipe = () => {
             });
         if (token) {
             api.get('/recipe/favorites/')
-            .then((response) => {
-                response.data.map((m) => {
-                    if (String(m.id) === String(id)) {
-                        setFavorite(true);
-                    }
-                    return null;
-                })
-            });
+                .then((response) => {
+                    response.data.map((m) => {
+                        if (String(m.id) === String(id)) {
+                            setFavorite(true);
+                        }
+                        return null;
+                    })
+                });
         }
     }, [id]);
 
@@ -142,10 +144,10 @@ const ViewRecipe = () => {
                 <>
                     <div className="chat-history-footer shadow-sm p-2">
                         <form className="form-send-message d-flex justify-content-between align-items-center"
-                                onSubmit={handleSubmit}>
+                              onSubmit={handleSubmit}>
                             <input className="form-control message-input border-0 me-1 shadow-none"
-                                    value={comment} onChange={handleCommentChange}
-                                    placeholder="Type comment here"></input>
+                                   value={comment} onChange={handleCommentChange}
+                                   placeholder="Type comment here"></input>
                             <div className="message-actions d-flex align-items-center">
                                 <label htmlFor="attach-doc" className="form-label mb-0">
                                     <i className="ti ti-paperclip ti-sm cursor-pointer mx-1"></i>
@@ -185,13 +187,25 @@ const ViewRecipe = () => {
         }
     }
 
+    function getBaseRecipeButton() {
+        if (baseRecipeId) {
+            return (
+                <Link to={`/view-recipe/${baseRecipeId}`}
+                      className="btn btn-primary btn-md waves-effect waves-light btn_space m-1" type="button">
+                    View Base Recipe
+                </Link>
+            );
+        }
+    }
+
     function getloggedindiv() {
         if (Number.isInteger(currentuserid)) {
             return (
                 <>
-                    <div className="card mb-4 p-2">
-                        {getloggedinButtons()}
-                        {getPersonalButtons()}
+                <div className="card mb-4 p-2">
+                    {getloggedinButtons()}
+                    {getBaseRecipeButton()}
+                    {getPersonalButtons()}
                     </div>
                 </>
             )
@@ -231,16 +245,16 @@ const ViewRecipe = () => {
                 api.delete(`/recipe/remove-from-favorite/${id}/`)
                     .then(() => setFavorite(false))
                 api.get(`/recipe/details/${id}/`)
-                .then((response) => {
-                    setnumfavs(response.data.number_of_saves);
-                });
+                    .then((response) => {
+                        setnumfavs(response.data.number_of_saves);
+                    });
             } else {
                 api.post(`/recipe/add-to-favorite/${id}/`)
                     .then(() => setFavorite(true));
                 api.get(`/recipe/details/${id}/`)
-                .then((response) => {
-                    setnumfavs(response.data.number_of_saves);
-                });
+                    .then((response) => {
+                        setnumfavs(response.data.number_of_saves);
+                    });
             }
         }
     }
@@ -273,13 +287,13 @@ const ViewRecipe = () => {
                 'Content-Type': "application/json"
             }
         })
-        .then(response => {
-            api.get(`/recipe/all-comments/${id}/`)
-                .then((response) => {
-                    setallcomment(response.data);
-                    setComment("");
-                });
-        })
+            .then(response => {
+                api.get(`/recipe/all-comments/${id}/`)
+                    .then((response) => {
+                        setallcomment(response.data);
+                        setComment("");
+                    });
+            })
     };
 
     function buildCarusel() {
@@ -457,7 +471,7 @@ const ViewRecipe = () => {
                             <div className="chat-history-wrapper mt-3 ms-3"><h4>Comments</h4></div>
                             <div className="chat-history-header border-bottom"></div>
                             <div className="chat-history-body bg-body ps ps--active-y h-400 chatHeight"
-                                style={{overflowY: "scroll", "minHeight": "312px"}}>
+                                 style={{overflowY: "scroll", "minHeight": "312px"}}>
                                 <ul className="list-unstyled chat-history m-3">
                                     {allcomment.map(c => (
                                         <Comments date_created={c.date_created} avatar={c.avatar} text={c.text}
