@@ -13,7 +13,7 @@ const Ingredients_List = ({ingredients}) => {
 
 const ingredientsScroll = {
     maxHeight: '300px',
-    overflowY: 'scroll'
+    overflowY: 'auto'
     };
 
     return (
@@ -26,7 +26,7 @@ const ingredientsScroll = {
                         <li>
                             <div className="row mb-1">
                                 <div className="col-8 fw-normal">{item.Ingredient}</div>
-                                <div className="col-4 fw-normal text-end">{item.Quantity} oz.</div>
+                                <div className="col-4 fw-normal text-end">{Math.round((item.Quantity + Number.EPSILON) * 100) / 100} oz.</div>
                             </div>
                         </li>
                     ))}
@@ -35,7 +35,7 @@ const ingredientsScroll = {
             <hr className="mx-n4"></hr>
             <dl className="row m-3 mb-0">
                 <dt className="col-8">Total Items</dt>
-                <dd className="col-4 fw-semibold text-end mb-0">{ total } oz.</dd>
+                <dd className="col-4 fw-semibold text-end mb-0">{ Math.round((total + Number.EPSILON) * 100) / 100 } oz.</dd>
             </dl>
         </>
         )
