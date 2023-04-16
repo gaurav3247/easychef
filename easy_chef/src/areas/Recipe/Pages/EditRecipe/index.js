@@ -596,7 +596,7 @@ const EditRecipe = () => {
                             <div className="card">
                                 <img style={{"objectFit": "cover", "maxHeight": "197px"}}
                                      className="card-img-top h-50 object-fit-fill"
-                                     src={previewPicture && !previewPictureFile ? `http://127.0.0.1:8000/${previewPicture}` :
+                                     src={previewPicture && !previewPictureFile ? `http://127.0.0.1:8000${previewPicture}` :
                                          previewPicture && previewPictureFile ? previewPicture : require('../../../../assets/img/no-image.jpg')}
                                      alt="Card image cap"/>
                                 <span
