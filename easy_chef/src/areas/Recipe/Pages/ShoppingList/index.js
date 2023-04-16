@@ -13,7 +13,6 @@ const ShoppingList = () => {
         api.get('/shopping-list/ingredients/')
             .then(response => {
                 setItems(response.data.ingredients)
-                console.log("sent request")
                 setReceived(true)
             })
     }, [])

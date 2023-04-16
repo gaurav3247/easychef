@@ -182,7 +182,7 @@ const RecipeFilters = forwardRef(({applyFilters, filterByCreatorHidden, isCompon
                         options={creatorsOptions}
                         className='react-select'
                         classNamePrefix='select'
-                        placeholder='Select Diets...'
+                        placeholder='Select Creators...'
                     />
                 </div>
             </>)
