@@ -333,6 +333,25 @@ const EditRecipe = () => {
                                 }
                             });
                     }
+
+                    if (attachmentRef.files) {
+                        const attachmentRequestOptions = {
+                            method: "PUT",
+                            attachments: attachmentRef.files,
+                            mode: 'same-origin',
+                            headers: {
+                                'Accept': 'application/json',
+                                'X-Requested-With': 'XMLHttpRequest',
+                            },
+                        };
+                        api.post(`/recipe/upload-attachment-pricture/${response.data.id}/`, attachmentRequestOptions)
+                            .then((response) => {
+                                if (response.status !== 200) {
+                                    toast.success('Some error occured')
+                                }
+                            });
+                    }
+
                     toast.success('Recipe Created!')
                     navigate(`/view-recipe/${response.data.id}`);
 
@@ -596,7 +615,7 @@ const EditRecipe = () => {
                             <div className="card">
                                 <img style={{"objectFit": "cover", "maxHeight": "197px"}}
                                      className="card-img-top h-50 object-fit-fill"
-                                     src={previewPicture && !previewPictureFile ? `http://127.0.0.1:8000/${previewPicture}` :
+                                     src={previewPicture && !previewPictureFile ? `http://127.0.0.1:8000${previewPicture}` :
                                          previewPicture && previewPictureFile ? previewPicture : require('../../../../assets/img/no-image.jpg')}
                                      alt="Card image cap"/>
                                 <span

@@ -196,7 +196,7 @@ const ProfileEdit = ({show, onClose, onSaveChanges}) => {
                                 <img className='rounded me-50'
                                     style={{"object-fit": "cover"}}
                                     src={userAvatarFile ? userAvatarFile :
-                                    userAvatar ? `http://127.0.0.1:8000/${userAvatar}` : require('../../../../assets/img/default-avatar.png')}
+                                    userAvatar ? `http://127.0.0.1:8000${userAvatar}` : require('../../../../assets/img/default-avatar.png')}
                                      alt='Generic placeholder image' height='100'
                                      width='100'/>
                             </div>

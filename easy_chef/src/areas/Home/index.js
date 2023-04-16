@@ -5,7 +5,7 @@ import ad2 from '../../assets/img/Carousel_img2.png';
 import ad3 from '../../assets/img/Carousel_img3.png';
 import Top from './Top';
 import RecipePreview from '../Recipe/Components/RecipePreview';
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import Carousel from 'react-bootstrap/Carousel';
 import AllRecipes from "../Recipe/Pages/AllRecipes";
 import {Button, Input} from "reactstrap";
@@ -15,6 +15,9 @@ const Home = () => {
     const [topCreators, setTopCreators] = useState([]);
     const [popRecipe, setPopRecipe] = useState([]);
     const [recentRecipe, setRecentRecipe] = useState([]);
+    const [searchValue, setSearchValue] = useState([]);
+    const [searchClicked, setSearchClicked] = useState(false);
+    const navigate = useNavigate();
 
     useEffect(() => {
         api.get(`/recipe/top-creators/?take=10`)
@@ -50,7 +53,29 @@ const Home = () => {
     }, []);
 
     function onSearchByName() {
+        setSearchClicked(true)
 
+        if(!searchValue || searchValue.length < 3)
+            return;
+
+        navigate(`/all-recipes/${searchValue}`);
+    }
+
+    function onSearchChange(name) {
+        setSearchValue(name.target.value);
+    }
+
+    function searchValidationError() {
+        if (searchClicked && (!searchValue || searchValue.length < 3)) {
+            return (<div style={{
+                "width": "100%",
+                "margin-top": "0.25rem",
+                "font-size": "0.8125rem",
+                "color": "#ca3e00"
+            }}>At least 3 characters is required</div>)
+        } else {
+            return (<></>)
+        }
     }
 
     return (
@@ -59,10 +84,12 @@ const Home = () => {
             <div className="container-xxl flex-grow-1 container-p-y">
                 <div className="row mt-n3 mb-4 me-4">
                     <div className="col-10">
-                        <Input type='text' placeholder='Search Recipe By Name'/>
+                        <Input value={searchValue} onChange={onSearchChange} type='text' placeholder='Search Recipe By Name'/>
+                        {searchValidationError()}
                     </div>
                     <div className="col-2">
                         <Button color='primary' className="w-100" type='button' onClick={() => onSearchByName()}>
+                            <i className="ti ti-search me-1 mt-n1"></i>
                             Search
                         </Button>
                     </div>

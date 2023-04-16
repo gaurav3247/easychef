@@ -23,7 +23,7 @@ function Comments(props) {
         if (isImage(item)) {
             return <img className="attachsize" src={item.includes('http') ? item : `http://127.0.0.1:8000/${item}`} alt={item} />;
         } else if (isVideo(item)) {
-            return <video className="attachsize" src={item.includes('http') ? item : `http://127.0.0.1:8000${item}`} controls />;
+            return <video className="attachsize" src={item.includes('http') ? item : `http://127.0.0.1:8000/${item}`} controls />;
         } else {
             return <small>Unsupported file type: {item}</small>;
         }

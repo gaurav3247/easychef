@@ -6,8 +6,10 @@ import QueryBuilder from "../../../../core/queryBuilder";
 import RecipePreview from "../../Components/RecipePreview";
 import ReactPaginate from 'react-paginate'
 import NoData from '../../../../assets/img/no-data.jpg'
+import {useParams} from "react-router-dom";
 
 const AllRecipes = ({isComponent}) => {
+    const {search} = useParams();
     const [recipes, setRecipes] = useState([])
     const [totalItems, setTotalItems] = useState(0)
     const [totalPages, setTotalPages] = useState(0)
@@ -16,6 +18,9 @@ const AllRecipes = ({isComponent}) => {
     const [query, setQuery] = useState('')
 
     useEffect(() => {
+        if (search) {
+            return;
+        }
         api.get(`/recipe/list?skip=${skip}&take=${take}&${query}`)
             .then((response) => {
                 setRecipes(response.data);
@@ -23,6 +28,9 @@ const AllRecipes = ({isComponent}) => {
     }, [skip])
 
     useEffect(() => {
+        if (search) {
+            return;
+        }
         api.get(`/recipe/list-count?&${query}`)
             .then((response) => {
                 let total = response.data.count;
@@ -34,7 +42,7 @@ const AllRecipes = ({isComponent}) => {
 
     function onApplyFilters(filterByCreators, filterByIngredients, filterByCuisines, filterByDiets, filterByCookingTime, filterByName) {
         const builder = new QueryBuilder();
-        if(filterByName)
+        if (filterByName)
             builder.addParam("name", [filterByName]);
         if (filterByCreators && filterByCreators.length > 0)
             builder.addParam("creator", filterByCreators.map(i => i.id));
@@ -52,7 +60,7 @@ const AllRecipes = ({isComponent}) => {
         setQuery(queryString);
         api.get(`/recipe/list?skip=${skip}&take=${take}&${queryString}`)
             .then((response) => {
-                console.log(response.data);
+                console.log("Data:"+  response.data);
                 setRecipes(response.data);
             })
 
@@ -127,8 +135,8 @@ const AllRecipes = ({isComponent}) => {
         }
     }
 
-    function breatCrumbs(){
-        if(!isComponent){
+    function breatCrumbs() {
+        if (!isComponent) {
             return (<BreadCrumbs basePage="Home" currentPage="All Recipes"></BreadCrumbs>)
         }
     }
@@ -137,7 +145,7 @@ const AllRecipes = ({isComponent}) => {
         <>
             <div>
                 {breatCrumbs()}
-                <RecipeFilters applyFilters={onApplyFilters}></RecipeFilters>
+                <RecipeFilters nameSearch={search} applyFilters={onApplyFilters}></RecipeFilters>
             </div>
             <div className="row mb-1">
                 {recipes.map(recipe => (
