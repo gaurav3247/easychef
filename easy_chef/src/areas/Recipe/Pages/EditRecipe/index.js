@@ -333,6 +333,25 @@ const EditRecipe = () => {
                                 }
                             });
                     }
+
+                    if (attachmentRef.files) {
+                        const attachmentRequestOptions = {
+                            method: "PUT",
+                            attachments: attachmentRef.files,
+                            mode: 'same-origin',
+                            headers: {
+                                'Accept': 'application/json',
+                                'X-Requested-With': 'XMLHttpRequest',
+                            },
+                        };
+                        api.post(`/recipe/upload-attachment-pricture/${response.data.id}/`, attachmentRequestOptions)
+                            .then((response) => {
+                                if (response.status !== 200) {
+                                    toast.success('Some error occured')
+                                }
+                            });
+                    }
+
                     toast.success('Recipe Created!')
                     navigate(`/view-recipe/${response.data.id}`);
 
