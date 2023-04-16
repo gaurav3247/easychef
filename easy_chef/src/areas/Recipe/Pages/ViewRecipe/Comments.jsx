@@ -38,7 +38,7 @@ function Comments(props) {
          <div className="d-flex overflow-hidden">
             <div className="user-avatar flex-shrink-0 me-3">
                 <div className="avatar avatar-sm">
-                <img style={{"object-fit": "cover"}} width="42" height="42" src={profileAvatar ? profileAvatar.includes('http') ? profileAvatar : `http://127.0.0.1:8000${profileAvatar}` : require('../../../../assets/img/default-avatar.png')}
+                <img style={{"object-fit": "cover"}} width="42" height="42" src={profileAvatar ? profileAvatar.includes('http') ? profileAvatar : `http://127.0.0.1:8000/${profileAvatar}` : require('../../../../assets/img/default-avatar.png')}
                                  alt="Avatar" className="rounded-circle"/>
                 </div>
             </div>

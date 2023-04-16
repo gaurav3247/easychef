@@ -136,16 +136,25 @@ class RecipeSerializers(serializers.ModelSerializer):
 
     @staticmethod
     def get_number_of_comments(foo):
-        return Comment.objects.filter(recipe=foo.id).count()
+        if foo.__class__ is Recipe:
+            return Comment.objects.filter(recipe=foo.id).count()
+        else:
+            return Comment.objects.filter(recipe=foo["id"]).count()
 
     @staticmethod
     def get_average_rating(foo):
-        rating = Rating.objects.filter(recipeID=foo.id).aggregate(Avg('rating'))
-        return rating['rating__avg'] if rating['rating__avg'] else 0
+        if foo.__class__ is Recipe:
+            rating = Rating.objects.filter(recipeID=foo.id).aggregate(Avg('rating'))
+            return rating['rating__avg'] if rating['rating__avg'] else 0
+        else:
+            rating = Rating.objects.filter(recipeID=foo["id"]).aggregate(Avg('rating'))
+            return rating['rating__avg'] if rating['rating__avg'] else 0
 
     @staticmethod
     def get_number_of_saves(foo):
-        return Favorite.objects.filter(recipe=foo.id).count()
+        if foo.__class__ is Recipe:
+            return Favorite.objects.filter(recipe=foo.id).count()
+        return Favorite.objects.filter(recipe=foo["id"]).count()
 
     class Meta:
         model = Recipe
