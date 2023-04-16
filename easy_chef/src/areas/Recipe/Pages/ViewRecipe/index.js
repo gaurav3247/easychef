@@ -34,6 +34,7 @@ const ViewRecipe = () => {
     const [selectedFiles, setSelectedFiles] = useState([]);
     const [comment, setComment] = useState('');
     const [rate, setRate] = useState(0);
+    const token = localStorage.getItem("user_tokens");
 
     const handleCommentChange = event => {
         setComment(event.target.value);
@@ -68,14 +69,18 @@ const ViewRecipe = () => {
 
     const [canvasOpen, setCanvasOpen] = useState(false)
     const toggleCanvas = () => {
-        setCanvasOpen(!canvasOpen)
+        if (token) {
+            setCanvasOpen(!canvasOpen);
+        }
     }
 
     useEffect(() => {
-        api.get(`/accounts/edit-profile/`)
-            .then((response) => {
-                setcurrentuserid(response.data.id);
-            });
+        if (token) {
+            api.get(`/accounts/edit-profile/`)
+                .then((response) => {
+                    setcurrentuserid(response.data.id);
+                });
+        }
         api.get(`/recipe/details/${id}/`)
             .then((response) => {
                 setRecipe(response.data.name);
@@ -101,6 +106,17 @@ const ViewRecipe = () => {
             .then((response) => {
                 setallcomment(response.data);
             });
+        if (token) {
+            api.get('/recipe/favorites/')
+            .then((response) => {
+                response.data.map((m) => {
+                    if (String(m.id) === String(id)) {
+                        setFavorite(true);
+                    }
+                    return null;
+                })
+            });
+        }
     }, [id]);
 
     function getPersonalButtons() {
@@ -115,6 +131,39 @@ const ViewRecipe = () => {
                           className="btn btn-outline-primary btn-md waves-effect waves-light btn_space m-1"
                           type="button">Delete
                     </Link>
+                </>
+            )
+        }
+    }
+
+    function getCommentAbility() {
+        if (token) {
+            return (
+                <>
+                    <div className="chat-history-footer shadow-sm p-2">
+                        <form className="form-send-message d-flex justify-content-between align-items-center"
+                                onSubmit={handleSubmit}>
+                            <input className="form-control message-input border-0 me-1 shadow-none"
+                                    value={comment} onChange={handleCommentChange}
+                                    placeholder="Type comment here"></input>
+                            <div className="message-actions d-flex align-items-center">
+                                <label htmlFor="attach-doc" className="form-label mb-0">
+                                    <i className="ti ti-paperclip ti-sm cursor-pointer mx-1"></i>
+                                    <input
+                                        id="attach-doc"
+                                        hidden
+                                        type="file"
+                                        multiple
+                                        onChange={handleFileSelect}
+                                    />
+                                </label>
+                                <button className="btn btn-primary d-flex send-msg-btn" type="submit">
+                                    <i className="ti ti-send me-md-1 me-0"></i>
+                                    <span className="align-middle d-md-inline-block d-none"></span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
                 </>
             )
         }
@@ -177,12 +226,22 @@ const ViewRecipe = () => {
     }
 
     function FavoriteButtonClick() {
-        if (isFavorite) {
-            api.delete(`/recipe/remove-from-favorite/${id}/`)
-                .then(() => setFavorite(false))
-        } else {
-            api.post(`/recipe/add-to-favorite/${id}/`)
-                .then(() => setFavorite(true));
+        if (token) {
+            if (isFavorite) {
+                api.delete(`/recipe/remove-from-favorite/${id}/`)
+                    .then(() => setFavorite(false))
+                api.get(`/recipe/details/${id}/`)
+                .then((response) => {
+                    setnumfavs(response.data.number_of_saves);
+                });
+            } else {
+                api.post(`/recipe/add-to-favorite/${id}/`)
+                    .then(() => setFavorite(true));
+                api.get(`/recipe/details/${id}/`)
+                .then((response) => {
+                    setnumfavs(response.data.number_of_saves);
+                });
+            }
         }
     }
 
@@ -193,7 +252,11 @@ const ViewRecipe = () => {
     function SaveRating() {
         api.post(`/recipe/rate/${id}/`, {rating: String(rate)})
             .then(response => {
-                console.log('Rating saved');
+                api.get(`/recipe/details/${id}/`)
+                    .then((response) => {
+                        setRating(response.data.rating);
+                    });
+                toggleCanvas();
             })
             .catch(error => {
                 console.error('Error adding rating', error);
@@ -209,6 +272,13 @@ const ViewRecipe = () => {
             headers: {
                 'Content-Type': "application/json"
             }
+        })
+        .then(response => {
+            api.get(`/recipe/all-comments/${id}/`)
+                .then((response) => {
+                    setallcomment(response.data);
+                    setComment("");
+                });
         })
     };
 
@@ -234,9 +304,9 @@ const ViewRecipe = () => {
                     <div className="card-header border-bottom my-n1">
                         <h4
                             style={{
-                                "margin-top": "-5px",
-                                "margin-bottom": "-6px",
-                                "margin-left": "-7px",
+                                "marginTop": "-5px",
+                                "marginBottom": "-6px",
+                                "marginLeft": "-7px",
                             }}>
                             Attachments
                         </h4>
@@ -391,7 +461,7 @@ const ViewRecipe = () => {
                             <div className="chat-history-wrapper mt-3 ms-3"><h4>Comments</h4></div>
                             <div className="chat-history-header border-bottom"></div>
                             <div className="chat-history-body bg-body ps ps--active-y h-400 chatHeight"
-                                style={{overflowY: "scroll", "min-height": "312px"}}>
+                                style={{overflowY: "scroll", "minHeight": "312px"}}>
                                 <ul className="list-unstyled chat-history m-3">
                                     {allcomment.map(c => (
                                         <Comments date_created={c.date_created} avatar={c.avatar} text={c.text}
@@ -399,30 +469,7 @@ const ViewRecipe = () => {
                                     ))}
                                 </ul>
                             </div>
-                            <div className="chat-history-footer shadow-sm p-2">
-                                <form className="form-send-message d-flex justify-content-between align-items-center"
-                                      onSubmit={handleSubmit}>
-                                    <input className="form-control message-input border-0 me-1 shadow-none"
-                                           value={comment} onChange={handleCommentChange}
-                                           placeholder="Type comment here"></input>
-                                    <div className="message-actions d-flex align-items-center">
-                                        <label htmlFor="attach-doc" className="form-label mb-0">
-                                            <i className="ti ti-paperclip ti-sm cursor-pointer mx-1"></i>
-                                            <input
-                                                id="attach-doc"
-                                                hidden
-                                                type="file"
-                                                multiple
-                                                onChange={handleFileSelect}
-                                            />
-                                        </label>
-                                        <button className="btn btn-primary d-flex send-msg-btn" type="submit">
-                                            <i className="ti ti-send me-md-1 me-0"></i>
-                                            <span className="align-middle d-md-inline-block d-none"></span>
-                                        </button>
-                                    </div>
-                                </form>
-                            </div>
+                            {getCommentAbility()}
                         </div>
                         {getAttachments()}
                     </div>
