@@ -7,6 +7,7 @@ import {Link} from "react-router-dom"
 import parse from 'html-react-parser'
 import {Offcanvas, OffcanvasBody, OffcanvasHeader} from 'reactstrap';
 import {FaStar} from "react-icons/fa";
+import toast from 'react-hot-toast'
 import {CarouselComponent, CarouselItemsDirective, CarouselItemDirective} from '@syncfusion/ej2-react-navigations';
 import {ButtonComponent} from '@syncfusion/ej2-react-buttons';
 import {Container, Radio, Rating} from "./RatingStyles.js";
@@ -215,9 +216,11 @@ const ViewRecipe = () => {
     function deleteClick() {
         api.delete(`/recipe/delete/${id}`)
             .then(response => {
+                toast.success('Recipe deleted successfully')
                 console.log('Recipe deleted successfully');
             })
             .catch(error => {
+                toast.error('Error deleting recipe')
                 console.error('Error deleting recipe', error);
             });
     }
@@ -232,9 +235,11 @@ const ViewRecipe = () => {
 
         api.post(`/shopping-list/add-recipe/`, requestOptions)
             .then(response => {
+                toast.success('Recipe added to shopping list')
                 console.log('Recipe added to shopping list');
             })
             .catch(error => {
+                toast.error('Error adding recipe to shopping cart. Recipe was already added')
                 console.error('Error adding recipe to shopping cart', error);
             });
     }
@@ -243,14 +248,20 @@ const ViewRecipe = () => {
         if (token) {
             if (isFavorite) {
                 api.delete(`/recipe/remove-from-favorite/${id}/`)
-                    .then(() => setFavorite(false))
+                    .then(() => {
+                        setFavorite(false);
+                        toast.success('Recipe removed from favorite')
+                    })
                 api.get(`/recipe/details/${id}/`)
                     .then((response) => {
                         setnumfavs(response.data.number_of_saves);
                     });
             } else {
                 api.post(`/recipe/add-to-favorite/${id}/`)
-                    .then(() => setFavorite(true));
+                    .then(() => {
+                        setFavorite(true)
+                        toast.success('Recipe marked as favorite')
+                    });
                 api.get(`/recipe/details/${id}/`)
                     .then((response) => {
                         setnumfavs(response.data.number_of_saves);
@@ -269,6 +280,7 @@ const ViewRecipe = () => {
                 api.get(`/recipe/details/${id}/`)
                     .then((response) => {
                         setRating(response.data.rating);
+                        toast.success('Rating added')
                     });
                 toggleCanvas();
             })
@@ -279,7 +291,6 @@ const ViewRecipe = () => {
 
     const handleSubmit = event => {
         event.preventDefault();
-        console.log(selectedFiles);
         api.post(`/recipe/comment/${id}/`, {
             text: comment,
             attachments: selectedFiles.map(attachment => ({attachment: attachment})),
