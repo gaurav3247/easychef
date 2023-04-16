@@ -21,9 +21,9 @@ function Comments(props) {
 
     function renderItem(item) {
         if (isImage(item)) {
-            return <img className="attachsize" src={item.includes('http') ? item : `http://127.0.0.1:8000${item}`} alt={item} />;
+            return <img className="attachsize" src={item.includes('http') ? item : `http://127.0.0.1:8000/${item}`} alt={item} />;
         } else if (isVideo(item)) {
-            return <video className="attachsize" src={item.includes('http') ? item : `http://127.0.0.1:8000${item}`} controls />;
+            return <video className="attachsize" src={item.includes('http') ? item : `http://127.0.0.1:8000/${item}`} controls />;
         } else {
             return <small>Unsupported file type: {item}</small>;
         }
@@ -38,7 +38,7 @@ function Comments(props) {
          <div className="d-flex overflow-hidden">
             <div className="user-avatar flex-shrink-0 me-3">
                 <div className="avatar avatar-sm">
-                <img style={{"object-fit": "cover"}} width="42" height="42" src={profileAvatar ? profileAvatar.includes('http') ? profileAvatar : `http://127.0.0.1:8000/${profileAvatar}` : require('../../../../assets/img/default-avatar.png')}
+                <img style={{"object-fit": "cover"}} width="42" height="42" src={profileAvatar ? profileAvatar.includes('http') ? profileAvatar : `http://127.0.0.1:8000${profileAvatar}` : require('../../../../assets/img/default-avatar.png')}
                                  alt="Avatar" className="rounded-circle"/>
                 </div>
             </div>
