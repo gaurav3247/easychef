@@ -387,10 +387,6 @@ const ViewRecipe = () => {
                                                             onClick={SaveRating}>
                                                         Apply
                                                     </button>
-                                                    <button type="button"
-                                                            className="btn btn-secondary waves-effect waves-light m-1">
-                                                        Clear
-                                                    </button>
                                                 </div>
                                             </div>
                                         </div>
