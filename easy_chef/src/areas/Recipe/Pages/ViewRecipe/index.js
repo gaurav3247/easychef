@@ -7,6 +7,7 @@ import {Link} from "react-router-dom"
 import parse from 'html-react-parser'
 import {Offcanvas, OffcanvasBody, OffcanvasHeader} from 'reactstrap';
 import {FaStar} from "react-icons/fa";
+import toast from 'react-hot-toast'
 import {CarouselComponent, CarouselItemsDirective, CarouselItemDirective} from '@syncfusion/ej2-react-navigations';
 import {ButtonComponent} from '@syncfusion/ej2-react-buttons';
 import {Container, Radio, Rating} from "./RatingStyles.js";
@@ -25,6 +26,7 @@ const ViewRecipe = () => {
     const [step, setStep] = useState("");
     const [ingredientList, setIngredientList] = useState([]);
     const [isFavorite, setFavorite] = useState(false);
+    const [baseRecipeId, setBaseRecipeId] = useState(false);
     const {id} = useParams();
     const rec_id = id;
     const [currentuserid, setcurrentuserid] = useState('');
@@ -49,14 +51,14 @@ const ViewRecipe = () => {
         });
     };
 
-    const  tobase64Handler = async(files) => {
+    const tobase64Handler = async (files) => {
         const filePathsPromises = [];
         const arr = Array.from(files);
         arr.forEach(file => {
             filePathsPromises.push(toBase64(file));
         });
         const filePaths = await Promise.all(filePathsPromises);
-        const fl = filePaths.map((base64File) => ({ selectedFile: base64File }));
+        const fl = filePaths.map((base64File) => ({selectedFile: base64File}));
         return fl;
     }
 
@@ -89,6 +91,7 @@ const ViewRecipe = () => {
                 setPrepTime(response.data.prep_time);
                 setDiet(response.data.diets);
                 setServing(response.data.serving);
+                setBaseRecipeId(response.data.base_recipe);
                 setCookingTime(response.data.cooking_time);
                 setStep(response.data.steps);
                 setIngredientList(response.data.ingredients);
@@ -108,14 +111,14 @@ const ViewRecipe = () => {
             });
         if (token) {
             api.get('/recipe/favorites/')
-            .then((response) => {
-                response.data.map((m) => {
-                    if (String(m.id) === String(id)) {
-                        setFavorite(true);
-                    }
-                    return null;
-                })
-            });
+                .then((response) => {
+                    response.data.map((m) => {
+                        if (String(m.id) === String(id)) {
+                            setFavorite(true);
+                        }
+                        return null;
+                    })
+                });
         }
     }, [id]);
 
@@ -142,10 +145,10 @@ const ViewRecipe = () => {
                 <>
                     <div className="chat-history-footer shadow-sm p-2">
                         <form className="form-send-message d-flex justify-content-between align-items-center"
-                                onSubmit={handleSubmit}>
+                              onSubmit={handleSubmit}>
                             <input className="form-control message-input border-0 me-1 shadow-none"
-                                    value={comment} onChange={handleCommentChange}
-                                    placeholder="Type comment here"></input>
+                                   value={comment} onChange={handleCommentChange}
+                                   placeholder="Type comment here"></input>
                             <div className="message-actions d-flex align-items-center">
                                 <label htmlFor="attach-doc" className="form-label mb-0">
                                     <i className="ti ti-paperclip ti-sm cursor-pointer mx-1"></i>
@@ -185,13 +188,25 @@ const ViewRecipe = () => {
         }
     }
 
+    function getBaseRecipeButton() {
+        if (baseRecipeId) {
+            return (
+                <Link to={`/view-recipe/${baseRecipeId}`}
+                      className="btn btn-primary btn-md waves-effect waves-light btn_space m-1" type="button">
+                    View Base Recipe
+                </Link>
+            );
+        }
+    }
+
     function getloggedindiv() {
         if (Number.isInteger(currentuserid)) {
             return (
                 <>
-                    <div className="card mb-4 p-2">
-                        {getloggedinButtons()}
-                        {getPersonalButtons()}
+                <div className="card mb-4 p-2">
+                    {getloggedinButtons()}
+                    {getBaseRecipeButton()}
+                    {getPersonalButtons()}
                     </div>
                 </>
             )
@@ -201,9 +216,11 @@ const ViewRecipe = () => {
     function deleteClick() {
         api.delete(`/recipe/delete/${id}`)
             .then(response => {
+                toast.success('Recipe deleted successfully')
                 console.log('Recipe deleted successfully');
             })
             .catch(error => {
+                toast.error('Error deleting recipe')
                 console.error('Error deleting recipe', error);
             });
     }
@@ -218,9 +235,11 @@ const ViewRecipe = () => {
 
         api.post(`/shopping-list/add-recipe/`, requestOptions)
             .then(response => {
+                toast.success('Recipe added to shopping list')
                 console.log('Recipe added to shopping list');
             })
             .catch(error => {
+                toast.error('Error adding recipe to shopping cart. Recipe was already added')
                 console.error('Error adding recipe to shopping cart', error);
             });
     }
@@ -229,18 +248,24 @@ const ViewRecipe = () => {
         if (token) {
             if (isFavorite) {
                 api.delete(`/recipe/remove-from-favorite/${id}/`)
-                    .then(() => setFavorite(false))
+                    .then(() => {
+                        setFavorite(false);
+                        toast.success('Recipe removed from favorite')
+                    })
                 api.get(`/recipe/details/${id}/`)
-                .then((response) => {
-                    setnumfavs(response.data.number_of_saves);
-                });
+                    .then((response) => {
+                        setnumfavs(response.data.number_of_saves);
+                    });
             } else {
                 api.post(`/recipe/add-to-favorite/${id}/`)
-                    .then(() => setFavorite(true));
+                    .then(() => {
+                        setFavorite(true)
+                        toast.success('Recipe marked as favorite')
+                    });
                 api.get(`/recipe/details/${id}/`)
-                .then((response) => {
-                    setnumfavs(response.data.number_of_saves);
-                });
+                    .then((response) => {
+                        setnumfavs(response.data.number_of_saves);
+                    });
             }
         }
     }
@@ -255,6 +280,7 @@ const ViewRecipe = () => {
                 api.get(`/recipe/details/${id}/`)
                     .then((response) => {
                         setRating(response.data.rating);
+                        toast.success('Rating added')
                     });
                 toggleCanvas();
             })
@@ -265,7 +291,6 @@ const ViewRecipe = () => {
 
     const handleSubmit = event => {
         event.preventDefault();
-        console.log(selectedFiles);
         api.post(`/recipe/comment/${id}/`, {
             text: comment,
             attachments: selectedFiles.map(attachment => ({attachment: attachment})),
@@ -273,13 +298,13 @@ const ViewRecipe = () => {
                 'Content-Type': "application/json"
             }
         })
-        .then(response => {
-            api.get(`/recipe/all-comments/${id}/`)
-                .then((response) => {
-                    setallcomment(response.data);
-                    setComment("");
-                });
-        })
+            .then(response => {
+                api.get(`/recipe/all-comments/${id}/`)
+                    .then((response) => {
+                        setallcomment(response.data);
+                        setComment("");
+                    });
+            })
     };
 
     function buildCarusel() {
@@ -457,7 +482,7 @@ const ViewRecipe = () => {
                             <div className="chat-history-wrapper mt-3 ms-3"><h4>Comments</h4></div>
                             <div className="chat-history-header border-bottom"></div>
                             <div className="chat-history-body bg-body ps ps--active-y h-400 chatHeight"
-                                style={{overflowY: "scroll", "minHeight": "312px"}}>
+                                 style={{overflowY: "scroll", "minHeight": "312px"}}>
                                 <ul className="list-unstyled chat-history m-3">
                                     {allcomment.map(c => (
                                         <Comments date_created={c.date_created} avatar={c.avatar} text={c.text}
