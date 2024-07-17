@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-rh9z_afqq0581xusg%zv5^%!2o6)g6f0-#yp9t#-4jx-a4nkft
 DEBUG = False
 CORS_ORIGIN_ALLOW_ALL = True
 
-ALLOWED_HOSTS = ['ec2-18-222-224-139.us-east-2.compute.amazonaws.com']
+ALLOWED_HOSTS = ['easychef-db-easychefdb.d.aivencloud.com']
 # Application definition
 
 INSTALLED_APPS = [
@@ -85,12 +85,15 @@ WSGI_APPLICATION = 'p2.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'ENGINE': 'django.db.backends.postgresql',
         'NAME': os.getenv('DB_NAME'),
         'USER': os.getenv('DB_USER'),
         'PASSWORD': os.getenv('DB_PASSWORD'),
         'HOST': os.getenv('DB_HOST'),
         'PORT': os.getenv('DB_PORT'),
+        'OPTIONS': {
+            'sslmode': 'require',
+        },
     }
 }
 
