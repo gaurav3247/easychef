@@ -35,4 +35,4 @@ urlpatterns = [
   path('top-creators/', TopCreatorsView.as_view()),
   path('add-diet/', AddDietView.as_view()),
   path('add-cuisine/', AddCuisineView.as_view()),
-] + static('preview_picture/', document_root='recipe/preview_picture') + static('comment_attachment/', document_root='recipe/comment_attachment')
+]
