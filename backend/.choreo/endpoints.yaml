@@ -5,4 +5,4 @@ endpoints:
     port: 8000
     type: REST
     networkVisibility: Public
-    context: /easychef/easy-chef-backend/v1.0
+    context: /easychef/easy-chef-backend/v1.0/
