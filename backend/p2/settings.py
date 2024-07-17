@@ -13,6 +13,9 @@ from datetime import timedelta
 from pathlib import Path
 import os
 import dotenv
+
+dotenv.load_dotenv()
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -27,7 +30,7 @@ SECRET_KEY = 'django-insecure-rh9z_afqq0581xusg%zv5^%!2o6)g6f0-#yp9t#-4jx-a4nkft
 DEBUG = False
 CORS_ORIGIN_ALLOW_ALL = True
 
-ALLOWED_HOSTS = ['easychef-db-easychefdb.d.aivencloud.com']
+ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
