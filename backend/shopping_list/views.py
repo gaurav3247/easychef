@@ -54,15 +54,11 @@ class ShoppingListIngredientsView(ListAPIView):
     def get_queryset(self):
         user = self.request.user
         recipes_ids = ShoppingListItem.objects.filter(user=user).values_list('recipeID', flat=True).distinct()
-        str_recipes_ids = str(tuple(recipes_ids))
-        if len(recipes_ids) == 1:
-            str_recipes_ids = str_recipes_ids.replace(',', '')
+        # str_recipes_ids = str(tuple(recipes_ids))
+        # if len(recipes_ids) == 1:
+        #     str_recipes_ids = str_recipes_ids.replace(',', '')
 
-        query = "SELECT * " \
-                "FROM recipe_ingredient " \
-                "WHERE recipe_id IN {str_recipes_ids}" \
-
-        ingredients = list(Ingredient.objects.raw(query.format(str_recipes_ids=f"{str_recipes_ids}")))
+        ingredients = Ingredient.objects.filter(recipe_id__in=recipes_ids)
         ingredients_dict = {}
 
         for ingredient in ingredients:
